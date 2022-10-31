@@ -1322,7 +1322,7 @@ public final class ConnectionUtils {
             List list =
                     ExtractMetaDataUtils.getInstance().connect(dbType, connection.getUrl(), userName, password,
                             connection.getDriverClass(), connection.getDriverJarPath(),
-                            connection.getDbVersionString(), connection.getAdditionalParams());
+                            connection.getDbVersionString(), connection.getAdditionalParams(), connection.isSupportNLS());
             for (int i = 0; i < list.size(); i++) {
                 if (list.get(i) instanceof java.sql.Connection) {
                     createConnection = (java.sql.Connection) list.get(i);
