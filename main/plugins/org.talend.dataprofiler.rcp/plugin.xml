@@ -22,7 +22,7 @@
             context="HSQL wizard"
             language="java"
             message="wizard for TOP"
-            name="hsqldb.jar" mvn_uri="mvn:org.talend.libraries/hsqldb/6.0.0" 
+            name="hsqldb.jar" mvn_uri="mvn:org.hsqldb/hsqldb/2.7.1" 
             required="true"
             uripath="platform:/plugin/org.talend.libraries.jdbc.hsql/lib/hsqldb.jar">
       </libraryNeeded>
