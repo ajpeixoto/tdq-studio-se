@@ -333,9 +333,7 @@ public final class AnalysisExecutorHelper {
      * @param dependentDefinition
      */
     private static IndicatorDefinition copyWhereRule(WhereRule dependentDefinition) {
-        // firstly clear the dependency of the analysis
-        dependentDefinition.getSupplierDependency().clear();
-        // then , record the joins in a temp list
+        // record the joins in a temp list
         EList<JoinElement> joins = dependentDefinition.getJoins();
         List<JoinElement> copyJoins = new ArrayList<JoinElement>();
         if (!joins.isEmpty()) {
