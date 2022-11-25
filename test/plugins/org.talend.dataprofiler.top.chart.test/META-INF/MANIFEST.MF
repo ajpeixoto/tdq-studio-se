@@ -1,10 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: All tests for org.talend.dataprofiler.top.chart Plug-in
+Bundle-Name: org.talend.dataprofiler.top.chart.test
 Bundle-SymbolicName: org.talend.dataprofiler.top.chart.test
 Bundle-Version: 8.0.1.qualifier
 Fragment-Host: org.talend.dataprofiler.top.chart
-Automatic-Module-Name: org.talend.dataprofiler.top.chart.test
 Bundle-Vendor: .Talend SA.
 Require-Bundle: org.junit,
  org.talend.testutils,
