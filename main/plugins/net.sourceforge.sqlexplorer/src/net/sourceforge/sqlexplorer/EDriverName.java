@@ -108,8 +108,8 @@ public enum EDriverName {
          "hadoop-core-1.0.0.jar", //$NON-NLS-1$
             "commons-logging-1.0.4.jar", //$NON-NLS-1$
             "reload4j-1.2.19.jar", //$NON-NLS-1$
-            "slf4j-api-1.6.1.jar", //$NON-NLS-1$
-            "slf4j-log4j12-1.6.1.jar") //$NON-NLS-1$
+            "slf4j-api-1.7.34.jar", //$NON-NLS-1$
+            "slf4j-reload4j-1.7.34.jar") //$NON-NLS-1$
     ;
 
     private final String dbKey;
