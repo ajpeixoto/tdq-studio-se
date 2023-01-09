@@ -91,6 +91,24 @@ public class SemanticDiscoveryActionProviderTest {
                 ((ActionContributionItem) menuManager.getItems()[0]).getAction() instanceof SemanticDiscoveryAction);
     }
 
+    @Test
+    public void testFillContextMenuIMenuManager_2columnsSameTable() {
+        SemanticDiscoveryActionProvider semanticDiscoveryActionProvider = new SemanticDiscoveryActionProvider();
+        TdTable createTdTable = RelationalFactory.eINSTANCE.createTdTable();
+        IRepositoryNode createNewColRepNode1 = createColumnByTableRepNode(createTdTable);
+        IRepositoryNode createNewColRepNode2 = createColumnByTableRepNode(createTdTable);
+        TreePath treePath1 = new TreePath(new IRepositoryNode[] { createNewColRepNode1, createNewColRepNode2 });
+        TreeSelection treeSelection = new TreeSelection(new TreePath[] { treePath1 });
+        semanticDiscoveryActionProvider.setContext(new ActionContext(treeSelection));
+        MenuManager menuManager = new MenuManager();
+        semanticDiscoveryActionProvider.fillContextMenu(menuManager);
+        Assert.assertEquals(1, menuManager.getSize());
+        Assert.assertTrue("Current action must be SemanticDiscoveryAction", //$NON-NLS-1$
+                ((ActionContributionItem) menuManager.getItems()[0]).getAction() instanceof SemanticDiscoveryAction);
+    }
+
+
+
     /**
      * DOC zshen Comment method "createNewColumnRepNode".
      */
@@ -107,5 +125,18 @@ public class SemanticDiscoveryActionProviderTest {
                 ENodeType.REPOSITORY_ELEMENT, null);
         return columnRepNode;
     }
+
+    private IRepositoryNode createColumnByTableRepNode(TdTable table) {
+        TdColumn tdColumn1 = RelationalFactory.eINSTANCE.createTdColumn();
+        tdColumn1.setOwner(table);
+        TdSqlDataType dataType = RelationalFactory.eINSTANCE.createTdSqlDataType();
+        dataType.setJavaDataType(Types.VARCHAR);
+        tdColumn1.setSqlDataType(dataType);
+        MetadataColumnRepositoryObject columnObject = new MetadataColumnRepositoryObject(null, tdColumn1);
+        IRepositoryNode columnRepNode = new DBColumnRepNode(columnObject, new RepositoryNode(null, null, null),
+                ENodeType.REPOSITORY_ELEMENT, null);
+        return columnRepNode;
+    }
+
 
 }
