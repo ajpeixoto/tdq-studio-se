@@ -93,7 +93,7 @@ public class MatchRuleUIService implements IMatchRuleUIService {
     public TreeMap<Object, Long> computeGroupSize2FreqMap(List<String[]> viewData, List<String> columnNames) {
         List<String> matchRowSchemaList = columnNames;
         int groupSizeColumnIndex = matchRowSchemaList.indexOf(MatchAnalysisConstant.GRP_SIZE);
-        int masterColumnIndex = matchRowSchemaList.indexOf(MatchAnalysisConstant.MASTER);
+        int masterColumnIndex = matchRowSchemaList.indexOf(MatchAnalysisConstant.PRIMARY);
         TreeMap<Object, Long> groupSize2groupFrequency = new TreeMap<Object, Long>();
         if (viewData != null) {
 

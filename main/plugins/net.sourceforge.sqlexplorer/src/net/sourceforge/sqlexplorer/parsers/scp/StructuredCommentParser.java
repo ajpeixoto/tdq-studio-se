@@ -190,7 +190,7 @@ public class StructuredCommentParser {
 	// The QueryParser
 	protected QueryParser parser;
 	
-	// Master buffer
+    // Main buffer
 	protected StringBuffer buffer;
 
 	// Structured comments

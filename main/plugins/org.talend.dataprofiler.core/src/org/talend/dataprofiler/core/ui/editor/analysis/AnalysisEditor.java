@@ -276,11 +276,6 @@ public class AnalysisEditor extends SupportContextEditor {
         }
     }
 
-    /**
-     * Getter for masterPage.
-     *
-     * @return the masterPage
-     */
     @Override
     public AbstractAnalysisMetadataPage getMasterPage() {
         return (AbstractAnalysisMetadataPage) masterPage;

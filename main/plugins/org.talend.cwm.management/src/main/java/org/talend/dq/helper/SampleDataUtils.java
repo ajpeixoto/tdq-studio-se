@@ -63,31 +63,6 @@ public class SampleDataUtils {
      */
     public SampleDataStatement getSampleDataStatement(final Analysis findAnalysis) {
         statement = null;
-        // if (Platform.isRunning()) {
-        // Display.getDefault().syncExec(new Runnable() {
-        //
-        // public void run() {
-        //
-        // IEditorPart activeEditor = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage()
-        // .getActiveEditor();
-        // if (activeEditor != null && activeEditor instanceof AnalysisEditor) {
-        // AnalysisEditor analysisEditor = ((AnalysisEditor) activeEditor);
-        // if (analysisEditor.getMasterPage().getCurrentModelElement().equals(findAnalysis)) {
-        // AbstractAnalysisMetadataPage masterPage = analysisEditor.getMasterPage();
-        // ColumnAnalysisDataSamTable sampleTable = masterPage.getSampleTable();
-        // int editorDisLimit = masterPage.getPreviewLimit();
-        // int tableLimit = sampleTable.getLimitNumber();
-        // if (currentLimitChanged(editorDisLimit, tableLimit)) {
-        // refreshSampleData(masterPage);
-        // }
-        // statement = new SampleDataStatement(sampleTable.getExistPreviewData(), sampleTable.getPropertyNames());
-        // }
-        // }
-        // }
-        // });
-        // }
-        // CommandLine case editor is not active case and so on
-        // if (statement == null) {
         DataPreviewHandler dataPreviewHandler = new DataPreviewHandler();
         dataPreviewHandler.setDataFilter(getDataFilter(findAnalysis));
         List<Object[]> previewData = new ArrayList<Object[]>();
@@ -174,17 +149,6 @@ public class SampleDataUtils {
      */
     private String getDataFilter(final Analysis findAnalysis) {
         return AnalysisHelper.getStringDataFilter(findAnalysis);
-    }
-
-    // private void refreshSampleData(AbstractAnalysisMetadataPage masterPage) {
-    // masterPage.refreshPreviewData();
-    // }
-
-    private boolean currentLimitChanged(int newValue, int oldValue) {
-        if (oldValue != newValue) {
-            return true;
-        }
-        return false;
     }
 
 }

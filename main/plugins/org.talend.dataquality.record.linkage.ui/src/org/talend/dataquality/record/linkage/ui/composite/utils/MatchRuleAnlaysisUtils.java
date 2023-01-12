@@ -223,7 +223,7 @@ public class MatchRuleAnlaysisUtils {
         for (int i = 0; i < allColumns.length; i++) {
             if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.GID)) {
                 gidIndex = i;
-            } else if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.MASTER)) {
+            } else if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.PRIMARY)) {
                 masterIndex = i;
             }
         }

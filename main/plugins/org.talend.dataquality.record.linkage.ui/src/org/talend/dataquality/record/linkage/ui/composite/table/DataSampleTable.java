@@ -294,7 +294,7 @@ public class DataSampleTable implements TDQObserver<ModelElement[]>, Observerabl
         columnNames.add(MatchAnalysisConstant.GRP_SIZE);
         this.masterColumn = columnSize + 3;
 
-        columnNames.add(MatchAnalysisConstant.MASTER);
+        columnNames.add(MatchAnalysisConstant.PRIMARY);
         columnNames.add(MatchAnalysisConstant.SCORE);
         columnNames.add(MatchAnalysisConstant.GRP_QUALITY);
         columnNames.add(MatchAnalysisConstant.ATTRIBUTE_SCORES);

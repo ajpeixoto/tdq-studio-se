@@ -74,7 +74,7 @@ public abstract class AbstractSyntaxQueryParser extends AbstractQueryParser {
 	}
 
 	
-	// Master buffer
+    // Main buffer
 	private StringBuffer buffer;
 	
 	// Tokenizer

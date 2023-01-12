@@ -130,7 +130,7 @@ public class StoreOnDiskUtils extends AbstractOSGIServiceUtils {
     }
 
     /**
-     * sorting the result data by GID,master
+     * sorting the result data by GID,primary
      *
      * @param allColumns
      * @param resultData
@@ -138,21 +138,21 @@ public class StoreOnDiskUtils extends AbstractOSGIServiceUtils {
      */
     public static List<Object[]> sortResultByGID(String[] allColumns, List<Object[]> resultData) {
         int gidIndex = -1;
-        int masterIndex = -1;
+        int primaryIndex = -1;
         for (int i = 0; i < allColumns.length; i++) {
             if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.GID)) {
                 gidIndex = i;
-            } else if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.MASTER)) {
-                masterIndex = i;
+            } else if (StringUtils.endsWithIgnoreCase(allColumns[i], MatchAnalysisConstant.PRIMARY)) {
+                primaryIndex = i;
             }
         }
-        // Sort by master first
-        final int masterIdx = masterIndex;
+        // Sort by primary first
+        final int primaryRecordIdx = primaryIndex;
         Comparator<Object[]> comparator = new Comparator<Object[]>() {
 
             @Override
             public int compare(Object[] row1, Object[] row2) {
-                return ((String) row2[masterIdx]).compareTo((String) row1[masterIdx]);
+                return ((String) row2[primaryRecordIdx]).compareTo((String) row1[primaryRecordIdx]);
             }
 
         };

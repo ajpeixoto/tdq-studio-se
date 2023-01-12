@@ -77,9 +77,9 @@ public class AnalysisRecordGroupingUtils {
         MetadataColumn dummyGSizeColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
         dummyGSizeColumn.setName(MatchAnalysisConstant.GRP_SIZE);
         columnNameList.add(dummyGSizeColumn);
-        MetadataColumn dummyMasterColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
-        dummyMasterColumn.setName(MatchAnalysisConstant.MASTER);
-        columnNameList.add(dummyMasterColumn);
+        MetadataColumn dummyPrimaryColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
+        dummyPrimaryColumn.setName(MatchAnalysisConstant.PRIMARY);
+        columnNameList.add(dummyPrimaryColumn);
         MetadataColumn dummyScoreColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
         dummyScoreColumn.setName(MatchAnalysisConstant.SCORE);
         columnNameList.add(dummyScoreColumn);
@@ -103,7 +103,7 @@ public class AnalysisRecordGroupingUtils {
         completedCols[i++] = MatchAnalysisConstant.BLOCK_KEY;
         completedCols[i++] = MatchAnalysisConstant.GID;
         completedCols[i++] = MatchAnalysisConstant.GRP_SIZE;
-        completedCols[i++] = MatchAnalysisConstant.MASTER;
+        completedCols[i++] = MatchAnalysisConstant.PRIMARY;
         completedCols[i++] = MatchAnalysisConstant.SCORE;
         completedCols[i++] = MatchAnalysisConstant.GRP_QUALITY;
         completedCols[i++] = MatchAnalysisConstant.ATTRIBUTE_SCORES;
@@ -129,9 +129,9 @@ public class AnalysisRecordGroupingUtils {
         MetadataColumn dummyGSizeColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
         dummyGSizeColumn.setName(MatchAnalysisConstant.GRP_SIZE);
         columnNameList.add(dummyGSizeColumn);
-        MetadataColumn dummyMasterColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
-        dummyMasterColumn.setName(MatchAnalysisConstant.MASTER);
-        columnNameList.add(dummyMasterColumn);
+        MetadataColumn dummyPrimaryColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
+        dummyPrimaryColumn.setName(MatchAnalysisConstant.PRIMARY);
+        columnNameList.add(dummyPrimaryColumn);
         MetadataColumn dummyScoreColumn = ConnectionPackage.eINSTANCE.getConnectionFactory().createMetadataColumn();
         dummyScoreColumn.setName(MatchAnalysisConstant.SCORE);
         columnNameList.add(dummyScoreColumn);

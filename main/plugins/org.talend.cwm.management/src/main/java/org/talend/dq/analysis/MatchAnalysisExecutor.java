@@ -236,7 +236,7 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
             rc.setMessage(Messages.getString("Evaluator.OutOfMomory", usedMemory));//$NON-NLS-1$
         }
 
-        // nodify the master page
+        // nodify the main page
         refreshTableWithMatchFullResult(analysis);
 
         // --- set metadata information of analysis
@@ -266,7 +266,7 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
                 resultData);
         List<String> matchRowSchemaList = Arrays.asList(recordMatchingIndicator.getMatchRowSchema());
         int groupSizeColumnIndex = matchRowSchemaList.indexOf(PluginConstant.GRP_SIZE);
-        int masterColumnIndex = matchRowSchemaList.indexOf(PluginConstant.MASTER);
+        int primaryColumnIndex = matchRowSchemaList.indexOf(PluginConstant.PRIMARY);
         int groupQualityColumnIndex = matchRowSchemaList.indexOf(PluginConstant.GRP_QUALITY);
 
         String mapDBName = StandardDBName.drillDown.name();
@@ -292,8 +292,8 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
             int groupSize = StringUtils.isEmpty((String) record[groupSizeColumnIndex]) ? 0
                     : Integer.valueOf((String) record[groupSizeColumnIndex]);
 
-            // get the group size of the master of one group
-            if (Boolean.valueOf((String) record[masterColumnIndex])) {
+            // get the group size of the primary of one group
+            if (Boolean.valueOf((String) record[primaryColumnIndex])) {
                 mapDBName = StandardDBName.drillDown.name() + groupSize;
                 oneGroupDBMap = (DBMap<Object, Object[]>) ((RecordMatchingIndicatorImpl) recordMatchingIndicator)
                         .getMapDB(mapDBName);

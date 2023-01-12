@@ -160,7 +160,7 @@ public class RecordMatchingIndicatorImpl extends ColumnSetMultiValueIndicatorImp
     public boolean reset() {
         List<String> matchRowSchemaList = Arrays.asList(matchRowSchema);
         this.groupSizeColumnIndex = matchRowSchemaList.indexOf(PluginConstant.GRP_SIZE);
-        this.masterColumnIndex = matchRowSchemaList.indexOf(PluginConstant.MASTER);
+        this.masterColumnIndex = matchRowSchemaList.indexOf(PluginConstant.PRIMARY);
         this.groupQualityColumnIndex = matchRowSchemaList.indexOf(PluginConstant.GRP_QUALITY);
 
         matchedRecordCount = MATCHED_RECORD_COUNT_EDEFAULT;

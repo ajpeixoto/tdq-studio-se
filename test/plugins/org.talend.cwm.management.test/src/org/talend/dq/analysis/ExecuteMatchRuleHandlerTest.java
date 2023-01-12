@@ -111,7 +111,7 @@ public class ExecuteMatchRuleHandlerTest {
         MatchGroupResultConsumer ResultConsumer = executeResult.getObject();
         List<Object[]> fullMatchResult = ResultConsumer.getFullMatchResult();
         Assert.assertTrue(fullMatchResult.size() == 4);
-        // every input data is master data
+        // every input data is primary record data
         for (Object[] objectArray : fullMatchResult) {
             Object object = objectArray[7];
             Assert.assertTrue(Boolean.parseBoolean(object.toString()));
@@ -222,13 +222,13 @@ public class ExecuteMatchRuleHandlerTest {
         Assert.assertTrue(fullMatchResult.size() == 4);
         for (int i = 0; i < fullMatchResult.size(); i++) {
             Object[] objectArray = fullMatchResult.get(i);
-            Object masterValue = objectArray[7];
+            Object primaryValue = objectArray[7];
             Object idValue = objectArray[0];
-            // judge id1 is master id2 is master id3 is master and id4 is not master
+            // check id1 is primary id2 is primary id3 is primary and id4 is not primary
             if ("id4".equals(idValue)) { //$NON-NLS-1$
-                Assert.assertFalse(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertFalse(Boolean.parseBoolean(primaryValue.toString()));
             } else {
-                Assert.assertTrue(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertTrue(Boolean.parseBoolean(primaryValue.toString()));
             }
         }
 
@@ -323,14 +323,14 @@ public class ExecuteMatchRuleHandlerTest {
         Assert.assertTrue(fullMatchResult.size() == 4);
         for (int i = 0; i < fullMatchResult.size(); i++) {
             Object[] objectArray = fullMatchResult.get(i);
-            Object masterValue = objectArray[7];
+            Object primaryValue = objectArray[7];
             Object idValue = objectArray[0];
-            // judge id1 is master id2 is not master id3 is master and id4 is not master
+            // check id1 is primary id2 is not primary id3 is primary and id4 is not primary
             // id2 is because of matchRule1 id4 is because of matchRule2
             if ("id2".equals(idValue) || "id4".equals(idValue)) { //$NON-NLS-1$ //$NON-NLS-2$
-                Assert.assertFalse(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertFalse(Boolean.parseBoolean(primaryValue.toString()));
             } else {
-                Assert.assertTrue(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertTrue(Boolean.parseBoolean(primaryValue.toString()));
             }
         }
 
@@ -426,14 +426,14 @@ public class ExecuteMatchRuleHandlerTest {
         Assert.assertTrue(fullMatchResult.size() == 4);
         for (int i = 0; i < fullMatchResult.size(); i++) {
             Object[] objectArray = fullMatchResult.get(i);
-            Object masterValue = objectArray[7];
+            Object primaryValue = objectArray[7];
             Object idValue = objectArray[0];
-            // judge id1 is master id2 is not master id3 is master and id4 is not master
+            // check id1 is primary id2 is not primary id3 is primary and id4 is not master
             // id2 is because of matchRule1 id4 is because of matchRule2
             if ("id2".equals(idValue) || "id4".equals(idValue)) { //$NON-NLS-1$ //$NON-NLS-2$
-                Assert.assertFalse(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertFalse(Boolean.parseBoolean(primaryValue.toString()));
             } else {
-                Assert.assertTrue(Boolean.parseBoolean(masterValue.toString()));
+                Assert.assertTrue(Boolean.parseBoolean(primaryValue.toString()));
             }
         }
 
