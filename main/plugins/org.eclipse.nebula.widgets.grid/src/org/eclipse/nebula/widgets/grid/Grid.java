@@ -583,6 +583,8 @@ public class Grid extends Canvas
     private GC sizingGC;
 
     private Color backgroundColor;
+    
+    private Color foregroundColor;
 
     /**
      * True if the widget is being disposed.  When true, events are not fired.
@@ -841,6 +843,13 @@ public class Grid extends Canvas
     {
         checkWidget();
         backgroundColor = color;
+        redraw();
+    }
+    
+    public void setForeground(Color color)
+    {
+        checkWidget();
+        foregroundColor = color;
         redraw();
     }
 

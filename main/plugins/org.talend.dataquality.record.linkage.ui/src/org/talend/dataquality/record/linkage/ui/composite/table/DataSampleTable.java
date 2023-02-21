@@ -59,6 +59,7 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.sort.SortDirectionEnum;
 import org.eclipse.nebula.widgets.nattable.sort.config.DefaultSortConfiguration;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
+import org.eclipse.nebula.widgets.nattable.style.ConfigAttribute;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.IStyle;
 import org.eclipse.nebula.widgets.nattable.style.Style;
@@ -75,6 +76,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.cwm.helper.ColumnHelper;
 import org.talend.dataprofiler.core.ui.grid.utils.Observerable;
 import org.talend.dataprofiler.core.ui.grid.utils.TDQObserver;
@@ -678,8 +680,6 @@ public class DataSampleTable implements TDQObserver<ModelElement[]>, Observerabl
         natTable.getConfigRegistry().registerConfigAttribute(EditConfigAttributes.CELL_EDITABLE_RULE,
                 IEditableRule.NEVER_EDITABLE, DisplayMode.EDIT, "EVEN_BODY"); //$NON-NLS-1$
 
-        natTable.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
-
         // add the listener for the column header selection
         addCustomSelectionBehaviour();
 
@@ -734,7 +734,11 @@ public class DataSampleTable implements TDQObserver<ModelElement[]>, Observerabl
         public void setupGCFromConfig(GC gc, IStyle cellStyle) {
             super.setupGCFromConfig(gc, cellStyle);
             if (changeForegroundColor) {
-                gc.setForeground(ImageLib.COLOR_GREY);
+                Color prefForegroundColor = ColorConstants.getTableForegroundColor();
+                if (prefForegroundColor == null) {
+                    prefForegroundColor = Display.getCurrent().getSystemColor(SWT.COLOR_BLACK);
+                }
+                gc.setForeground(prefForegroundColor);
             }
         }
 
@@ -801,7 +805,12 @@ public class DataSampleTable implements TDQObserver<ModelElement[]>, Observerabl
         protected Color getBackgroundColour(ILayerCell cell, IConfigRegistry configRegistry) {
             int grpSizeValue = getGrpSize(cell);
             if (grpSizeValue == 0) {// default color when no
-                return GUIHelper.COLOR_LIST_BACKGROUND;
+                // TDQ-20972 msjian: support dark theme
+                Color prefBackgroundColor = ColorConstants.getTableBackgroundColor();
+                if (prefBackgroundColor == null) {
+                    prefBackgroundColor = Display.getCurrent().getSystemColor(SWT.COLOR_WHITE);
+                }
+                return prefBackgroundColor;
             }
             return COLOR_LIST[Math.abs((grpSizeValue - 1) % COLOR_LIST.length)];
         }

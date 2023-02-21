@@ -188,7 +188,7 @@ public class TdRowHeaderRenderer extends GridCellRenderer {
         if (checkable) {
             gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
         } else {
-            gc.setBackground(IndicatorSelectGrid.gray);
+            gc.setBackground(IndicatorSelectGrid.prefBackgroundColor);
         }
 
         int originX = getBounds().x + getBounds().width - 50;

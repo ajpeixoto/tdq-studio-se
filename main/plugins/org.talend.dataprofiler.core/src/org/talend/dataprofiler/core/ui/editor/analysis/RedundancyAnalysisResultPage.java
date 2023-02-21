@@ -43,6 +43,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.cwm.helper.ColumnHelper;
 import org.talend.cwm.helper.ConnectionHelper;
@@ -332,7 +333,7 @@ public class RedundancyAnalysisResultPage extends AbstractAnalysisResultPageWith
 
                 // ADD by msjian 2011-4-29 20602: click the data, its color changed
                 if (e.widget instanceof TableCursor) {
-                    ((TableCursor) e.widget).setForeground(new Color(null, 0, 0, 0));
+                    ((TableCursor) e.widget).setForeground(ColorConstants.getTableForegroundColor());
                 }
                 // ~
             }

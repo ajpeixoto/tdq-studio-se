@@ -15,19 +15,23 @@ package org.talend.dataprofiler.core.ui.views.provider;
 import java.sql.Driver;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.Logger;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.edit.ui.provider.AdapterFactoryLabelProvider;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.IFontProvider;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
+import org.talend.commons.ui.runtime.ITalendThemeService;
 import org.talend.commons.ui.runtime.image.IImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.commons.ui.runtime.image.OverlayImageProvider;
@@ -82,17 +86,26 @@ import orgomg.cwm.objectmodel.core.ModelElement;
  */
 public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider implements IFontProvider, IColorProvider {
 
+    // these comes from RepositoryLabelProvider class
+    private static final String MERGED_PREFERENCED_ITEMS =
+            "org.talend.core.repository.REPO_MERGED_REFERENCED_ITEMS_COLOR";
+
+    private static final String LOCKED_ENTRY = "org.talend.core.repository.REPO_LOCKED_ENTRY";
+
+    private static final String STABLE_PRIMARY_ENTRY = "org.talend.core.repository.REPO_STABLE_PRIMARY_ENTRY_COLOR";
+
+    private static final String STABLE_SECONDARY_ENTRY = "org.talend.core.repository.REPO_STABLE_SECONDARY_ENTRY_COLOR";
+
     private static final Color STABLE_SECONDARY_ENTRY_COLOR = new Color(null, 100, 100, 100);
 
     private static final Color STABLE_PRIMARY_ENTRY_COLOR = new Color(null, 0, 0, 0);
 
     protected static final Color INACTIVE_ENTRY_COLOR = new Color(null, 200, 200, 200);
 
-    private static final Color LOCKED_ENTRY = new Color(null, 200, 0, 0);
+    private static final Color LOCKED_ENTRY_COLOR = new Color(null, 200, 0, 0);
 
     private static final Color MERGED_REFERENCED_ITEMS_COLOR = new Color(null, 120, 120, 120);
-
-    private Logger log = Logger.getLogger(DQRepositoryViewLabelProvider.class);
+    // these comes from RepositoryLabelProvider class
 
     public DQRepositoryViewLabelProvider() {
         super(MNComposedAdapterFactory.getAdapterFactory());
@@ -409,26 +422,20 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
             if (node.getObject() != null) {
                 switch (node.getType()) {
                 case REFERENCED_PROJECT:
-                    return STABLE_PRIMARY_ENTRY_COLOR;
                 case STABLE_SYSTEM_FOLDER:
                 case SYSTEM_FOLDER:
-                    if (node.getContentType() == ERepositoryObjectType.TDQ_DATA_PROFILING
-                            || node.getContentType() == ERepositoryObjectType.METADATA
-                            || node.getContentType() == ERepositoryObjectType.TDQ_SYSTEM_INDICATORS
-                            || node.getContentType() == ERepositoryObjectType.TDQ_PATTERN_REGEX) {
-                        return STABLE_PRIMARY_ENTRY_COLOR;
-                    }
-                    return STABLE_SECONDARY_ENTRY_COLOR;
+                    return getStableSecondaryEntryColor();
                 default:
                     ERepositoryStatus repositoryStatus = node.getObject().getRepositoryStatus();
                     if (repositoryStatus == ERepositoryStatus.LOCK_BY_OTHER) {
-                        return LOCKED_ENTRY;
+                        return getLockedEntryColor();
                     }
 
                     if (org.talend.core.PluginChecker.isRefProjectLoaded()) {
                         IReferencedProjectService service =
-                                (IReferencedProjectService) GlobalServiceRegister.getDefault().getService(
-                                        IReferencedProjectService.class);
+                                (IReferencedProjectService) GlobalServiceRegister.getDefault()
+                                        .getService(
+                                                IReferencedProjectService.class);
                         if (service != null && service.isMergeRefProject()) {
                             IRepositoryViewObject object = node.getObject();
                             if (object != null) {
@@ -436,7 +443,7 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
                                         ProjectManager.getInstance().getCurrentProject().getEmfProject();
                                 String projectLabel = object.getProjectLabel();
                                 if (!mainProject.getLabel().equals(projectLabel)) {
-                                    return MERGED_REFERENCED_ITEMS_COLOR;
+                                    return getMergedReferencedItemsColor();
                                 }
                             }
                         }
@@ -445,6 +452,53 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
             }
         }
         return super.getForeground(element);
+    }
+
+    private Color getStableSecondaryEntryColor() {
+        return ITalendThemeService.getColor(STABLE_SECONDARY_ENTRY).orElse(STABLE_SECONDARY_ENTRY_COLOR);
+    }
+
+    private Color getLockedEntryColor() {
+        return ITalendThemeService.getColor(LOCKED_ENTRY).orElse(LOCKED_ENTRY_COLOR);
+    }
+
+    private Color getMergedReferencedItemsColor() {
+        return ITalendThemeService.getColor(MERGED_PREFERENCED_ITEMS).orElse(MERGED_REFERENCED_ITEMS_COLOR);
+    }
+
+    public static IPropertyChangeListener createPropertyChangeListener(TreeViewer treeViewer) {
+        return new IPropertyChangeListener() {
+
+            @Override
+            public void propertyChange(PropertyChangeEvent event) {
+                String property = event.getProperty();
+                if (property == null) {
+                    return;
+                }
+                boolean changed = false;
+                switch (property) {
+                case STABLE_PRIMARY_ENTRY:
+                    changed = true;
+                    break;
+                default:
+                    break;
+                }
+                if (changed) {
+                    Display.getDefault().asyncExec(new Runnable() {
+
+                        @Override
+                        public void run() {
+                            if (treeViewer != null) {
+                                Control control = treeViewer.getControl();
+                                if (!control.isDisposed()) {
+                                    treeViewer.refresh();
+                                }
+                            }
+                        }
+                    });
+                }
+            }
+        };
     }
 
 }
