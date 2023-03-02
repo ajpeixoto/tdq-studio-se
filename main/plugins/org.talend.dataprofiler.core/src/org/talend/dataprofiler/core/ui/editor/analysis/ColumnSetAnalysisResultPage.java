@@ -58,6 +58,7 @@ import org.eclipse.ui.forms.IManagedForm;
 import org.eclipse.ui.forms.editor.FormEditor;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.dataprofiler.common.ui.editor.preview.ICustomerDataset;
 import org.talend.dataprofiler.common.ui.pagination.controller.PageableWithIndexController;
@@ -578,8 +579,6 @@ public class ColumnSetAnalysisResultPage extends AbstractAnalysisResultPageWithC
         }
     }
 
-    private Color bg = new Color(null, 249, 139, 121);
-
     /**
      * DOC zshen ColumnSetResultPage class global comment. Detailled comment
      */
@@ -653,7 +652,7 @@ public class ColumnSetAnalysisResultPage extends AbstractAnalysisResultPageWithC
 
             for (Object elem : elements) {
                 if (elem == null || "".equals(elem)) { //$NON-NLS-1$
-                    return bg;
+                    return ColorConstants.getTableBackgroundColor();
                 }
             }
             return null;
@@ -735,9 +734,6 @@ public class ColumnSetAnalysisResultPage extends AbstractAnalysisResultPageWithC
 
     @Override
     public void dispose() {
-        if (bg != null) {
-            bg.dispose();
-        }
         if (AnalysisHelper.isJavaExecutionEngine(masterPage.getCurrentModelElement())) {
             MapDBManager.getInstance().closeDB(masterPage.getCurrentModelElement());
         }
@@ -788,7 +784,7 @@ public class ColumnSetAnalysisResultPage extends AbstractAnalysisResultPageWithC
                 }
             }
         }
-        return new Color(null, 0, 0, 0);
+        return ColorConstants.getTableForegroundColor();
     }
 
     public List<Map<Integer, RegexpMatchingIndicator>> getTableFilterResult() {
