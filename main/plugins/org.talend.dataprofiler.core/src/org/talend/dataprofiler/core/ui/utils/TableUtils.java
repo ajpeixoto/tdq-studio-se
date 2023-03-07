@@ -29,6 +29,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.PlatformUI;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.dataprofiler.core.CorePlugin;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
@@ -198,13 +199,13 @@ public final class TableUtils {
                 switch (event.type) {
                 case SWT.Dispose:
                     if (item != null) {
-                        item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                        item.setBackground(ColorConstants.getTableBackgroundColor());
                     }
                     break;
                 case SWT.KeyDown:
                 case SWT.MouseMove:
                     if (item != null) {
-                        item.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                        item.setBackground(ColorConstants.getTableBackgroundColor());
                     }
                     if (rangeTooltipShell != null && !rangeTooltipShell.isDisposed()) {
                         rangeTooltipShell.close();
