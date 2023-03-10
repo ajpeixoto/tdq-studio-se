@@ -1,4 +1,5 @@
 change logs from talend
+2023-3-1 msjian TDQ-20993: Removal of binary dependency libraries from source and rename jars
 
 2022-06-24 yyin TDQ-19618: add surpport for Object[] in MapDBDataset and related SqlexplorerService. 
 
@@ -305,7 +306,7 @@ In this case you must check "messages.properties" in "net.sourceforge.sqlexplore
 you can find the about oracle's bundle key.
 
 NOTE: Add the content of "text.properties" to "messages.properties", the path of  "text.properties" like so:
-net.sourceforge.sqlexplorer.oracle_3.5.0.jar\net\sourceforge\sqlexplorer\oracle\text.properties
+\lib\net.sourceforge.sqlexplorer.oracle_3.5.0.jar\net\sourceforge\sqlexplorer\oracle\text.properties
 
 
 2010-7-2 qiongli bug 13093:the function in Data Explorer for view the information of data structure not work well 

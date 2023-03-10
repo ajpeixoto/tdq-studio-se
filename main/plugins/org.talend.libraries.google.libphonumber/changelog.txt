@@ -3,6 +3,13 @@ please make sure run the follow application to synchronize components.
 UpdateComponent4libphonenumber class 
 under dataquality-libraries-devops project
 ------------------------------------------------------------------------------
+V8.0.1 
+msjian 2023-02-27
+TDQ-20993 upgrade google libphonenumber jars as follows:
+phonenumbers;version:8.12.3-->8.12.3
+geocoding;version:2.113-->2.174
+carrier;version:1.103-->1.164
+prefixmapper;version:2.113-->2.174
 
 V7.2.1 
 msjian 2019-04-02
