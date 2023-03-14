@@ -37,11 +37,12 @@ public class TdCellRenderer extends AbstractTdCellRenderer {
         boolean checked = item.getChecked(column);
 
         // fill background rectangle
-        Color systemBackColor = getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND);
+        Color systemBackColor = IndicatorSelectGrid.prefBackgroundColor;
+        Color systemForeColor = IndicatorSelectGrid.prefForegroundColor;
         if (checkable) {
-            gc.setBackground(getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+            gc.setBackground(IndicatorSelectGrid.prefBackgroundColor);
         } else {
-            gc.setBackground(IndicatorSelectGrid.gray);
+            gc.setBackground(IndicatorSelectGrid.prefBackgroundColor);
         }
 
         int originX = getBounds().x;
@@ -74,7 +75,7 @@ public class TdCellRenderer extends AbstractTdCellRenderer {
                 if (highlight != null) {
                     gc.setForeground(highlight);
                 } else {
-                    gc.setForeground(systemBackColor);
+                    gc.setForeground(systemForeColor);
                 }
                 gc.setLineWidth(3);
                 gc.drawLine(originX + offset / 2 + 4, getBounds().y + 10, originX + offset / 2 + getBounds().height - 12,

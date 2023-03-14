@@ -36,6 +36,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.ScrollBar;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.helper.ModelElementIndicatorHelper;
 import org.talend.dataprofiler.core.model.ModelElementIndicator;
@@ -71,6 +72,14 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
     static final Color blue = new Color(Display.getCurrent(), 90, 184, 235);
 
     static final Color lineColor = new Color(Display.getCurrent(), 180, 200, 220);
+
+    static Color prefBackgroundColor =
+            ColorConstants.getTableBackgroundColor() == null ? gray
+                    : ColorConstants.getTableBackgroundColor();
+
+    static Color prefForegroundColor =
+            ColorConstants.getTableForegroundColor() == null ? Display.getCurrent().getSystemColor(SWT.COLOR_BLACK)
+                    : ColorConstants.getTableForegroundColor();
 
     // static final Image tickImage = ImageLib.getImage(ImageLib.TICK_IMAGE);
 
@@ -266,10 +275,14 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
         setItemHeight(21);
         setLineColor(lineColor);
         setFont(itemFont);
+        setBackground(prefBackgroundColor);
+        setForeground(prefForegroundColor);
         setFocusRenderer(null);
 
         for (GridItem gridItem : getItems()) {
-            gridItem.setBackground(0, gray);
+            for (int index = 0; index < _modelElementIndicators.length + 2; index++) {
+                gridItem.setBackground(index, prefBackgroundColor);
+            }
         }
     }
 
@@ -555,8 +568,8 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                     item.setBackground(0, highlightBlue);
                     item.setBackground(1, highlightBlue);
                 } else {
-                    item.setBackground(0, gray);
-                    item.setBackground(1, getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                    item.setBackground(0, prefBackgroundColor);
+                    item.setBackground(1, prefBackgroundColor);
                     if (item.getCheckable(1)) {
                         item.setBackground(highlightBlue);
                     }
@@ -571,7 +584,7 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                     } else if (i == cell.y && realIdx < cell.x || realIdx == cell.x && i < cell.y) {
                         item.setBackground(j, highlightBlue);
                     } else {
-                        item.setBackground(j, null);
+                        item.setBackground(j, prefBackgroundColor);
                     }
                 }
             }
@@ -596,8 +609,8 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                             item.setBackground(0, highlightBlue);
                             item.setBackground(1, highlightBlue);
                         } else {
-                            item.setBackground(0, gray);
-                            item.setBackground(1, getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                            item.setBackground(0, prefBackgroundColor);
+                            item.setBackground(1, prefBackgroundColor);
                         }
                     }
 
@@ -606,7 +619,7 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                         if (i == indexOf(currentItem)) {
                             item.setBackground(j, highlightBlue);
                         } else {
-                            item.setBackground(j, getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                            item.setBackground(j, prefBackgroundColor);
                         }
                     }
                 }
@@ -630,10 +643,10 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                     if (j == currentColumnIndex) {
                         item.setBackground(j, highlightBlue);
                     } else {
-                        item.setBackground(j, getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                        item.setBackground(j, prefBackgroundColor);
                     }
                 }
-                item.setBackground(0, gray);
+                item.setBackground(0, prefBackgroundColor);
                 item.setBackground(1, null);
             }
 
@@ -656,11 +669,11 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                     if (j == currentColumnIndex) {
                         item.setBackground(j, highlightBlue);
                     } else {
-                        item.setBackground(j, getDisplay().getSystemColor(SWT.COLOR_LIST_BACKGROUND));
+                        item.setBackground(j, prefBackgroundColor);
                     }
                 }
-                item.setBackground(0, gray);
-                item.setBackground(1, null);
+                item.setBackground(0, prefBackgroundColor);
+                item.setBackground(1, prefBackgroundColor);
             }
 
             for (GridColumn column : range.getColumns()) {
