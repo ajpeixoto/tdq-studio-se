@@ -706,19 +706,4 @@ public class DelimitedFileReader {
         // public static final boolean autoReallocateForHuge = true;
     }
 
-    public static void main(String[] args) throws IOException {
-        DelimitedFileReader fid = new DelimitedFileReader("D:\\talend\\talendFID\\in.csv", "ISO-8859-15", "", "\n", false); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
-        int rowNum = 0;
-        while (fid.readRecord()) {
-            System.out.println("*********Row" + rowNum + "***********"); //$NON-NLS-1$ //$NON-NLS-2$
-            System.out.println("------Row------\n" + fid.getRowRecord()); //$NON-NLS-1$
-            int fieldNum = fid.getAvailableColumnsCount();
-            for (int k = 0; k < fieldNum; k++) {
-                System.out.println("------" + k + "------\n" + fid.get(k)); //$NON-NLS-1$ //$NON-NLS-2$
-            }
-            rowNum++;
-            System.out.println("\n\n"); //$NON-NLS-1$
-        }
-    }
-
 }
