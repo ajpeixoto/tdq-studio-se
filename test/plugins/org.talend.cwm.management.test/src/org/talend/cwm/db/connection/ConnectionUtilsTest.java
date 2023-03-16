@@ -63,7 +63,7 @@ public class ConnectionUtilsTest {
     @Test
     public void testCheckGeneralJdbcJarFilePathDriverClassNameCase1() {
         String driverClass = "om.mysql.jdbc.Driver"; //$NON-NLS-1$
-        String driverName = "mysql-connector-java-5.1.12-bin.jar"; //$NON-NLS-1$
+        String driverName = "mysql-connector-java-5.1.49.jar"; //$NON-NLS-1$
         CopyTheJarFile();
 
         DatabaseConnection createDatabaseConnection = ConnectionFactoryImpl.eINSTANCE.createDatabaseConnection();
@@ -81,7 +81,7 @@ public class ConnectionUtilsTest {
     @Test
     public void testCheckGeneralJdbcJarFilePathDriverClassNameCase2() {
         String driverClass = StringUtils.EMPTY;
-        String driverName = "mysql-connector-java-5.1.12-bin.jar"; //$NON-NLS-1$
+        String driverName = "mysql-connector-java-5.1.49.jar"; //$NON-NLS-1$
         CopyTheJarFile();
 
         DatabaseConnection createDatabaseConnection = ConnectionFactoryImpl.eINSTANCE.createDatabaseConnection();
@@ -139,7 +139,7 @@ public class ConnectionUtilsTest {
     @Test
     public void testCheckGeneralJdbcJarFilePathDriverClassNameCase4() {
         String driverClass = "om.mysql.jdbc.Driver"; //$NON-NLS-1$
-        String driverName = "mysql-connector-java-5.1.12-bin111111.jar"; //$NON-NLS-1$
+        String driverName = "mysql-connector-java-5.1.49111111.jar"; //$NON-NLS-1$
         CopyTheJarFile();
 
         DatabaseConnection createDatabaseConnection = ConnectionFactoryImpl.eINSTANCE.createDatabaseConnection();
@@ -165,13 +165,13 @@ public class ConnectionUtilsTest {
                         CWMPlugin
                                 .getDefault()
                                 .getBundle()
-                                .getResource("jdbc" + Path.SEPARATOR + "mysql-connector-java-5.1.12-bin.jar"); //$NON-NLS-1$ //$NON-NLS-2$
+                                .getResource("jdbc" + Path.SEPARATOR + "mysql-connector-java-5.1.49.jar"); //$NON-NLS-1$ //$NON-NLS-2$
                 fileURL = FileLocator.toFileURL(resource);
                 URI uri = fileURL.toURI();
                 sourceFile = new File(uri);
             } catch (IllegalArgumentException e) {
                 try {
-                    Assert.fail("url is: " + fileURL.toString() + "URI is: " + fileURL.toURI().toString()); //$NON-NLS-1$ //$NON-NLS-2$
+                    Assert.fail("url is: " + fileURL.toString() + "\nURI is: " + fileURL.toURI().toString()); //$NON-NLS-1$ //$NON-NLS-2$
                 } catch (URISyntaxException e1) {
                     Assert.fail(e1.getMessage());
                 }
@@ -182,7 +182,7 @@ public class ConnectionUtilsTest {
                 Assert.fail("source file is not exist"); //$NON-NLS-1$
             }
             String tempLibPath = ExtractMetaDataUtils.getInstance().getJavaLibPath();
-            File targetFile = new File(tempLibPath + "mysql-connector-java-5.1.12-bin.jar"); //$NON-NLS-1$
+            File targetFile = new File(tempLibPath + "mysql-connector-java-5.1.49.jar"); //$NON-NLS-1$
             FilesUtils.copyFile(sourceFile, targetFile);
         } catch (IOException e1) {
             Assert.fail(e1.getMessage());
@@ -213,7 +213,7 @@ public class ConnectionUtilsTest {
     @Test
     public void testIsConnectionAvailable_generalJDBC_false() {
         String driverClass = "om.mysql.jdbc.Driver"; //$NON-NLS-1$
-        String driverName = "mysql-connector-java-5.1.12-bin.jar"; //$NON-NLS-1$
+        String driverName = "mysql-connector-java-5.1.49.jar"; //$NON-NLS-1$
         CopyTheJarFile();
         DatabaseConnection createDatabaseConnection = ConnectionFactoryImpl.eINSTANCE.createDatabaseConnection();
         createDatabaseConnection.setDriverClass(driverClass);

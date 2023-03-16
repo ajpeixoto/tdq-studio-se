@@ -22,11 +22,11 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.2.0",
  org.talend.metadata.managment,
  org.talend.dataprofiler.service
 Bundle-ClassPath: sqlexplorer.jar,
- lib/rowset.jar,
+ lib/rowset-1.0.1.jar,
  lib/dom4j-2.1.3.jar,
- lib/squirrel.jar,
- lib/hibernate3.2.4.sp1.jar,
- net.sourceforge.sqlexplorer.oracle_3.6.1.v20120708_SR6.jar
+ lib/fw-3.0.2.jar,
+ lib/hibernate-3.2.4.sp1.jar,
+ lib/net.sourceforge.sqlexplorer.oracle-3.6.1.v20120708_SR6.jar
 Export-Package: META-INF,
  com.sun.rowset,
  com.sun.rowset.internal;x-internal:=true,
