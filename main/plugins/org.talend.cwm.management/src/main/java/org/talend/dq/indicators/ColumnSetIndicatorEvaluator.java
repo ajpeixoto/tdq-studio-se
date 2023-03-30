@@ -14,9 +14,9 @@ package org.talend.dq.indicators;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -151,15 +151,15 @@ public class ColumnSetIndicatorEvaluator extends Evaluator<String> {
      * @throws SQLException
      */
     private ReturnCode evaluateBySql(String sqlStatement, ReturnCode ok) throws SQLException {
-        Statement statement = null;
+        PreparedStatement statement = null;
         ResultSet resultSet = null;
         try {
-            statement = createStatement();
+            statement = createStatement(sqlStatement);
             if (continueRun()) {
                 if (log.isInfoEnabled()) {
                     log.info("Executing query: " + sqlStatement); //$NON-NLS-1$
                 }
-                statement.execute(sqlStatement);
+                statement.execute();
             }
             // get the results
             resultSet = statement.getResultSet();

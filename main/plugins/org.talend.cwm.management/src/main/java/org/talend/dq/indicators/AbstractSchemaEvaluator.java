@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.dq.indicators;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -344,12 +344,13 @@ public abstract class AbstractSchemaEvaluator<T> extends Evaluator<T> {
             return totalRowCount;
         }
 
-        Statement statement = null;
+        PreparedStatement statement = null;
         // MOD qiongli 2012-8-13.TDQ-5907
         if (DbmsLanguageFactory.isHive(dbmsLanguage.getDbmsName())) {
-            statement = conn.createStatement();
+            statement = conn.prepareStatement(sql);
         } else {
-            statement = conn.createStatement(ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+            // resultSetType, resultSetConcurrency
+            statement = conn.prepareStatement(sql, ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
         }
         // not needed here statement.setFetchSize(fetchSize);
         try {
@@ -358,7 +359,7 @@ public abstract class AbstractSchemaEvaluator<T> extends Evaluator<T> {
                 if (log.isInfoEnabled()) {
                     log.info("Executing query: " + sql); //$NON-NLS-1$
                 }
-                statement.execute(sql);
+                statement.execute();
             }
         } catch (SQLException e) {
             statement.close();
