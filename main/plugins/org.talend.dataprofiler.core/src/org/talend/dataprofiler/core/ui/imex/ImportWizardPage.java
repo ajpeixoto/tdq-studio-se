@@ -454,7 +454,7 @@ public class ImportWizardPage extends WizardPage {
             setErrorMessage(dErrors.get(0));
         } else if (onlyWarnMessage && elements.length > 0) {
             setErrorMessage(null);
-            this.setMessage(Messages.getString("ImportWizardPage.replaceWarn"), ERROR); //$NON-NLS-1$
+            this.setMessage(Messages.getString("ImportWizardPage.replaceWarn"), WARNING); //$NON-NLS-1$
         } else {
             setErrorMessage(null);
             // restore error message if no error here
