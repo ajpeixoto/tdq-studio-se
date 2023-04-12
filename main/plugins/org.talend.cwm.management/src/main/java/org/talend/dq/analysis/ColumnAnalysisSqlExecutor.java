@@ -14,10 +14,10 @@ package org.talend.dq.analysis;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -577,25 +577,25 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
     private boolean isFunction(String defValue, String table) {
         boolean ok = false;
         Connection conenction = null;
-        Statement stat = null;
+        PreparedStatement prepStmt = null;
         try {
             String queryStmt = "select " + defValue + " from " + table;//$NON-NLS-1$//$NON-NLS-2$
             TypedReturnCode<Connection> conn = getConnection(cachedAnalysis);
             conenction = conn.getObject();
 
-            stat = conenction.createStatement();
             if (log.isInfoEnabled()) {
                 log.info("Executing query: " + queryStmt); //$NON-NLS-1$
             }
-            ok = stat.execute(queryStmt);
+            prepStmt = conenction.prepareStatement(queryStmt);
+            ok = prepStmt.execute();
 
         } catch (Exception e) {
             ok = false;
         } finally {
             // MOD qiongli 2011-5-20,don't print error in error log view and use finnaly to close Statement.
             try {
-                if (stat != null) {
-                    stat.close();
+                if (prepStmt != null) {
+                    prepStmt.close();
                 }
             } catch (SQLException e) {
                 log.error(e, e);
@@ -1504,7 +1504,7 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             Thread.currentThread().setContextClassLoader(hiveClassLoader);
         }
         List<Object[]> myResultSet = new ArrayList<Object[]>();
-        Statement statement = null;
+        PreparedStatement statement = null;
         try {
             if (catalogName != null && needChangeCatalog(connection)) { // check whether null argument can be given
                 changeCatalog(catalogName, connection);
@@ -1512,12 +1512,12 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             // MOD xqliu 2009-02-09 bug 6237
             if (continueRun()) {
                 // create query statement
-                statement = connection.createStatement();
                 // statement.setFetchSize(fetchSize);
                 if (log.isInfoEnabled()) {
                     log.info("Executing query: " + queryStmt); //$NON-NLS-1$
                 }
-                statement.execute(queryStmt);
+                statement = connection.prepareStatement(queryStmt);
+                statement.execute();
                 // get the results
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet == null) {

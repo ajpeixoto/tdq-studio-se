@@ -13,10 +13,10 @@
 package org.talend.dq.analysis;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -484,38 +484,45 @@ public class TableAnalysisSqlExecutor extends AnalysisExecutor {
             changeCatalog(catalogName, connection);
         }
         // create query statement
-        Statement statement = connection.createStatement();
+        PreparedStatement statement = connection.prepareStatement(queryStmt);
+        ResultSet resultSet = null;
         // statement.setFetchSize(fetchSize);
 
-        if (continueRun()) {
-            if (log.isInfoEnabled()) {
-                log.info("Executing query: " + queryStmt); //$NON-NLS-1$
+        try {
+            if (continueRun()) {
+                if (log.isInfoEnabled()) {
+                    log.info("Executing query: " + queryStmt); //$NON-NLS-1$
+                }
+                statement.execute();
             }
-            statement.execute(queryStmt);
-        }
 
-        // get the results
-        ResultSet resultSet = statement.getResultSet();
-        if (resultSet == null) {
-            String mess = Messages.getString("ColumnAnalysisSqlExecutor.NORESULTSETFORTHISSTATEMENT") + queryStmt;//$NON-NLS-1$
-            log.warn(mess);
-            return null;
-        }
-        ResultSetMetaData metaData = resultSet.getMetaData();
-        int columnCount = metaData.getColumnCount();
-        List<Object[]> myResultSet = new ArrayList<Object[]>();
-        while (resultSet.next()) {
-            Object[] result = new Object[columnCount];
-            for (int i = 0; i < columnCount; i++) {
-                result[i] = resultSet.getObject(i + 1);
+            // get the results
+            resultSet = statement.getResultSet();
+            if (resultSet == null) {
+                String mess = Messages.getString("ColumnAnalysisSqlExecutor.NORESULTSETFORTHISSTATEMENT") + queryStmt;//$NON-NLS-1$
+                log.warn(mess);
+                return null;
             }
-            myResultSet.add(result);
+            ResultSetMetaData metaData = resultSet.getMetaData();
+            int columnCount = metaData.getColumnCount();
+            List<Object[]> myResultSet = new ArrayList<Object[]>();
+            while (resultSet.next()) {
+                Object[] result = new Object[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    result[i] = resultSet.getObject(i + 1);
+                }
+                myResultSet.add(result);
+            }
+            return myResultSet;
+        } finally {
+            // -- release resources
+            if (resultSet != null) {
+                resultSet.close();
+            }
+            if (statement != null) {
+                statement.close();
+            }
         }
-        // -- release resources
-        resultSet.close();
-        statement.close();
-
-        return myResultSet;
     }
 
     /**

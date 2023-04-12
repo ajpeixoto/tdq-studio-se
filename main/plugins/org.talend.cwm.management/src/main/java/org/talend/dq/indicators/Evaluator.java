@@ -14,8 +14,8 @@ package org.talend.dq.indicators;
 
 import java.lang.management.ManagementFactory;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -330,11 +330,12 @@ public abstract class Evaluator<T> {
      * @return
      * @throws SQLException
      */
-    protected Statement createStatement() throws SQLException {
-        Statement statement = null;
+    protected PreparedStatement createStatement(String sqlStatement) throws SQLException {
+        PreparedStatement statement = null;
         if (getAnalysis() != null && getConnection() != null) {
-            statement = DbmsLanguageFactory.createDbmsLanguage(getAnalysis().getContext().getConnection()).createStatement(
-                    getConnection(), getFetchSize());
+            statement = DbmsLanguageFactory.createDbmsLanguage(getAnalysis().getContext().getConnection())
+                    .preparedStatement(
+                    getConnection(), getFetchSize(), sqlStatement);
         }
         return statement;
     }

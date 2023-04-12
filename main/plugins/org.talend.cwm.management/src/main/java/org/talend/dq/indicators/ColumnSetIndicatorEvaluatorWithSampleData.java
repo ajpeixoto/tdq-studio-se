@@ -38,7 +38,7 @@ public class ColumnSetIndicatorEvaluatorWithSampleData extends ColumnSetIndicato
      * @see org.talend.dq.indicators.Evaluator#createStatement()
      */
     @Override
-    protected Statement createStatement() throws SQLException {
+    protected java.sql.PreparedStatement createStatement(String sqlStatement) throws SQLException {
         return SampleDataUtils.getInstance().getSampleDataStatement(this.analysis);
     }
 

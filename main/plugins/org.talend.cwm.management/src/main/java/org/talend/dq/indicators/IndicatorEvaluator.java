@@ -12,9 +12,9 @@
 // ============================================================================
 package org.talend.dq.indicators;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
@@ -91,13 +91,13 @@ public class IndicatorEvaluator extends Evaluator<String> {
         // ~ 13826
         // create query statement
         // feature 0010630 zshen: Tables are not found when using Excel with ODBC connection
-        Statement statement = createStatement();
+        PreparedStatement statement = createStatement(sqlStatement);
         // MOD xqliu 2009-02-09 bug 6237
         if (continueRun()) {
             if (log.isInfoEnabled()) {
                 log.info("Executing query: " + sqlStatement); //$NON-NLS-1$
             }
-            statement.execute(sqlStatement);
+            statement.execute();
         }
         // get the results
         ResultSet resultSet = statement.getResultSet();
