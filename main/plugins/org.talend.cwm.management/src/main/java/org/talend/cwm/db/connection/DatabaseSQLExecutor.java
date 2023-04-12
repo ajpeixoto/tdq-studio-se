@@ -13,9 +13,9 @@
 package org.talend.cwm.db.connection;
 
 import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -188,10 +188,9 @@ public class DatabaseSQLExecutor extends SQLExecutor {
         int columnListSize = analysedElements.size();
 
         TypedReturnCode<java.sql.Connection> sqlconnection = getSQLConnection(connection);
-        Statement statement = null;
+        PreparedStatement prepStmt = null;
         ResultSet resultSet = null;
         try {
-            statement = sqlconnection.getObject().createStatement();
             // for JDBC type, use 'statement.setMaxRows(limit)' instead of Limit in sql query;
             int limit = getLimit();
             Connection con = (Connection) connection;
@@ -220,21 +219,22 @@ public class DatabaseSQLExecutor extends SQLExecutor {
             }
             try {
                 // 2.execute the query with 'LIMIT' or similar ones
-                statement.executeQuery(query);
+                prepStmt = sqlconnection.getObject().prepareStatement(query);
+                prepStmt.execute();
             } catch (SQLException e) {
                 // 3.'getTopNQuery(...)' may not be fit for some JDBC connection,then use original way 'setMaxRows()'
                 // TODO if found the performance issue on this type JDBC Connection, can create a class XXXDbmsLanguage
                 // to implement 'getTopNQuery(...)'
                 if (limit > 0 && (ConnectionUtils.isTcompJdbc(con) || ConnectionUtils.isGeneralJdbc(con))) {
                     query = createSqlStatement(connection, analysedElements, where, sqlconnection, true);
-                    statement.setMaxRows(limit);
-                    statement.executeQuery(query);
+                    prepStmt = sqlconnection.getObject().prepareStatement(query);
+                    prepStmt.setMaxRows(limit);
                 } else {
                     throw new SQLException(e);
                 }
             }
             // TDQ-20694~
-            resultSet = statement.getResultSet();
+            resultSet = prepStmt.getResultSet();
 
             while (resultSet.next()) {
                 Object[] oneRow = new Object[columnListSize];
@@ -254,8 +254,8 @@ public class DatabaseSQLExecutor extends SQLExecutor {
             if (resultSet != null) {
                 resultSet.close();
             }
-            if (statement != null) {
-                statement.close();
+            if (prepStmt != null) {
+                prepStmt.close();
             }
             ReturnCode closed = ConnectionUtils.closeConnection(sqlconnection.getObject());
             if (!closed.isOk()) {
