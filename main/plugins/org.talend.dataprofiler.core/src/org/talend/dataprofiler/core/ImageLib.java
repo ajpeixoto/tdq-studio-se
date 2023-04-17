@@ -101,8 +101,6 @@ public final class ImageLib {
 
     public static final String COPY_ACTION = "copy.gif"; //$NON-NLS-1$
 
-    public static final String SECTION_PREVIEW = "eye.png"; //$NON-NLS-1$
-
     public static final String ACTION_NEW_REPORT = "report_add.png"; //$NON-NLS-1$
 
     public static final String ACTION_NEW_ANALYSIS = "chart_bar_add.png"; //$NON-NLS-1$
@@ -117,18 +115,12 @@ public final class ImageLib {
 
     public static final String TD_DATAPROVIDER = "TdDataProvider.gif"; //$NON-NLS-1$
 
-    public static final String MDM_CONNECTION = "mdm_metadata.png"; //$NON-NLS-1$
-
-    public static final String EDITCONNECTION = "sample.gif"; //$NON-NLS-1$
-
     public static final String CREATE_SQL_ACTION = "new_sqlEditor.png"; //$NON-NLS-1$
 
     public static final String LICENSE_WIZ = "license_wiz.png"; //$NON-NLS-1$
 
     /** {@link PatternNode#getImageName()} */
     public static final String PATTERN_REG = "pattern.png"; //$NON-NLS-1$
-
-    public static final String REGISTER_WIZ = "register_wiz.png"; //$NON-NLS-1$
 
     public static final String CONNECTION = "connection.gif"; //$NON-NLS-1$
 
@@ -173,10 +165,6 @@ public final class ImageLib {
     /** PK icon from SQL Explorer. */
     public static final String PK_DECORATE = "pk_decorate.gif"; //$NON-NLS-1$
 
-    public static final String EDIT_COPY = "copy.gif"; //$NON-NLS-1$
-
-    public static final String DUPLICATE = "duplicate.png"; //$NON-NLS-1$
-
     /** index icon from SQL Explorer. */
     public static final String INDEX_VIEW = "index.gif"; //$NON-NLS-1$
 
@@ -202,9 +190,6 @@ public final class ImageLib {
 
     public static final String ADD_IND_DEFINITION = "IndicatorAdd.png"; //$NON-NLS-1$
 
-    /** Icon of indicator's category. */
-    public static final String IND_CATEGORY = "IndicatorCategory.gif"; //$NON-NLS-1$
-
     /** Icon for Pagination. */
     public static final String ICON_PAGE_LAST_LNK = "bottomb.gif"; //$NON-NLS-1$
 
@@ -220,10 +205,6 @@ public final class ImageLib {
 
     public static final String JRXML_ICON = "jrxml.png"; //$NON-NLS-1$
 
-    public static final String JRXML_WHITE_ICON = "jrxml_white.png"; //$NON-NLS-1$
-
-    public static final String XML_ELEMENT_DOC = "xmlele.gif"; //$NON-NLS-1$
-
     public static final String ICON_PROCESS = "process_icon.png"; //$NON-NLS-1$
 
     public static final String ICON_PROCESS_WIZARD = "process_wiz.png"; //$NON-NLS-1$
@@ -231,10 +212,6 @@ public final class ImageLib {
     public static final String ICON_ERROR_INFO = "error.png"; //$NON-NLS-1$
 
     public static final String RECYCLEBIN_EMPTY = "recyclebinempty.png"; //$NON-NLS-1$
-
-    public static final String RECYCLEBIN_OVERLAY = "recycle_bino_verlay.gif"; //$NON-NLS-1$
-
-    public static final String RECYCLEBIN_FULL = "recyclebinfull.png"; //$NON-NLS-1$
 
     public static final String ICON_ERROR_VAR = "error_ovr.gif"; //$NON-NLS-1$
 
@@ -260,11 +237,7 @@ public final class ImageLib {
 
     public static final String FILTER_CLOSE = "search_rem.gif"; //$NON-NLS-1$
 
-    public static final String RULE_TEST = "test.gif"; //$NON-NLS-1$
-
     public static final String ICON_LOCK_BYOTHER = "locked_red_overlay.gif"; //$NON-NLS-1$
-
-    public static final String TICK_IMAGE = "checked.gif"; //$NON-NLS-1$
 
     public static final String PK_ICON = "primary_key.png"; //$NON-NLS-1$
 
