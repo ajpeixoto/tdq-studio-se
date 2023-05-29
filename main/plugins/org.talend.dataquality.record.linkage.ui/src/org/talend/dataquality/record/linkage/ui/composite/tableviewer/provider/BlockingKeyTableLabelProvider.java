@@ -122,7 +122,10 @@ public class BlockingKeyTableLabelProvider extends LabelProvider implements ITab
      * @return
      */
     protected Color getCellColor(boolean takeParameter) {
-        return Display.getDefault().getSystemColor(takeParameter ? SWT.COLOR_WHITE : SWT.COLOR_GRAY);
+        if (takeParameter) {
+            return null;
+        }
+        return Display.getDefault().getSystemColor(SWT.COLOR_GRAY);
     }
 
 }

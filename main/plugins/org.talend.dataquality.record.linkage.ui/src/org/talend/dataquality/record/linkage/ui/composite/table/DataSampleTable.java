@@ -59,7 +59,6 @@ import org.eclipse.nebula.widgets.nattable.selection.SelectionLayer;
 import org.eclipse.nebula.widgets.nattable.sort.SortDirectionEnum;
 import org.eclipse.nebula.widgets.nattable.sort.config.DefaultSortConfiguration;
 import org.eclipse.nebula.widgets.nattable.style.CellStyleAttributes;
-import org.eclipse.nebula.widgets.nattable.style.ConfigAttribute;
 import org.eclipse.nebula.widgets.nattable.style.DisplayMode;
 import org.eclipse.nebula.widgets.nattable.style.IStyle;
 import org.eclipse.nebula.widgets.nattable.style.Style;
@@ -1316,12 +1315,26 @@ public class DataSampleTable implements TDQObserver<ModelElement[]>, Observerabl
                 DisplayMode.NORMAL, GridRegion.ROW_HEADER);
         if (rowHeaderNormalStyle != null) {
             rowHeaderNormalStyle.setAttributeValue(CellStyleAttributes.FONT, font);
+            // TDQ-21008 msjian: support dark mode
+            rowHeaderNormalStyle.setAttributeValue(
+                    CellStyleAttributes.FOREGROUND_COLOR,
+                    ColorConstants.getTableForegroundColor());
+            rowHeaderNormalStyle.setAttributeValue(
+                    CellStyleAttributes.BACKGROUND_COLOR,
+                    ColorConstants.getTableBackgroundColor());
         }
 
         IStyle columnHeaderNormalStyle = natTable.getConfigRegistry().getConfigAttribute(CellConfigAttributes.CELL_STYLE,
                 DisplayMode.NORMAL, GridRegion.COLUMN_HEADER);
         if (columnHeaderNormalStyle != null) {
             columnHeaderNormalStyle.setAttributeValue(CellStyleAttributes.FONT, font);
+            // TDQ-21008 msjian: support dark mode
+            columnHeaderNormalStyle.setAttributeValue(
+                    CellStyleAttributes.FOREGROUND_COLOR,
+                    ColorConstants.getTableForegroundColor());
+            columnHeaderNormalStyle.setAttributeValue(
+                    CellStyleAttributes.BACKGROUND_COLOR,
+                    ColorConstants.getTableBackgroundColor());
         }
 
         IStyle dataNormalStyle = natTable.getConfigRegistry().getConfigAttribute(CellConfigAttributes.CELL_STYLE,

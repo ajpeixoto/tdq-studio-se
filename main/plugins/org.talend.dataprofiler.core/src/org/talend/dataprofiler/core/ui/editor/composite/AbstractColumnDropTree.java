@@ -35,6 +35,7 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.cwm.db.connection.ConnectionUtils;
@@ -583,6 +584,9 @@ public abstract class AbstractColumnDropTree extends AbstractPagePart implements
     // create the similar tree column
     protected void createTreeItem(Tree newTree, int width, String text) {
         TreeColumn column = new TreeColumn(newTree, SWT.CENTER);
+        // TDQ-21098: fix some table header support dark mode
+        newTree.setHeaderBackground(ColorConstants.getTableBackgroundColor());
+        newTree.setHeaderForeground(ColorConstants.getTableForegroundColor());
         column.setWidth(width);
         column.setText(DefaultMessagesImpl.getString(text));
     }
