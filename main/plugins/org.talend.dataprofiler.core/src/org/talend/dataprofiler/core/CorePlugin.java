@@ -27,7 +27,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.help.internal.base.BaseHelpSystem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.osgi.service.datalocation.Location;
 import org.eclipse.swt.widgets.Composite;
@@ -79,7 +78,6 @@ import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.dataprofiler.core.ui.views.DQRespositoryView;
 import org.talend.dataprofiler.core.ui.views.PatternTestView;
 import org.talend.dataprofiler.core.ui.views.RespositoryDetailView;
-import org.talend.dataprofiler.help.BookMarkEnum;
 import org.talend.dataprofiler.migration.MigrationPlugin;
 import org.talend.dataprofiler.service.ISemanticStudioService;
 import org.talend.dataquality.analysis.impl.AnalysisImpl;
@@ -159,13 +157,6 @@ public class CorePlugin extends AbstractUIPlugin {
         getPreferenceStore().setValue(ITalendCorePrefConstants.PREVIEW_LIMIT, "50");//$NON-NLS-1$
         getPreferenceStore().setValue(ITalendCorePrefConstants.LANGUAGE_SELECTOR, Locale.getDefault().getLanguage());
         getPreferenceStore().setDefault(PluginConstant.MAX_NB_ROWS_ANALYSIS_EDITOR, 10000);
-        try {
-            for (BookMarkEnum bookMark : BookMarkEnum.VALUES) {
-                BaseHelpSystem.getBookmarkManager().addBookmark(bookMark.getHref(), bookMark.getLabel());
-            }
-        } catch (Exception e) {
-            log.error(e, e);
-        }
     }
 
     /*
