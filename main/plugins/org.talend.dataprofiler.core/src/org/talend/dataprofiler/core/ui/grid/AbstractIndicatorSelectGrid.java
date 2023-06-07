@@ -618,9 +618,13 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                         if (i == indexOf(currentItem)) {
                             item.setBackground(0, highlightBlue);
                             item.setBackground(1, highlightBlue);
+                            // TDQ-21008: after mouse click, change the text color to black
+                            item.setForeground(0, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
                         } else {
                             item.setBackground(0, prefBackgroundColor);
                             item.setBackground(1, prefBackgroundColor);
+                            // TDQ-21008: after mouse move, change the before item text color from black to white
+                            item.setForeground(0, prefForegroundColor);
                         }
                     }
 
