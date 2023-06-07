@@ -75,6 +75,7 @@ public class ColumnPreviewGrid extends AbstractIndicatorSelectGrid implements TD
                 PreviewItem.setCheckable(i, false);
             }
             PreviewItem.setText(DefaultMessagesImpl.getString("ColumnPreviewGrid.PreviewItemLabel")); //$NON-NLS-1$
+            PreviewItem.setForeground(prefForegroundColor);
             processNodePrivew(null, PreviewItem);
             PreviewItem.setExpanded(true);
         } catch (SQLException e) {
@@ -97,6 +98,7 @@ public class ColumnPreviewGrid extends AbstractIndicatorSelectGrid implements TD
             TalendGridItem currentItem = new TalendGridItem(parentItem, SWT.NONE);
             currentItem.setCheckable(0, false);
             currentItem.setCheckable(1, false);
+            currentItem.setForeground(prefForegroundColor);
             for (int i = 2; i < this.getColumnCount(); i++) {
                 GridColumn column = getColumn(i);
                 currentItem.setCheckable(i, false);

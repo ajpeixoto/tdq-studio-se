@@ -46,6 +46,7 @@ import org.talend.dq.nodes.indicator.IIndicatorNode;
 import org.talend.dq.nodes.indicator.IndicatorTreeModelBuilder;
 import org.talend.dq.nodes.indicator.type.IndicatorEnum;
 import org.talend.repository.model.IRepositoryNode;
+import org.talend.themes.core.elements.utils.TalendThemeUtils;
 
 /**
  * Abstract class for Grid control
@@ -276,7 +277,6 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
         setLineColor(lineColor);
         setFont(itemFont);
         setBackground(prefBackgroundColor);
-        setForeground(prefForegroundColor);
         setFocusRenderer(null);
 
         for (GridItem gridItem : getItems()) {
@@ -315,6 +315,7 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
         for (IIndicatorNode indicatorNode : branchNodes) {
             TalendGridItem item = new TalendGridItem(this, SWT.NONE);
             item.setText(indicatorNode.getLabel());
+            item.setForeground(prefForegroundColor);
             item.setData(indicatorNode);
             createChildNodes(null, item, indicatorNode);
             processNodeSelection(null, item);
@@ -567,9 +568,18 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                 if (i == cell.y) {
                     item.setBackground(0, highlightBlue);
                     item.setBackground(1, highlightBlue);
+                    item.setForeground(0, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
                 } else {
                     item.setBackground(0, prefBackgroundColor);
                     item.setBackground(1, prefBackgroundColor);
+                    // TDQ-21103: set text color to white when dark mode,
+                    // set text color to black when light mode.
+                    if (TalendThemeUtils.isDarkModeTheme()) {
+                        item.setForeground(0, Display.getCurrent().getSystemColor(SWT.COLOR_WHITE));
+                    } else {
+                        item.setForeground(0, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
+                    }
+
                     if (item.getCheckable(1)) {
                         item.setBackground(highlightBlue);
                     }
@@ -608,9 +618,13 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
                         if (i == indexOf(currentItem)) {
                             item.setBackground(0, highlightBlue);
                             item.setBackground(1, highlightBlue);
+                            // TDQ-21008: after mouse click, change the text color to black
+                            item.setForeground(0, Display.getCurrent().getSystemColor(SWT.COLOR_BLACK));
                         } else {
                             item.setBackground(0, prefBackgroundColor);
                             item.setBackground(1, prefBackgroundColor);
+                            // TDQ-21008: after mouse move, change the before item text color from black to white
+                            item.setForeground(0, prefForegroundColor);
                         }
                     }
 
@@ -764,6 +778,7 @@ public abstract class AbstractIndicatorSelectGrid extends TalendGrid {
             }
 
             childItem.setText(childNode.getLabel());
+            childItem.setForeground(prefForegroundColor);
             childItem.setData(childNode);
             if (parentItem == null) {
                 childItem.setExpanded(true);

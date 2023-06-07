@@ -19,6 +19,7 @@ import java.util.Map;
 
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ITableColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.wizard.WizardPage;
@@ -29,6 +30,7 @@ import org.eclipse.nebula.widgets.grid.GridItem;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
@@ -37,6 +39,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Widget;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataquality.indicators.RegexpMatchingIndicator;
@@ -273,7 +276,7 @@ public class PatternsSelectPage extends WizardPage {
      *
      * FIXME this inner class should be static. Confirm and fix the error.
      */
-    private class PatternSelectLabelProvider implements ITableLabelProvider {
+    private class PatternSelectLabelProvider implements ITableLabelProvider, ITableColorProvider {
 
         /*
          * (non-Javadoc)
@@ -351,6 +354,25 @@ public class PatternsSelectPage extends WizardPage {
 
         }
 
+        /*
+         * (non-Javadoc)
+         *
+         * @see org.eclipse.jface.viewers.ITableColorProvider#getForeground(java.lang.Object, int)
+         */
+        @Override
+        public Color getForeground(Object element, int columnIndex) {
+            return ColorConstants.getTableForegroundColor();
+        }
+
+        /*
+         * (non-Javadoc)
+         *
+         * @see org.eclipse.jface.viewers.ITableColorProvider#getBackground(java.lang.Object, int)
+         */
+        @Override
+        public Color getBackground(Object element, int columnIndex) {
+            return null;
+        }
     }
 
     public Grid getTable() {

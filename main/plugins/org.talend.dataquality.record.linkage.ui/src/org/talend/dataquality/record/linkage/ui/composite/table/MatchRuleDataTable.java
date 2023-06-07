@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -35,12 +36,17 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.TableItem;
+import org.talend.commons.ui.runtime.ColorConstants;
 import org.talend.core.service.IMatchRuleUIService;
 import org.talend.dataquality.PluginConstant;
 import org.talend.dataquality.record.linkage.ui.MatchRuleUIService;
@@ -176,7 +182,30 @@ public class MatchRuleDataTable extends Composite {
         dataViewer.setContentProvider(new ArrayContentProvider());
         dataViewer.setLabelProvider(new DataLabelProvider());
         dataViewer.getTable().addControlListener(matchRuleTableResizeListener);
+        // TDQ-21008: add this to support dark mode show text well
+        dataViewer.getTable().addListener(SWT.EraseItem, new Listener() {
 
+            @Override
+            public void handleEvent(Event event) {
+                if ((event.detail & SWT.HOT) == 0 && (event.detail & SWT.SELECTED) == 0)
+                    return; /* item not selected and not Hot */
+                int clientWidth = dataViewer.getTable().getClientArea().width;
+                GC gc = event.gc;
+                Color oldForeground = gc.getForeground();
+                Color oldBackground = gc.getBackground();
+                gc.setForeground(ColorConstants.getTableForegroundColor());
+                gc.setBackground(ColorConstants.getTableBackgroundColor());
+                String data = ((TableItem) event.item).getText(event.index);
+                gc.fillGradientRectangle(0, event.y, clientWidth, event.height, false);
+                gc.drawText(data == null ? StringUtils.EMPTY : data, event.x, event.y);
+                gc.setForeground(oldForeground);
+                gc.setBackground(oldBackground);
+                event.detail &= ~SWT.SELECTED;
+                event.detail &= ~SWT.HOT;
+                event.detail &= ~SWT.FOREGROUND;
+                event.detail &= ~SWT.BACKGROUND;
+            }
+        });
     }
 
     private void reComputePageSize() {
