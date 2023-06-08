@@ -13,22 +13,26 @@
 package org.talend.cwm.db.connection;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.log4j.Logger;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.dataquality.analysis.Analysis;
 import org.talend.dataquality.indicators.columnset.RecordMatchingIndicator;
+import org.talend.dq.analysis.AnalysisExecutor;
 import org.talend.dq.helper.StoreOnDiskUtils;
+import org.talend.utils.sugars.ReturnCode;
 
 /**
  * created by zhao on Oct 20, 2013 Detailled comment
  *
  */
-public abstract class SQLExecutor implements ISQLExecutor {
+public abstract class SQLExecutor extends AnalysisExecutor implements ISQLExecutor {
 
     private static Logger log = Logger.getLogger(SQLExecutor.class);
 
@@ -90,6 +94,20 @@ public abstract class SQLExecutor implements ISQLExecutor {
      */
     public void setShowRandomData(Boolean isShowRandomData) {
         this.isShowRandomData = isShowRandomData;
+    }
+
+    @Override
+    public void SetAnalysis(Analysis analysis) {
+        this.cachedAnalysis = analysis;
+
+    }
+    /**
+     * Getter for analysis.
+     * 
+     * @return the analysis
+     */
+    public Analysis getAnalysis() {
+        return cachedAnalysis;
     }
 
     /*
@@ -167,5 +185,15 @@ public abstract class SQLExecutor implements ISQLExecutor {
 
     public List<Object[]> getDataFromTable() {
         return this.dataFromTable;
+    }
+
+    @Override
+    protected String createSqlStatement(Analysis analysis) {
+        throw new NotImplementedException("This method is not implemented yet!");
+    }
+
+    @Override
+    protected ReturnCode evaluate(Analysis analysis, Connection connection, String sqlStatement) {
+        throw new NotImplementedException("This method is not implemented yet!");
     }
 }

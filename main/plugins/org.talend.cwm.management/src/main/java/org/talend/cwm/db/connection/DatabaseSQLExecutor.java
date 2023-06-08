@@ -29,8 +29,10 @@ import org.talend.cwm.helper.ColumnHelper;
 import org.talend.cwm.helper.SchemaHelper;
 import org.talend.cwm.helper.SwitchHelpers;
 import org.talend.cwm.relational.TdColumn;
+import org.talend.dataquality.analysis.Analysis;
 import org.talend.dataquality.matchmerge.Record;
 import org.talend.dataquality.record.linkage.iterator.ResultSetIterator;
+import org.talend.dq.analysis.connpool.TdqAnalysisConnectionPool;
 import org.talend.dq.dbms.DbmsLanguage;
 import org.talend.dq.dbms.DbmsLanguageFactory;
 import org.talend.dq.helper.ContextHelper;
@@ -56,7 +58,8 @@ public class DatabaseSQLExecutor extends SQLExecutor {
      *
      * @see org.talend.cwm.db.connection.ISQLExecutor#executeQuery(org.talend.dataquality.analysis.Analysis)
      */
-    public List<Object[]> executeQuery(DataManager connection, List<ModelElement> analysedElements) throws SQLException {
+    public List<Object[]> executeQuery(DataManager connection, List<ModelElement> analysedElements)
+            throws SQLException {
         return executeQuery(connection, analysedElements, null);
     }
 
@@ -70,7 +73,12 @@ public class DatabaseSQLExecutor extends SQLExecutor {
     private TypedReturnCode<java.sql.Connection> getSQLConnection(DataManager connection) throws SQLException {
         org.talend.core.model.metadata.builder.connection.Connection copyConnection =
                 ContextHelper.getPromptContextValuedConnection((Connection) connection);
-        TypedReturnCode<java.sql.Connection> sqlconnection = JavaSqlFactory.createConnection(copyConnection);
+        TypedReturnCode<java.sql.Connection> sqlconnection = null;
+        if (this.getAnalysis() == null) {
+            sqlconnection = JavaSqlFactory.createConnection(copyConnection);
+        } else {
+            sqlconnection = this.getSqlConnection(this.getAnalysis());
+        }
         if (!sqlconnection.isOk()) {
             throw new SQLException(sqlconnection.getMessage());
         }
@@ -156,18 +164,26 @@ public class DatabaseSQLExecutor extends SQLExecutor {
      * (non-Javadoc)
      *
      * @see
-     * org.talend.cwm.db.connection.ISQLExecutor#getResultSetIterator(orgomg.cwm.foundation.softwaredeployment.DataManager
+     * org.talend.cwm.db.connection.ISQLExecutor#getResultSetIterator(orgomg.cwm.foundation.softwaredeployment.
+     * DataManager
      * , java.util.List)
      */
-    public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements) throws SQLException {
+    public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements)
+            throws SQLException {
         TypedReturnCode<java.sql.Connection> sqlconnection = getSQLConnection(connection);
-        String sqlString = createSqlStatement(connection, analysedElements, null, sqlconnection, false);
+        return getResultSetIterator(connection, analysedElements, sqlconnection);
+    }
+
+    @Override
+    public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements,
+            TypedReturnCode<java.sql.Connection> sqlConnection) throws SQLException {
+        String sqlString = createSqlStatement(connection, analysedElements, null, sqlConnection, false);
         List<String> elementsName = new ArrayList<String>();
         for (ModelElement element : analysedElements) {
             elementsName.add(element.getName());
         }
 
-        return new ResultSetIterator(sqlconnection.getObject(), sqlString, elementsName);
+        return new ResultSetIterator(sqlConnection.getObject(), sqlString, elementsName);
     }
 
     /*
@@ -204,7 +220,7 @@ public class DatabaseSQLExecutor extends SQLExecutor {
                     Schema parentSchema = SchemaHelper.getParentSchema(columnOwnerAsColumnSet);
                     Catalog parentCatalog = CatalogHelper.getParentCatalog(parentSchema);
                     if (parentCatalog != null) {
-                        sqlconnection.getObject().setCatalog(parentCatalog.getName());
+                        changeCatalog(parentCatalog.getName(), sqlconnection.getObject());
                     }
                 }
             }
@@ -233,6 +249,7 @@ public class DatabaseSQLExecutor extends SQLExecutor {
                     throw new SQLException(e);
                 }
             }
+
             // TDQ-20694~
             resultSet = prepStmt.getResultSet();
 
@@ -257,7 +274,7 @@ public class DatabaseSQLExecutor extends SQLExecutor {
             if (prepStmt != null) {
                 prepStmt.close();
             }
-            ReturnCode closed = ConnectionUtils.closeConnection(sqlconnection.getObject());
+            ReturnCode closed = this.closeSqlConnection(cachedAnalysis, sqlconnection.getObject());
             if (!closed.isOk()) {
                 log.error(closed.getMessage());
             }
@@ -270,4 +287,5 @@ public class DatabaseSQLExecutor extends SQLExecutor {
         }
         return getDataFromTable();
     }
+
 }

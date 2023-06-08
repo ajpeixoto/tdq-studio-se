@@ -406,6 +406,14 @@ public class RunAnalysisAction extends Action implements ICheatSheetAction {
         return ConnectionUtils.checkConnection(copyConnection, anaName);
     }
 
+    public boolean isConnectionAvailable(DataManager datamanager, Analysis ana) {
+        Connection copyConnection = ConnectionUtils.prepareConection(datamanager);
+        if (copyConnection == null) {
+            return false;
+        }
+        return ConnectionUtils.checkConnection(copyConnection, ana);
+    }
+
 
     /**
      * check whether the connection of analysis is available.
@@ -421,7 +429,7 @@ public class RunAnalysisAction extends Action implements ICheatSheetAction {
                     DefaultMessagesImpl.getString("ColumnMasterDetailsPage.NoColumnAssigned", runItem.getAnalysis().getName()));//$NON-NLS-1$
             return false;
         }
-        return isConnectionAvailable(datamanager, runItem.getAnalysis().getName());
+        return isConnectionAvailable(datamanager, runItem.getAnalysis());
     }
 
     /**

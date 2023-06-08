@@ -60,7 +60,7 @@ import org.talend.dq.helper.StoreOnDiskUtils;
 import org.talend.dq.indicators.Evaluator;
 import org.talend.utils.sugars.ReturnCode;
 import org.talend.utils.sugars.TypedReturnCode;
-
+import org.talend.dataquality.record.linkage.iterator.ResultSetIterator;
 import orgomg.cwm.foundation.softwaredeployment.DataManager;
 import orgomg.cwm.objectmodel.core.ModelElement;
 
@@ -139,7 +139,7 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
         // TDQ-9664~
 
         Map<MetadataColumn, String> columnMap = getColumn2IndexMap(anlayzedElements);
-        ISQLExecutor sqlExecutor = getSQLExectutor(analysis, recordMatchingIndicator, columnMap);
+        SQLExecutor sqlExecutor = getSQLExectutor(analysis, recordMatchingIndicator, columnMap);
         if (sqlExecutor == null) {
             rc.setOk(Boolean.FALSE);
             rc.setMessage(Messages.getString("MatchAnalysisExecutor.noSqlExecutor")); //$NON-NLS-1$
@@ -201,9 +201,13 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
             }
         } else {
             // Added TDQ-9320 , use the result set iterator to replace the list of result in the memory.
+            TypedReturnCode<java.sql.Connection> sqlConnection = null;
             try {
-                Iterator<Record> resultSetIterator = sqlExecutor.getResultSetIterator(copyConnection,
-                        anlayzedElements);
+                sqlConnection =
+                        ((AnalysisExecutor) sqlExecutor).getSqlConnection(analysis);
+                Iterator<Record> resultSetIterator = sqlExecutor
+                        .getResultSetIterator(copyConnection,
+                        anlayzedElements, sqlConnection);
                 BlockAndMatchManager bAndmManager =
                         new BlockAndMatchManager(resultSetIterator, matchResultConsumer, columnMap,
                                 recordMatchingIndicator, blockKeyIndicator);
@@ -220,6 +224,8 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
                 rc.setMessage(e.getMessage());
                 AnalysisExecutorHelper.setExecutionInfoInAnalysisResult(analysis, rc.isOk(), rc.getMessage());
                 return rc;
+            } finally {
+                ((AnalysisExecutor) sqlExecutor).closeSqlConnection(analysis, sqlConnection.getObject());
             }
         }
 
@@ -389,15 +395,16 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
      * @param modelElement
      * @return
      */
-    private ISQLExecutor getSQLExectutor(Analysis analysis, RecordMatchingIndicator recordMatchingIndicator,
+    private SQLExecutor getSQLExectutor(Analysis analysis, RecordMatchingIndicator recordMatchingIndicator,
             Map<MetadataColumn, String> columnMap) {
         ModelElement modelElement = analysis.getContext().getAnalysedElements().get(0);
-        ISQLExecutor sqlExecutor = null;
+        SQLExecutor sqlExecutor = null;
         if (modelElement instanceof TdColumn) {
             sqlExecutor = new DatabaseSQLExecutor();
         } else if (modelElement instanceof MetadataColumn) {
             sqlExecutor = new DelimitedFileSQLExecutor();
         }
+        sqlExecutor.SetAnalysis(analysis);
         // Tune on store on disk option when needed.
         Boolean isStoreOnDisk =
                 PluginChecker.isTDQLoaded() ? TaggedValueHelper.getValueBoolean(SQLExecutor.STORE_ON_DISK_KEY,

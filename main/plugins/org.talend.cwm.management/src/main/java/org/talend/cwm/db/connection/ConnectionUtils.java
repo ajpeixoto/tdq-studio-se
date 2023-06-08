@@ -77,8 +77,10 @@ import org.talend.cwm.management.i18n.Messages;
 import org.talend.cwm.relational.RelationalFactory;
 import org.talend.cwm.relational.TdColumn;
 import org.talend.cwm.relational.TdSqlDataType;
+import org.talend.dataquality.analysis.Analysis;
 import org.talend.dataquality.helpers.MetadataHelper;
 import org.talend.dq.CWMPlugin;
+import org.talend.dq.analysis.connpool.TdqAnalysisConnectionPool;
 import org.talend.dq.analysis.parameters.DBConnectionParameter;
 import org.talend.dq.helper.EObjectHelper;
 import org.talend.dq.helper.PropertyHelper;
@@ -161,6 +163,19 @@ public final class ConnectionUtils {
                     .openError(Display.getCurrent().getActiveShell(),
                             Messages.getString("ConnectionUtils.checkConnFailTitle"), //$NON-NLS-1$
                             Messages.getString("ConnectionUtils.checkConnFailMsg", analysisName));//$NON-NLS-1$
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkConnection(Connection analysisDataProvider, Analysis analysis) {
+        ReturnCode connectionAvailable = isConnectionAvailable(analysisDataProvider, analysis);
+        if (!connectionAvailable.isOk()) {
+            log.error(connectionAvailable.getMessage());
+            MessageDialogWithToggle
+                    .openError(Display.getCurrent().getActiveShell(),
+                            Messages.getString("ConnectionUtils.checkConnFailTitle"), //$NON-NLS-1$
+                            Messages.getString("ConnectionUtils.checkConnFailMsg", analysis.getName()));//$NON-NLS-1$
             return false;
         }
         return true;
@@ -251,6 +266,103 @@ public final class ConnectionUtils {
             ManagerConnection managerConn = new ManagerConnection();
             returnCode.setOk(managerConn.check(metadataConnection));
             returnCode.setMessage(managerConn.getMessageException());
+        }
+        return returnCode;
+    }
+
+    /**
+     * This method is used to check connection is available for analysis or report ,when analysis or report runs.
+     *
+     * @param analysisDataProvider
+     * @return
+     */
+    public static ReturnCode isConnectionAvailable(Connection analysisDataProvider, Analysis analysis) {
+        ReturnCode returnCode = new ReturnCode();
+        if (analysisDataProvider == null) {
+            returnCode.setOk(false);
+            returnCode.setMessage(Messages.getString("ConnectionUtils.checkConnFailTitle")); //$NON-NLS-1$
+            return returnCode;
+        }
+
+        // check hive connection
+        IMetadataConnection metadataConnection = ConvertionHelper.convert(analysisDataProvider);
+        if (metadataConnection != null) {
+            if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(metadataConnection.getDbType())) {
+                try {
+                    // need to do this first when check for hive embed connection.
+                    if (isHiveEmbedded(analysisDataProvider)) {
+                        JavaSqlFactory.doHivePreSetup(analysisDataProvider);
+                    }
+                    HiveConnectionManager.getInstance().checkConnection(metadataConnection);
+                    returnCode.setOk(true);
+                } catch (ClassNotFoundException e) {
+                    returnCode.setOk(false);
+                    returnCode.setMessage(e.toString());
+                } catch (InstantiationException e) {
+                    returnCode.setOk(false);
+                    returnCode.setMessage(e.toString());
+                } catch (IllegalAccessException e) {
+                    returnCode.setOk(false);
+                    returnCode.setMessage(e.toString());
+                } catch (SQLException e) {
+                    returnCode.setOk(false);
+                    returnCode.setMessage(e.toString());
+                }
+                return returnCode;
+            }
+        }
+
+        if (analysisDataProvider instanceof FileConnection) {
+            FileConnection fileConn = (FileConnection) analysisDataProvider;
+            // ADD msjian TDQ-4559 2012-2-28: when the fileconnection is context mode, getOriginalFileConnection.
+            if (fileConn.isContextMode()) {
+                IRepositoryContextService service = CoreRuntimePlugin.getInstance().getRepositoryContextService();
+                if (service != null) {
+                    fileConn = service.cloneOriginalValueConnection(fileConn);
+                }
+            }
+            // TDQ-4559 ~
+            String filePath = fileConn.getFilePath();
+            try {
+                BufferedReader filePathAvailable = FilesUtils.isFilePathAvailable(filePath, fileConn);
+                if (filePathAvailable == null) {
+                    returnCode.setOk(false);
+                    returnCode.setMessage(Messages.getString("ConnectionUtils.checkConnFailTitle") + " " + filePath); //$NON-NLS-1$ //$NON-NLS-2$
+                }
+            } catch (UnsupportedEncodingException e) {
+                returnCode.setOk(false);
+                returnCode.setMessage(e.toString());
+            } catch (FileNotFoundException e) {
+                returnCode.setOk(false);
+                returnCode.setMessage(e.toString());
+            } catch (IOException e) {
+                returnCode.setOk(false);
+                returnCode.setMessage(e.toString());
+            }
+            return returnCode;
+        }
+
+        if (analysisDataProvider instanceof DatabaseConnection) {
+            // MOD qiongli TDQ-11507,for GeneralJdbc,should check connection too after validation jar and jdbc driver .
+            if (isTcompJdbc(analysisDataProvider) || isGeneralJdbc(analysisDataProvider)) {
+                ReturnCode rcJdbc = checkJdbcJarFilePathDriverClassName((DatabaseConnection) analysisDataProvider);
+                if (!rcJdbc.isOk()) {
+                    return rcJdbc;
+                }
+            }
+
+            try {
+                java.sql.Connection connection = TdqAnalysisConnectionPool.getConnectionPool(analysis).getConnection();
+                TdqAnalysisConnectionPool.getConnectionPool(analysis).returnConnection(connection);
+                returnCode.setOk(true);
+            } catch (SQLException e) {
+                // MOD qiongli 2014-5-14 in order to check and connect a dbConnection by a correct driver,replace
+                // 'ConnectionUtils.checkConnection(...)' with 'managerConn.check(metadataConnection)'.
+                ManagerConnection managerConn = new ManagerConnection();
+                returnCode.setOk(managerConn.check(metadataConnection));
+                returnCode.setMessage(managerConn.getMessageException());
+            }
+
         }
         return returnCode;
     }
@@ -474,8 +586,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             return EDatabaseTypeName.TERADATA.getXmlName().equalsIgnoreCase(databaseType);
         }
         return false;
@@ -510,8 +623,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             return EDatabaseTypeName.INFORMIX.getXmlName().equalsIgnoreCase(databaseType);
         }
         return false;
@@ -527,8 +641,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             // databaseType: IBM DB2, but DBKey is DB2
             return databaseType.contains(EDatabaseTypeName.IBMDB2.getXmlName());
         }
@@ -560,8 +675,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             return EDatabaseTypeName.MSSQL.getXmlName().equalsIgnoreCase(databaseType);
         }
         return false;
@@ -599,8 +715,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             return EDatabaseTypeName.AS400.getDisplayName().equalsIgnoreCase(databaseType);
         }
         return false;
@@ -684,8 +801,9 @@ public final class ConnectionUtils {
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         if (dbConn != null) {
             String databaseType =
-                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : dbConn
-                            .getDatabaseType();
+                    dbConn.getDatabaseType() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                            : dbConn
+                                    .getDatabaseType();
             return EDatabaseTypeName.PSQL.getXmlName().equalsIgnoreCase(databaseType);
         }
         return false;
@@ -872,8 +990,9 @@ public final class ConnectionUtils {
         connectionParam.setDbName(JavaSqlFactory.getSID(conn));
         // MOD by zshen for bug 15314
         String retrieveAllMetadata = MetadataHelper.getRetrieveAllMetadata(conn);
-        connectionParam.setRetrieveAllMetadata(retrieveAllMetadata == null ? true : new Boolean(retrieveAllMetadata)
-                .booleanValue());
+        connectionParam.setRetrieveAllMetadata(retrieveAllMetadata == null ? true
+                : new Boolean(retrieveAllMetadata)
+                        .booleanValue());
 
         return connectionParam;
     }
@@ -897,8 +1016,9 @@ public final class ConnectionUtils {
         MetadataHelper.setAuthor(conn, property.getAuthor().getLogin());
         MetadataHelper.setDescription(property.getDescription(), conn);
         String statusCode =
-                property.getStatusCode() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING : property
-                        .getStatusCode();
+                property.getStatusCode() == null ? org.talend.dataquality.PluginConstant.EMPTY_STRING
+                        : property
+                                .getStatusCode();
         MetadataHelper.setDevStatus(
                 conn,
                 org.talend.dataquality.PluginConstant.EMPTY_STRING.equals(statusCode) ? DevelopmentStatus.DRAFT
@@ -1025,10 +1145,12 @@ public final class ConnectionUtils {
         if (connectionParam == null) {
             return false;
         } else {
-            return connectionParam.getSqlTypeName().equalsIgnoreCase(
-                    SupportDBUrlType.ORACLEWITHSERVICENAMEDEFAULTURL.getDBKey())
-                    || connectionParam.getSqlTypeName().equalsIgnoreCase(
-                            SupportDBUrlType.ORACLEWITHSIDDEFAULTURL.getDBKey());
+            return connectionParam.getSqlTypeName()
+                    .equalsIgnoreCase(
+                            SupportDBUrlType.ORACLEWITHSERVICENAMEDEFAULTURL.getDBKey())
+                    || connectionParam.getSqlTypeName()
+                            .equalsIgnoreCase(
+                                    SupportDBUrlType.ORACLEWITHSIDDEFAULTURL.getDBKey());
         }
     }
 
@@ -1068,8 +1190,9 @@ public final class ConnectionUtils {
         List<TdSqlDataType> sqlDatatypes = new ArrayList<TdSqlDataType>();
         @SuppressWarnings("deprecation")
         ResultSet columns =
-                org.talend.utils.sql.ConnectionUtils.getConnectionMetadata(connection).getColumns(catalogName,
-                        schemaPattern, tablePattern, columnPattern);
+                org.talend.utils.sql.ConnectionUtils.getConnectionMetadata(connection)
+                        .getColumns(catalogName,
+                                schemaPattern, tablePattern, columnPattern);
         while (columns.next()) {
             sqlDatatypes.add(createDataType(columns));
         }
@@ -1224,8 +1347,9 @@ public final class ConnectionUtils {
                     DatabaseConnection dbConn = (DatabaseConnection) dataProvider;
                     IMetadataConnection metaConnection = ConvertionHelper.convert(dbConn);
                     dbConn =
-                            (DatabaseConnection) MetadataFillFactory.getDBInstance(dataProvider).fillUIConnParams(
-                                    metaConnection, dbConn);
+                            (DatabaseConnection) MetadataFillFactory.getDBInstance(dataProvider)
+                                    .fillUIConnParams(
+                                            metaConnection, dbConn);
                     if (dbConn != null && Platform.isRunning()) {
                         try {
                             ProxyRepositoryFactory.getInstance().save(item);
@@ -1255,9 +1379,11 @@ public final class ConnectionUtils {
         java.sql.Connection createConnection = null;
         try {
             List list =
-                    ExtractMetaDataUtils.getInstance().connect(dbType, connection.getUrl(), userName, password,
-                            connection.getDriverClass(), connection.getDriverJarPath(),
-                            connection.getDbVersionString(), connection.getAdditionalParams(), connection.isSupportNLS());
+                    ExtractMetaDataUtils.getInstance()
+                            .connect(dbType, connection.getUrl(), userName, password,
+                                    connection.getDriverClass(), connection.getDriverJarPath(),
+                                    connection.getDbVersionString(), connection.getAdditionalParams(),
+                                    connection.isSupportNLS());
             for (Object element : list) {
                 if (element instanceof java.sql.Connection) {
                     createConnection = (java.sql.Connection) element;
@@ -1317,7 +1443,8 @@ public final class ConnectionUtils {
      * @return
      * @throws MalformedURLException
      */
-    public static LinkedList<String> getDriverJarRealPaths(List<String> driverJarNameList) throws MalformedURLException {
+    public static LinkedList<String> getDriverJarRealPaths(List<String> driverJarNameList)
+            throws MalformedURLException {
         LinkedList<String> linkedList = new LinkedList<String>();
         // no check the real jar path for None-Platform-Running
         if (!Platform.isRunning()) {
@@ -1337,8 +1464,9 @@ public final class ConnectionUtils {
             }
             if (GlobalServiceRegister.getDefault().isServiceRegistered(ILibraryManagerService.class)) {
                 ILibraryManagerService libManagerServic =
-                        GlobalServiceRegister.getDefault().getService(
-                        ILibraryManagerService.class);
+                        GlobalServiceRegister.getDefault()
+                                .getService(
+                                        ILibraryManagerService.class);
                 String libPath = libManagerServic.getJarPath(jarName);
                 if (libPath == null) {
                     jarNotFound = true;

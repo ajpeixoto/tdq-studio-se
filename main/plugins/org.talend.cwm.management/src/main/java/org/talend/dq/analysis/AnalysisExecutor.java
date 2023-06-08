@@ -296,17 +296,38 @@ public abstract class AnalysisExecutor implements IAnalysisExecutor {
      * @return the connection(pooled or not)
      */
     protected TypedReturnCode<java.sql.Connection> getConnectionBeforeRun(Analysis analysis) {
+        return getSqlConnection(analysis, POOLED_CONNECTION);
+    }
+
+    /**
+     * get the connection before evaluating, same for all sub classes
+     *
+     * @param analysis
+     * @param usePool whether use connection pool
+     * @return the connection(pooled or not)
+     */
+    protected TypedReturnCode<java.sql.Connection> getSqlConnection(Analysis analysis, boolean usePool) {
         // open a connection
         TypedReturnCode<java.sql.Connection> connection = null;
-        if (POOLED_CONNECTION) {
+        if (usePool) {
             // reset the connection pool before run this analysis
-            resetConnectionPool(analysis);
             connection = getPooledConnection(analysis);
         } else {
             connection = getConnection(analysis);
         }
 
         return connection;
+
+    }
+
+    /**
+     * get the connection before evaluating, same for all sub classes
+     *
+     * @param analysis
+     * @return the connection(pooled or not)
+     */
+    protected TypedReturnCode<java.sql.Connection> getSqlConnection(Analysis analysis) {
+        return getSqlConnection(analysis, POOLED_CONNECTION);
 
     }
 
@@ -322,6 +343,32 @@ public abstract class AnalysisExecutor implements IAnalysisExecutor {
         if (connection != null) {
             if (POOLED_CONNECTION) {
                 resetConnectionPool(analysis);
+            } else {
+                rc = ConnectionUtils.closeConnection(connection);
+                if (!rc.isOk()) {
+                    setError(rc.getMessage());
+                }
+            }
+        } else {
+            rc.setOk(Boolean.FALSE);
+            rc.setMessage(Messages.getString("AnalysisExecutor.ConnectionNull", analysis.getName())); //$NON-NLS-1$
+            log.error(rc.getMessage());
+        }
+        return rc;
+    }
+
+    /**
+     * close the connection for the analysis after running.
+     *
+     * @param analysis
+     * @param connection
+     * @return close success or not
+     */
+    protected ReturnCode closeSqlConnection(Analysis analysis, java.sql.Connection connection) {
+        ReturnCode rc = new ReturnCode(Boolean.TRUE);
+        if (connection != null) {
+            if (analysis != null && POOLED_CONNECTION) {
+                TdqAnalysisConnectionPool.getConnectionPool(analysis).returnConnection(connection);
             } else {
                 rc = ConnectionUtils.closeConnection(connection);
                 if (!rc.isOk()) {
@@ -647,7 +694,9 @@ public abstract class AnalysisExecutor implements IAnalysisExecutor {
      */
     protected boolean changeCatalog(String catalogName, java.sql.Connection connection) {
         try {
-            connection.setCatalog(catalogName);
+            if (!catalogName.equals(connection.getCatalog())) {
+                connection.setCatalog(catalogName);
+            }
             return true;
         } catch (SQLException e) {
             // TDQ-18628: for Azure Synapse cannot support switch between databases
