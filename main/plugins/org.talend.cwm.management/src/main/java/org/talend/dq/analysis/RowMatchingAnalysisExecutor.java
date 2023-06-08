@@ -35,6 +35,7 @@ import org.talend.dataquality.indicators.Indicator;
 import org.talend.dataquality.indicators.columnset.ColumnsetPackage;
 import org.talend.dataquality.indicators.columnset.RowMatchingIndicator;
 import org.talend.dataquality.indicators.definition.IndicatorDefinition;
+import org.talend.dq.analysis.connpool.TdqAnalysisConnectionPool;
 import org.talend.dq.helper.AnalysisExecutorHelper;
 import org.talend.dq.helper.ContextHelper;
 import org.talend.dq.helper.EObjectHelper;
@@ -404,6 +405,8 @@ public class RowMatchingAnalysisExecutor extends ColumnAnalysisSqlExecutor {
             // ~
             // give result to indicator so that it handles the results
             boolean ok = indicator.storeSqlResults(myResultSet);
+            // release connection after used
+            TdqAnalysisConnectionPool.returnPooledConnection(cachedAnalysis, connection);
             // get row count and store it in indicator
             Long count = getCount(cachedAnalysis, "*", tableName, catalogOrSchema, whereClauses); //$NON-NLS-1$
             ok = ok && count != null;

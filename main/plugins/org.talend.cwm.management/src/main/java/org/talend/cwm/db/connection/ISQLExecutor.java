@@ -21,6 +21,8 @@ import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.dataquality.analysis.Analysis;
 import org.talend.dataquality.indicators.columnset.RecordMatchingIndicator;
 import org.talend.dataquality.matchmerge.Record;
+import org.talend.utils.sugars.TypedReturnCode;
+
 import orgomg.cwm.foundation.softwaredeployment.DataManager;
 import orgomg.cwm.objectmodel.core.ModelElement;
 
@@ -52,4 +54,9 @@ public interface ISQLExecutor {
     public Object getStoreOnDiskHandler();
 
     public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements) throws SQLException;
+
+    public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements,
+            TypedReturnCode<java.sql.Connection> sqlConnection) throws SQLException;
+
+    public void SetAnalysis(Analysis analysis);
 }

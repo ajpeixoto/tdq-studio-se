@@ -14,6 +14,7 @@ package org.talend.cwm.db.connection;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +35,7 @@ import org.talend.dataquality.matchmerge.Record;
 import org.talend.dq.helper.AnalysisExecutorHelper;
 import org.talend.dq.helper.FileUtils;
 import org.talend.fileprocess.FileInputDelimited;
+import org.talend.utils.sugars.TypedReturnCode;
 
 import com.talend.csv.CSVReader;
 
@@ -181,6 +183,12 @@ public class DelimitedFileSQLExecutor extends SQLExecutor {
     public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements) {
 
         return new DelimitedFileIterator((DelimitedFileConnection) connection, analysedElements);
+    }
+
+    @Override
+    public Iterator<Record> getResultSetIterator(DataManager connection, List<ModelElement> analysedElements,
+            TypedReturnCode<Connection> sqlConnection) throws SQLException {
+        return getResultSetIterator(connection, analysedElements);
     }
 
     /*

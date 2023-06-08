@@ -213,7 +213,10 @@ public class TdqAnalysisConnectionPool {
             wait(DEFAULT_WAIT_MILLISECOND);
             conn = findFreeConnection();
             if (conn == null) {
-                newConnection();
+                TypedReturnCode<Connection> newConnection = newConnection();
+                if (!newConnection.isOk()) {
+                    throw new SQLException();
+                }
             }
         }
         showConnectionInfo();
@@ -225,10 +228,12 @@ public class TdqAnalysisConnectionPool {
      *
      * @return
      */
-    private Connection newConnection() {
+    private TypedReturnCode<Connection> newConnection() {
+        TypedReturnCode<Connection> trcConn = new TypedReturnCode<Connection>(false);
         Connection conn = null;
         if (isFull()) {
-            return conn;
+            trcConn.setOk(true);
+            return trcConn;
         }
         DataManager datamanager = analysis.getContext().getConnection();
         if (datamanager == null) {
@@ -241,7 +246,6 @@ public class TdqAnalysisConnectionPool {
         org.talend.core.model.metadata.builder.connection.Connection dataprovider = SwitchHelpers.CONNECTION_SWITCH
                 .doSwitch(datamanager);
 
-        TypedReturnCode<Connection> trcConn = null;
 
         org.talend.core.model.metadata.builder.connection.Connection copyConnection =
                 ContextHelper.getPromptContextValuedConnection(dataprovider);
@@ -298,7 +302,7 @@ public class TdqAnalysisConnectionPool {
             }
         }
 
-        return conn;
+        return trcConn;
     }
 
     /**
@@ -418,7 +422,7 @@ public class TdqAnalysisConnectionPool {
             }
 
             closeConnection(pConn.getConnection());
-            pConn.setConnection(newConnection());
+            pConn.setConnection(newConnection().getObject());
             pConn.setBusy(false);
         }
     }

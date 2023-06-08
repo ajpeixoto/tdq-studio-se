@@ -77,6 +77,7 @@ import org.talend.dataquality.indicators.RowCountIndicator;
 import org.talend.dataquality.indicators.TextParameters;
 import org.talend.dataquality.indicators.definition.CharactersMapping;
 import org.talend.dataquality.indicators.definition.IndicatorDefinition;
+import org.talend.dq.analysis.connpool.TdqAnalysisConnectionPool;
 import org.talend.dq.dbms.BigQueryDbmsLanguage;
 import org.talend.dq.dbms.GenericSQLHandler;
 import org.talend.dq.helper.AnalysisExecutorHelper;
@@ -143,7 +144,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
                 if (!createSqlQuery(stringDataFilter, indicator)) {
                     log.error(Messages.getString(
-                            "ColumnAnalysisSqlExecutor.CREATEQUERYERROR", AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                            "ColumnAnalysisSqlExecutor.CREATEQUERYERROR", //$NON-NLS-1$
+                            AnalysisExecutorHelper.getIndicatorName(indicator)));
                 }
             }
         } catch (AnalysisExecutionException e) {
@@ -199,9 +201,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             // analysis, will not check the sql expression and create again(from the definition).
             if (UDIHelper.isUDI(indicator) && indicator.getInstantiatedExpressions().size() > 0) {
                 return Boolean.TRUE;
-            }// ~
-             // when the indicator is a pattern indicator, a possible cause is that the DB does not support regular
-             // expressions.
+            } // ~
+              // when the indicator is a pattern indicator, a possible cause is that the DB does not support regular
+              // expressions.
             if (IndicatorsPackage.eINSTANCE.getRegexpMatchingIndicator().equals(indicatorEclass)) {
                 traceError(Messages.getString("ColumnAnalysisSqlExecutor.PLEASEREMOVEALLPATTEN"));//$NON-NLS-1$
                 return Boolean.FALSE;
@@ -209,9 +211,10 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
             traceError(Messages
                     .getString(
-                            "ColumnAnalysisSqlExecutor.UNSUPPORTEDINDICATOR",//$NON-NLS-1$
-                            (indicator.getName() != null ? AnalysisExecutorHelper.getIndicatorName(indicator) : indicatorEclass
-                                    .getName())));
+                            "ColumnAnalysisSqlExecutor.UNSUPPORTEDINDICATOR", //$NON-NLS-1$
+                            (indicator.getName() != null ? AnalysisExecutorHelper.getIndicatorName(indicator)
+                                    : indicatorEclass
+                                            .getName())));
             return Boolean.FALSE;
         }
 
@@ -254,8 +257,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             }
         }
 
-        TypedReturnCode<String> completedQuery = getCompletedQuery(indicator, tdColumn, colName, indicatorDefinition, language,
-                sqlGenericExpression, indicatorEclass, whereExpression, rangeStrings, dateAggregationType);
+        TypedReturnCode<String> completedQuery =
+                getCompletedQuery(indicator, tdColumn, colName, indicatorDefinition, language,
+                        sqlGenericExpression, indicatorEclass, whereExpression, rangeStrings, dateAggregationType);
         if (!completedQuery.isOk()) {
             return false;
         }
@@ -289,7 +293,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      */
     private TypedReturnCode<String> getCompletedQuery(Indicator indicator, TdColumn tdColumn, String colName,
             IndicatorDefinition indicatorDefinition, String language, Expression sqlGenericExpression,
-            final EClass indicatorEclass, List<String> whereExpression, List<String> rangeStrings, DateGrain dateAggregationType)
+            final EClass indicatorEclass, List<String> whereExpression, List<String> rangeStrings,
+            DateGrain dateAggregationType)
             throws AnalysisExecutionException {
         TypedReturnCode<String> rt = new TypedReturnCode<String>(true);
         String completedSqlString;
@@ -302,7 +307,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                 || indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getLowerQuartileIndicator())
                 || indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getUpperQuartileIndicator())) {
             // TODO scorreia test type of column and cast when needed
-            completedSqlString = getCompletedStringForQuantiles(indicator, sqlGenericExpression, colName, table, whereExpression);
+            completedSqlString =
+                    getCompletedStringForQuantiles(indicator, sqlGenericExpression, colName, table, whereExpression);
             if (completedSqlString != null) {
                 if (!PluginConstant.EMPTY_STRING.equals(completedSqlString)) {
                     whereExpression = duplicateForCrossJoin(completedSqlString, whereExpression, tdColumn);
@@ -311,7 +317,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             }
         } else if (indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getFrequencyIndicator())
                 || IndicatorsPackage.eINSTANCE.getFrequencyIndicator().isSuperTypeOf(indicatorEclass)
-                || indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getModeIndicator()) || UDIHelper.isFrequency(indicator)) {
+                || indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getModeIndicator())
+                || UDIHelper.isFrequency(indicator)) {
             // --- handle case when frequency indicator
 
             // TODO scorreia test type of column and cast when needed
@@ -323,8 +330,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             }
 
             if (rangeStrings != null) {
-                completedSqlString = getUnionCompletedString(indicator, sqlGenericExpression, colName, table, whereExpression,
-                        rangeStrings);
+                completedSqlString =
+                        getUnionCompletedString(indicator, sqlGenericExpression, colName, table, whereExpression,
+                                rangeStrings);
                 if (indicatorEclass.equals(IndicatorsPackage.eINSTANCE.getModeIndicator())) {
                     // get the best row
                     completedSqlString = dbms().getTopNQuery(completedSqlString, topN);
@@ -351,8 +359,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                     }
 
                     final EList<CharactersMapping> charactersMapping = indicatorDefinition.getCharactersMapping();
-                    TypedReturnCode<String> columnNameWithFunction = getColumnNameWithFunction(indicator, colName, language,
-                            charactersMapping);
+                    TypedReturnCode<String> columnNameWithFunction =
+                            getColumnNameWithFunction(indicator, colName, language,
+                                    charactersMapping);
                     if (!columnNameWithFunction.isOk()) {
                         rt.setOk(false);
                         return rt;
@@ -367,8 +376,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                     table = dbms().getSoundexFunction(table, colName);
                 }
 
-                completedSqlString = dbms().fillGenericQueryWithColumnTableAndAlias(sqlGenericExpression.getBody(), colName,
-                        table, colName);
+                completedSqlString =
+                        dbms().fillGenericQueryWithColumnTableAndAlias(sqlGenericExpression.getBody(), colName,
+                                table, colName);
                 completedSqlString = addWhereToSqlStringStatement(whereExpression, completedSqlString);
                 completedSqlString = dbms().getTopNQuery(completedSqlString, topN);
             }
@@ -389,7 +399,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                 if (defValue == null) {
                     traceError(Messages
                             .getString(
-                                    "ColumnAnalysisSqlExecutor.NODEFAULTVALUE", colName, AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                                    "ColumnAnalysisSqlExecutor.NODEFAULTVALUE", colName, //$NON-NLS-1$
+                                    AnalysisExecutorHelper.getIndicatorName(indicator)));
                     rt.setOk(false);
                     return rt;
                 }
@@ -417,6 +428,7 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
     /**
      * DOC msjian Comment method "getFinalDefaultValue".
+     * 
      * @param tdColumn
      * @param language
      * @param table
@@ -453,7 +465,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             if (colNameWithFunction == null) {
                 traceError(Messages
                         .getString(
-                                "ColumnAnalysisSqlExecutor.NOREPLACEMENTFOUNDFORDBTYPE", language, AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                                "ColumnAnalysisSqlExecutor.NOREPLACEMENTFOUNDFORDBTYPE", language, //$NON-NLS-1$
+                                AnalysisExecutorHelper.getIndicatorName(indicator)));
                 rt.setOk(false);
             }
         }
@@ -477,7 +490,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             if (indicator.getInstantiatedExpressions().size() <= 0) {
                 traceError(Messages
                         .getString(
-                                "ColumnAnalysisSqlExecutor.NOPATTERNFOUNDFORDBTYPE", language, AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                                "ColumnAnalysisSqlExecutor.NOPATTERNFOUNDFORDBTYPE", language, //$NON-NLS-1$
+                                AnalysisExecutorHelper.getIndicatorName(indicator)));
                 rt.setOk(false);
             }
         }
@@ -521,7 +535,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
         ModelElement analyzedElement = indicator.getAnalyzedElement();
         if (analyzedElement == null) {
             traceError(Messages.getString(
-                    "ColumnAnalysisSqlExecutor.ANALYSISELEMENTISNULL", AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                    "ColumnAnalysisSqlExecutor.ANALYSISELEMENTISNULL", //$NON-NLS-1$
+                    AnalysisExecutorHelper.getIndicatorName(indicator)));
             rt.setOk(false);
             return rt;
         }
@@ -530,7 +545,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
         rt.setObject(tdColumn);
         if (tdColumn == null) {
             traceError(Messages.getString(
-                    "ColumnAnalysisSqlExecutor.ANALYZEDISNOTCOLUMNINDICATOR", AnalysisExecutorHelper.getIndicatorName(indicator)));//$NON-NLS-1$
+                    "ColumnAnalysisSqlExecutor.ANALYZEDISNOTCOLUMNINDICATOR", //$NON-NLS-1$
+                    AnalysisExecutorHelper.getIndicatorName(indicator)));
             rt.setOk(false);
         }
         return rt;
@@ -632,7 +648,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @param tdColumn the analyzed column
      * @return a list of new where clauses (or the one given as argument)
      */
-    private List<String> duplicateForCrossJoin(String completedSqlString, List<String> whereExpression, TdColumn tdColumn) {
+    private List<String> duplicateForCrossJoin(String completedSqlString, List<String> whereExpression,
+            TdColumn tdColumn) {
         if (whereExpression.isEmpty()) {
             return whereExpression;
         }
@@ -652,8 +669,10 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             for (TdColumn col : columns) {
                 String colNameToReplace = where.contains(quotedColName) ? quotedColName : col.getName();
                 if (where.contains(colNameToReplace)) {
-                    whereA = whereA.replace(colNameToReplace, tableAliases[0] + PluginConstant.DOT_STRING + colNameToReplace);
-                    whereB = whereB.replace(colNameToReplace, tableAliases[1] + PluginConstant.DOT_STRING + colNameToReplace);
+                    whereA = whereA.replace(colNameToReplace,
+                            tableAliases[0] + PluginConstant.DOT_STRING + colNameToReplace);
+                    whereB = whereB.replace(colNameToReplace,
+                            tableAliases[1] + PluginConstant.DOT_STRING + colNameToReplace);
                 }
             }
             duplicatedWhereExpressions.add(whereA);
@@ -754,7 +773,7 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
     private String getDateAggregatedCompletedStringWithoutAlia(Expression sqlExpression, String colName, String table,
             DateGrain dateAggregationType) {
         String result = PluginConstant.EMPTY_STRING;
-        //        String aliases = ""; // used in group by clause in MySQL //$NON-NLS-1$
+        // String aliases = ""; // used in group by clause in MySQL //$NON-NLS-1$
         // String alias;
         switch (dateAggregationType) {
         case DAY:
@@ -848,7 +867,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
         // MOD scorreia 2008-12-16 handle teradata case where "order by" clause needs a number to identify the column
         // by removing the unnecessary "order by" clause
         // String orderBy = (idxOfOrderBY != -1) ? sqlGenericExpression.substring(idxOfOrderBY) : "";
-        String singleStatement = (idxOfOrderBY != -1) ? sqlGenericExpression.substring(0, idxOfOrderBY) : sqlGenericExpression;
+        String singleStatement =
+                (idxOfOrderBY != -1) ? sqlGenericExpression.substring(0, idxOfOrderBY) : sqlGenericExpression;
 
         for (int i = 0; i < last; i++) {
             String singleSelect = getCompletedSingleSelect(indicator, singleStatement, colName, table, whereExpression,
@@ -881,7 +901,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @return
      * @throws ParseException
      */
-    private String getCompletedSingleSelect(Indicator indicator, String sqlGenericExpression, String colName, String table,
+    private String getCompletedSingleSelect(Indicator indicator, String sqlGenericExpression, String colName,
+            String table,
             List<String> whereExpression, String range) {
         String completedRange = this.unquote(range); // replaceVariablesLow(range, this.unquote(colName),
         // this.unquote(table));
@@ -934,7 +955,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
     private List<String> getBinsAsGenericString(EList<RangeRestriction> ranges, String colName) {
         List<String> bins = new ArrayList<String>();
         for (RangeRestriction rangeRestriction : ranges) {
-            String bin = colName + dbms().greaterOrEqual() + DomainHelper.getMinValue(rangeRestriction) + dbms().and() + colName
+            String bin = colName + dbms().greaterOrEqual() + DomainHelper.getMinValue(rangeRestriction) + dbms().and()
+                    + colName
                     + dbms().less() + DomainHelper.getMaxValue(rangeRestriction);
             // set the name of the RangeRestriction here
             // TODO range name should be set at the construction (in the bins designer wizard)
@@ -954,7 +976,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @param whereExpression
      * @throws AnalysisExecutionException
      */
-    private String getCompletedStringForQuantiles(Indicator indicator, Expression sqlExpression, String colName, String table,
+    private String getCompletedStringForQuantiles(Indicator indicator, Expression sqlExpression, String colName,
+            String table,
             List<String> whereExpression) throws AnalysisExecutionException {
         // first, count nb lines
         String catalogOrSchema = getCatalogOrSchemaName(indicator.getAnalyzedElement());
@@ -967,14 +990,16 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
         if (count == 0) {
             // then use 0 to fill the query
-            return dbms().fillGenericQueryWithColumnTableLimitOffset(sqlExpression.getBody(), colName, table, "0", "0", "0"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+            return dbms().fillGenericQueryWithColumnTableLimitOffset(sqlExpression.getBody(), colName, table, "0", "0", //$NON-NLS-1$ //$NON-NLS-2$
+                    "0"); //$NON-NLS-1$
         }
 
         Long midleCount = getOffsetInLimit(indicator, count);
         Integer nbRow = getNbReturnedRows(indicator, count);
 
         long nPlusSkip = midleCount + nbRow; // needed for MSSQL query with TOP clause
-        return dbms().fillGenericQueryWithColumnTableLimitOffset(sqlExpression.getBody(), colName, table, String.valueOf(nbRow),
+        return dbms().fillGenericQueryWithColumnTableLimitOffset(sqlExpression.getBody(), colName, table,
+                String.valueOf(nbRow),
                 String.valueOf(midleCount), String.valueOf(nPlusSkip));
     }
 
@@ -1044,12 +1069,13 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @return
      * @throws AnalysisExecutionException
      */
-    protected Long getCount(Analysis analysis, String colName, String table, String catalog, List<String> whereExpression)
+    protected Long getCount(Analysis analysis, String colName, String table, String catalog,
+            List<String> whereExpression)
             throws AnalysisExecutionException {
         try {
             return getCountLow(analysis, colName, table, catalog, whereExpression);
         } catch (SQLException e) {
-            throw new AnalysisExecutionException(Messages.getString("ColumnAnalysisSqlExecutor.CannotGetCount",//$NON-NLS-1$
+            throw new AnalysisExecutionException(Messages.getString("ColumnAnalysisSqlExecutor.CannotGetCount", //$NON-NLS-1$
                     analysis.getName(), colName, dbms().toQualifiedName(catalog, null, table)), e);
         }
     }
@@ -1066,22 +1092,25 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @throws SQLException
      * @throws AnalysisExecutionException
      */
-    private Long getCountLow(Analysis analysis, String colName, String table, String catalogName, List<String> whereExpression)
+    private Long getCountLow(Analysis analysis, String colName, String table, String catalogName,
+            List<String> whereExpression)
             throws SQLException, AnalysisExecutionException {
-        TypedReturnCode<Connection> trc = this.getConnection(analysis);
+        TypedReturnCode<Connection> trc = this.getSqlConnection(analysis, POOLED_CONNECTION);
         if (!trc.isOk()) {
             throw new AnalysisExecutionException(Messages.getString(
                     "ColumnAnalysisSqlExecutor.CannotExecuteAnalysis", analysis.getName() //$NON-NLS-1$
                     , trc.getMessage()));
         }
         Connection connection = trc.getObject();
-        String whereExp = (whereExpression == null || whereExpression.isEmpty()) ? PluginConstant.EMPTY_STRING : " WHERE " //$NON-NLS-1$
-                + dbms().buildWhereExpression(whereExpression);
-        String queryStmt = "SELECT COUNT(" + colName + ") FROM " + table + whereExp; // + dbms().eos(); //$NON-NLS-1$ //$NON-NLS-2$
+        String whereExp = (whereExpression == null || whereExpression.isEmpty()) ? PluginConstant.EMPTY_STRING
+                : " WHERE " //$NON-NLS-1$
+                        + dbms().buildWhereExpression(whereExpression);
+        String queryStmt = "SELECT COUNT(" + colName + ") FROM " + table + whereExp; // + //$NON-NLS-1$ //$NON-NLS-2$
+                                                                                     // dbms().eos();
 
         List<Object[]> myResultSet = executeQuery(catalogName, connection, queryStmt);
 
-        org.talend.utils.sql.ConnectionUtils.closeConnection(connection);
+        closeSqlConnection(analysis, connection);
 
         if (myResultSet.isEmpty() || myResultSet.size() > 1) {
             log.error(Messages.getString("ColumnAnalysisSqlExecutor.TOOMANYRESULTOBTAINED") + myResultSet);//$NON-NLS-1$
@@ -1136,6 +1165,7 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
         try {
             if (canParallel(connection)) {
+                TdqAnalysisConnectionPool.getConnectionPool(analysis).returnConnection(connection);
                 ok = runAnalysisIndicatorsParallel(analysis, elementToIndicator, indicators, POOLED_CONNECTION);
             } else {
                 ok = runAnalysisIndicators(connection, elementToIndicator, indicators);
@@ -1183,7 +1213,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
             Expression query = dbms().getInstantiatedExpression(indicator);
             if (query == null || !executeQuery(indicator, connection, query.getBody())) {
-                traceError("Query not executed for indicator: \"" + AnalysisExecutorHelper.getIndicatorName(indicator) + "\" " //$NON-NLS-1$//$NON-NLS-2$
+                traceError("Query not executed for indicator: \"" + AnalysisExecutorHelper.getIndicatorName(indicator) //$NON-NLS-1$
+                        + "\" " //$NON-NLS-1$
                         + ((query == null) ? "query is null" : "SQL query: " + query.getBody())); //$NON-NLS-1$//$NON-NLS-2$
                 runStatus = Boolean.FALSE;
             } else {
@@ -1203,14 +1234,17 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @param elementToIndicator
      * @param indicator
      */
-    protected void addElements2IndicatorsMapping(Map<ModelElement, List<Indicator>> elementToIndicator, Indicator indicator) {
-        // TDQ-12743 msjian: for each element, we need to add a rowCountIndicator mapping, because later we will use the mapping
+    protected void addElements2IndicatorsMapping(Map<ModelElement, List<Indicator>> elementToIndicator,
+            Indicator indicator) {
+        // TDQ-12743 msjian: for each element, we need to add a rowCountIndicator mapping, because later we will use the
+        // mapping
         // to set rowcount for each element
         if (indicator instanceof RowCountIndicatorsAdapter) {
             RowCountIndicatorsAdapter indicator1 = (RowCountIndicatorsAdapter) indicator;
             Set<RowCountIndicator> rowCountIndiSet = indicator1.getRowCountIndiSet();
             for (RowCountIndicator rowCountInd : rowCountIndiSet) {
-                MultiMapHelper.addUniqueObjectToListMap(rowCountInd.getAnalyzedElement(), indicator, elementToIndicator);
+                MultiMapHelper.addUniqueObjectToListMap(rowCountInd.getAnalyzedElement(), indicator,
+                        elementToIndicator);
             }
         } else {
             MultiMapHelper.addUniqueObjectToListMap(indicator.getAnalyzedElement(), indicator, elementToIndicator);
@@ -1258,10 +1292,12 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             if (parent.getMonitor() != null && parent.getMonitor().isCanceled()) {
                 return Status.CANCEL_STATUS;
             }
-            ColumnAnalysisSqlParallelExecutor columnSqlParallel = ColumnAnalysisSqlParallelExecutor.createInstance(parent,
-                    connection, elementToIndicator, indicator);
+            ColumnAnalysisSqlParallelExecutor columnSqlParallel =
+                    ColumnAnalysisSqlParallelExecutor.createInstance(parent,
+                            connection, elementToIndicator, indicator);
             Boolean isSuccess = columnSqlParallel.run();
-            // System.out.println("i:" + i + ":::::" + indicator.getAnalyzedElement().getName() + "--" + indicator.getName());
+            // System.out.println("i:" + i + ":::::" + indicator.getAnalyzedElement().getName() + "--" +
+            // indicator.getName());
             if (isSuccess) {
                 return Status.OK_STATUS;
             } else {
@@ -1290,10 +1326,9 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @return
      * @throws SQLException
      */
-    private boolean runAnalysisIndicatorsParallel(Analysis analysis, Map<ModelElement, List<Indicator>> elementToIndicator,
+    private boolean runAnalysisIndicatorsParallel(Analysis analysis,
+            Map<ModelElement, List<Indicator>> elementToIndicator,
             List<Indicator> indicators, boolean pooledConnection) throws SQLException {
-        // reset the connection pool before run this analysis
-        resetConnectionPool(analysis);
 
         // MOD gdbu 2011-6-10 bug : 21273
         try {
@@ -1329,15 +1364,12 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                     }
                 }
                 Connection conn = null;
-                if (pooledConnection) {
-                    conn = getPooledConnection(analysis).getObject();
-                } else {
-                    conn = getConnection(analysis).getObject();
-                }
+                conn = getSqlConnection(analysis, pooledConnection).getObject();
 
                 if (conn != null) {
-                    ExecutiveAnalysisJob eaj = new ExecutiveAnalysisJob(ColumnAnalysisSqlExecutor.this, conn, elementToIndicator,
-                            indicator);
+                    ExecutiveAnalysisJob eaj =
+                            new ExecutiveAnalysisJob(ColumnAnalysisSqlExecutor.this, conn, elementToIndicator,
+                                    indicator);
                     eaj.setName(AnalysisExecutorHelper.getIndicatorName(indicator));
                     eaj.schedule();
                     jobs.add(eaj);
@@ -1430,7 +1462,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
         Package schema = super.schemata.get(analyzedElement);
         if (schema == null) {
             if (!isSchemataProxy()) {
-                log.error(Messages.getString("ColumnAnalysisSqlExecutor.NOSCHEMAFOUNDFORCOLUMN") + " " + ((analyzedElement != null) ? analyzedElement.getName() : "Unknow column"));//$NON-NLS-1$  //$NON-NLS-2$ //$NON-NLS-3$
+                log.error(Messages.getString("ColumnAnalysisSqlExecutor.NOSCHEMAFOUNDFORCOLUMN") + " " //$NON-NLS-1$ //$NON-NLS-2$
+                        + ((analyzedElement != null) ? analyzedElement.getName() : "Unknow column"));//$NON-NLS-1$
             }
             return null;
         }
@@ -1456,7 +1489,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @return
      * @throws SQLException
      */
-    protected boolean executeQuery(final Indicator indicator, Connection connection, String queryStmt) throws SQLException {
+    protected boolean executeQuery(final Indicator indicator, Connection connection, String queryStmt)
+            throws SQLException {
         String cat = getCatalogOrSchemaName(indicator.getAnalyzedElement());
         if (log.isInfoEnabled()) {
             log.info(Messages.getString(
@@ -1481,10 +1515,11 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
                 @Override
                 public void run() {
-                    tdqRepositoryService.publishDynamicEvent(indicator, IndicatorCommonUtil.getIndicatorValue(indicator));
+                    tdqRepositoryService.publishDynamicEvent(indicator,
+                            IndicatorCommonUtil.getIndicatorValue(indicator));
                 }
             });
-        }// ~
+        } // ~
 
         // MOD delete the try/catch TDQ-8388
         return ret;
@@ -1498,10 +1533,12 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
      * @return
      * @throws SQLException
      */
-    protected List<Object[]> executeQuery(String catalogName, Connection connection, String queryStmt) throws SQLException {
+    protected List<Object[]> executeQuery(String catalogName, Connection connection, String queryStmt)
+            throws SQLException {
         // set current thread classLoader if it is hive connection
         ClassLoader currClassLoader = Thread.currentThread().getContextClassLoader();
-        org.talend.core.model.metadata.builder.connection.Connection dbConn = this.getAnalysisDataProvider(cachedAnalysis);
+        org.talend.core.model.metadata.builder.connection.Connection dbConn =
+                this.getAnalysisDataProvider(cachedAnalysis);
         IMetadataConnection metadataBean = ConvertionHelper.convert(dbConn);
         if (EDatabaseTypeName.HIVE.getXmlName().equalsIgnoreCase(metadataBean.getDbType())) {
             ClassLoader hiveClassLoader = HiveClassLoaderFactory.getInstance().getClassLoader(metadataBean);
@@ -1525,7 +1562,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
                 // get the results
                 ResultSet resultSet = statement.getResultSet();
                 if (resultSet == null) {
-                    String mess = Messages.getString("ColumnAnalysisSqlExecutor.NORESULTSETFORTHISSTATEMENT") + queryStmt;//$NON-NLS-1$
+                    String mess =
+                            Messages.getString("ColumnAnalysisSqlExecutor.NORESULTSETFORTHISSTATEMENT") + queryStmt;//$NON-NLS-1$
                     log.warn(mess);
                     return null;
                 }
@@ -1549,7 +1587,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             // -- release resources
 
         } catch (NullPointerException nullExc) {
-            // TDQ-11851 when click 'cancel' on wizard,the connection should be closed, so that some object may be Null.Catch the
+            // TDQ-11851 when click 'cancel' on wizard,the connection should be closed, so that some object may be
+            // Null.Catch the
             // Exception and logging here.
             if (getMonitor() != null && getMonitor().isCanceled()) {
                 log.error(nullExc);
@@ -1574,7 +1613,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
     private boolean canParallel(Connection connection) {
         try {
             @SuppressWarnings("deprecation")
-            DatabaseMetaData connectionMetadata = org.talend.utils.sql.ConnectionUtils.getConnectionMetadata(connection);
+            DatabaseMetaData connectionMetadata =
+                    org.talend.utils.sql.ConnectionUtils.getConnectionMetadata(connection);
             if (connectionMetadata.getDriverName() != null
                     && connectionMetadata.getDriverName().toLowerCase().startsWith(DatabaseConstant.ODBC_DRIVER_NAME)) {
                 return false;
@@ -1587,7 +1627,8 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
             }
             if (ExtractMetaDataUtils.getInstance().isHiveConnection(connection)) {
                 // TDQ-12020 only Hive2 supports connection concurrency.
-                org.talend.core.model.metadata.builder.connection.Connection analysisDataProvider = getAnalysisDataProvider(cachedAnalysis);
+                org.talend.core.model.metadata.builder.connection.Connection analysisDataProvider =
+                        getAnalysisDataProvider(cachedAnalysis);
                 DatabaseConnection dbConn = ((DatabaseConnection) analysisDataProvider);
                 String hiveVersion = dbConn.getParameters().get(ConnParameterKeys.HIVE_SERVER_VERSION);
                 if (HiveServerVersionInfo.HIVE_SERVER_1.getKey().equals(hiveVersion)) {
@@ -1596,8 +1637,10 @@ public class ColumnAnalysisSqlExecutor extends ColumnAnalysisExecutor {
 
                 // TDQ-13909: when run Hive on Spark not support Parallel
                 // TODO: if we have a new hive on spark envirement and test profiling run well, we can remove this part
-                String jdbcProperties = dbConn.getParameters().get(ConnParameterKeys.CONN_PARA_KEY_HIVE_JDBC_PROPERTIES);
-                List<Map<String, Object>> hiveJDBCPropertiesList = HadoopRepositoryUtil.getHadoopPropertiesList(jdbcProperties);
+                String jdbcProperties =
+                        dbConn.getParameters().get(ConnParameterKeys.CONN_PARA_KEY_HIVE_JDBC_PROPERTIES);
+                List<Map<String, Object>> hiveJDBCPropertiesList =
+                        HadoopRepositoryUtil.getHadoopPropertiesList(jdbcProperties);
                 if (!hiveJDBCPropertiesList.isEmpty()) {
                     List keyList = new ArrayList();
                     List valueList = new ArrayList();
