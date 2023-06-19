@@ -45,11 +45,11 @@
             restorable="true">
       </view>
    </extension>
-
    <extension
          point="org.eclipse.ui.commands">
       <command
-            id="org.talend.dataprofiler.help.show.cheatSheet.command"
+  
+          id="org.talend.dataprofiler.help.show.cheatSheet.command"
             name="Cheat Sheets...">
       </command>
    </extension>
@@ -64,10 +64,11 @@
          point="org.eclipse.ui.menus">
       <menuContribution
             allPopups="false"
-            locationURI="menu:help?after=talend">
+            locationURI="menu:help?after=Academy">
          <command
                commandId="org.talend.dataprofiler.help.show.cheatSheet.command"
                id="org.talend.dataprofiler.help.show.cheatSheet.menu.command"
+               icon="icons/cheet_sheets.png"
                style="push">
             <visibleWhen>
                <with
