@@ -240,7 +240,7 @@ public class ManagedDriver implements Comparable<ManagedDriver> {
     public void registerSQLDriver(DatabaseConnection dbConn) throws ClassNotFoundException, InstantiationException,
             IllegalAccessException {
         String dbType = dbConn.getDatabaseType();
-        String dbVersion = dbConn.getDbVersionString();
+        String dbVersion = ConvertionHelper.getDriverVersionString(dbConn);
         String userName = dbConn.getUsername();
         userName = userName != null ? userName : PluginConstant.EMPTY_STRING;
         String message = "fail to register jdbc driver in SQLExplorer";
@@ -528,4 +528,5 @@ public class ManagedDriver implements Comparable<ManagedDriver> {
         }
         return true;
     }
+
 }
