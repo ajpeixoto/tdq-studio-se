@@ -19,7 +19,14 @@ Require-Bundle: org.eclipse.swt,
  org.talend.dataprofiler.common.ui,
  org.talend.libraries.mapdb,
  org.talend.dataprofiler.service,
- org.talend.common.ui.runtime
+ org.talend.common.ui.runtime,
+ org.eclipse.equinox.common,
+ org.talend.cwm.mip,
+ org.apache.commons.logging,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.talend.studio.studio-utils,
+ org.apache.commons.lang3
 Import-Package: org.eclipse.ui.views.properties.tabbed
 Export-Package: org.talend.dataquality.record.linkage.ui.action,
  org.talend.dataquality.record.linkage.ui.composite.chart,

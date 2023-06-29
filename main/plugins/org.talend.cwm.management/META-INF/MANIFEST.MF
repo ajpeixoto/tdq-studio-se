@@ -27,7 +27,14 @@ Require-Bundle: org.eclipse.ui,
  org.talend.libraries.mapdb,
  org.talend.dataprofiler.service,
  org.talend.libraries.csv,
- org.talend.dataquality.sampling
+ org.talend.dataquality.sampling,
+ org.eclipse.core.runtime,
+ org.talend.cwm.mip,
+ org.talend.commons.runtime,
+ org.eclipse.core.resources,
+ org.eclipse.emf.ecore.xmi,
+ org.talend.studio.studio-utils,
+ org.apache.commons.lang3
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .,
  dist/org.talend.cwm.management.jar

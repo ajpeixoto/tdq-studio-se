@@ -16,7 +16,11 @@ Require-Bundle: org.talend.cwm.management,
  org.talend.core.runtime,
  org.talend.metadata.managment,
  org.talend.core.repository,
- org.apache.log4j
+ org.apache.log4j,
+ org.eclipse.core.runtime,
+ org.eclipse.core.resources,
+ org.talend.studio.studio-utils,
+ org.talend.commons.runtime
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin

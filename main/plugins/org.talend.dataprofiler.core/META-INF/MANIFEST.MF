@@ -49,7 +49,17 @@ Require-Bundle: org.eclipse.nebula.widgets.tablecombo,
  org.eclipse.nebula.widgets.nattable.core,
  org.eclipse.m2e.core,
  org.eclipse.jface.text,
- org.talend.themes.core
+ org.talend.themes.core,
+ org.talend.commons.runtime,
+ org.talend.common.ui.runtime,
+ org.eclipse.core.resources,
+ org.talend.studio.studio-utils,
+ org.eclipse.ui.forms,
+ org.eclipse.ui.navigator,
+ org.eclipse.gef,
+ org.apache.commons.lang3,
+ org.apache.commons.codec,
+ org.eclipse.emf.ecore.xmi
 Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.dataprofiler.core,
  org.talend.dataprofiler.core.exception,
