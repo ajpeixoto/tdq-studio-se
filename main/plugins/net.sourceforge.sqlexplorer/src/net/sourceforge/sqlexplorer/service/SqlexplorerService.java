@@ -328,7 +328,7 @@ public class SqlexplorerService implements ISqlexplorerService {
      */
     private void loadManagedDriver(DatabaseConnection dbConn) {
         String dbType = dbConn.getDatabaseType();
-        String dbVersion = dbConn.getDbVersionString();
+        String dbVersion = ConvertionHelper.getDriverVersionString(dbConn);
         String driverClassName = JavaSqlFactory.getDriverClass(dbConn);
         if (dbType == null || driverClassName == null) {
             return;
