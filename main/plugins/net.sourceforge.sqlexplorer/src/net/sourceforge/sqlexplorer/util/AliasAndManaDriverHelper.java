@@ -84,7 +84,7 @@ public class AliasAndManaDriverHelper {
         String id = this.joinManagedDriverId(dbConn);
         ManagedDriver manaDriver = new ManagedDriver(id);
         String dbType = dbConn.getDatabaseType();
-        String dbVersion = dbConn.getDbVersionString();
+        String dbVersion = ConvertionHelper.getDriverVersionString(dbConn);
         manaDriver.setName(dbVersion == null ? dbType : dbType + ":" + dbVersion);
         manaDriver.setDriverClassName(JavaSqlFactory.getDriverClass(dbConn));
         manaDriver.setUrl(JavaSqlFactory.getURL(dbConn));
@@ -196,7 +196,8 @@ public class AliasAndManaDriverHelper {
             if (StringUtils.equals(EDatabaseTypeName.IMPALA.getDisplayName(), databaseType)) {
                 driverJarNameList = getImpalaDriverJarNameList(dbConnnection);
             } else {
-                driverJarNameList = EDatabaseVersion4Drivers.getDrivers(databaseType, dbConnnection.getDbVersionString());
+                driverJarNameList = EDatabaseVersion4Drivers.getDrivers(databaseType,
+                        ConvertionHelper.getDriverVersionString(dbConnnection));
             }
         }
         manDr.setJars(getDriverJarRealPaths(driverJarNameList));
@@ -252,7 +253,7 @@ public class AliasAndManaDriverHelper {
             id = joinHiveManagedDriverId(dbConn);
         } else {
             String driverClassName = JavaSqlFactory.getDriverClass(dbConn);
-            String dbVersion = dbConn.getDbVersionString();
+            String dbVersion = ConvertionHelper.getDriverVersionString(dbConn);
             id = joinManagedDriverId(databaseType, driverClassName, dbVersion);
         }
         return id;
