@@ -22,7 +22,8 @@ Require-Bundle: org.eclipse.jface,
  org.apache.commons.lang,
  org.eclipse.core.resources,
  org.talend.studio.studio-utils,
- org.apache.log4j
+ org.apache.log4j,
+ org.talend.model
 Export-Package: org.talend.dataprofiler.common.ui.dialog,
  org.talend.dataprofiler.common.ui.dialog.helper,
  org.talend.dataprofiler.common.ui.editor.preview,
