@@ -31,7 +31,7 @@
     <import plugin="org.apache.commons.pool" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.httpcomponents.httpclient" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.httpcomponents.httpcore" version="0.0.0" match="greaterOrEqual"/>
-    <import plugin="org.apache.servicemix.bundles.avro" version="0.0.0" match="greaterOrEqual"/>
+    <import plugin="avro" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.eclipse.nebula.widgets.nattable.core" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.ops4j.pax.url.mvn" version="0.0.0" match="greaterOrEqual"/>
   </requires>
