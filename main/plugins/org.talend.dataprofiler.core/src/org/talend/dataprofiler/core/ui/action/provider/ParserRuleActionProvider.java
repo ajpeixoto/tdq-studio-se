@@ -18,8 +18,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.talend.commons.emf.FactoriesUtil;
 import org.talend.dataprofiler.core.ui.action.actions.CreateParserRuleAction;
-import org.talend.dataprofiler.core.ui.action.actions.ExportParserRuleAction;
-import org.talend.dataprofiler.core.ui.action.actions.ImportParserRuleAction;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -48,11 +46,6 @@ public class ParserRuleActionProvider extends AbstractCommonActionProvider {
                 if (ENodeType.SYSTEM_FOLDER.equals(node.getType()) || ENodeType.SIMPLE_FOLDER.equals(node.getType())) {
                     IFolder folder = WorkbenchUtils.getFolder((RepositoryNode) node);
                     menu.add(new CreateParserRuleAction(folder));
-                    // Export to Exchange or local
-                    menu.add(new ExportParserRuleAction(node, true));
-                    // Export to local
-                    menu.add(new ExportParserRuleAction(node, false));
-                    menu.add(new ImportParserRuleAction(folder));
                 }
             }
         }

@@ -50,9 +50,6 @@
     <entry keyword="Pattern">
         <topic label="Regular Expressions" href="$nl$/html/wizard/pattern/reg_experession.html"/>
         <topic label="SQL Expressions" href="$nl$/html/wizard/pattern/sql_experession.html"/>
-        <topic label="Import Pattern" href="$nl$/html/wizard/pattern/importPattern.html"/>
-        <topic label="Export for Talend Exchange" href="$nl$/html/wizard/pattern/export_exchange.html"/>
-        <topic label="Export Pattern" href="$nl$/html/wizard/pattern/exportPattern.html"/>
      </entry>
       
      <entry keyword="User-defined Indicator (UDI)">

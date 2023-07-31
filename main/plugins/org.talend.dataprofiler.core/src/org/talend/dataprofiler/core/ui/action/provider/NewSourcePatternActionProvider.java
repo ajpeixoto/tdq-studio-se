@@ -23,8 +23,6 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.talend.commons.emf.FactoriesUtil;
 import org.talend.dataprofiler.core.pattern.actions.CreatePatternAction;
-import org.talend.dataprofiler.core.pattern.actions.ExportPatternsAction;
-import org.talend.dataprofiler.core.pattern.actions.ImportPatternsAction;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.dataquality.domain.pattern.ExpressionType;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -71,9 +69,6 @@ public class NewSourcePatternActionProvider extends AbstractCommonActionProvider
 
                         if (type != null) {
                             menu.add(new CreatePatternAction(folder, type));
-                            menu.add(new ImportPatternsAction(node, type));
-                            menu.add(new ExportPatternsAction(node, false));
-                            menu.add(new ExportPatternsAction(node, true));
                         }
                     } catch (Exception e) {
                         log.error(e, e);
