@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.talend.dataprofiler.core.ui.action.actions.CreateUDIAction;
+import org.talend.dataprofiler.core.ui.action.actions.ImportUDIAction;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.RepositoryNode;
@@ -47,6 +48,7 @@ public class UDIActionProvider extends AbstractCommonActionProvider {
                     try {
                         if (ResourceService.isSubFolder(ResourceManager.getUDIFolder(), folder)) {
                             menu.add(new CreateUDIAction(folder));
+                            menu.add(new ImportUDIAction(folder));
                         }
                     } catch (Exception e) {
                         log.error(e, e);
