@@ -25,7 +25,6 @@ import org.eclipse.jface.wizard.WizardDialog;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.pattern.ExportPatternsWizard;
-import org.talend.dataprofiler.core.ui.imex.ExportForExchangeWizard;
 import org.talend.dataprofiler.core.ui.utils.OpeningHelpWizardDialog;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.dataprofiler.help.HelpPlugin;
@@ -80,22 +79,13 @@ public class ExportPatternsAction extends Action {
 
     @Override
     public void run() {
-        Wizard wizard = isForExchange ? new ExportForExchangeWizard(folder.getFullPath().toString()) : new ExportPatternsWizard(
-                node, isForExchange);
+        Wizard wizard = new ExportPatternsWizard(node, isForExchange);
         WizardDialog dialog = null;
-        // MOD hcheng 2009-07-07,for 8122.Add an help file in the "Export patterns for Talend exchange wizard".
-        if (isForExchange) {
-            IContext context = HelpSystem.getContext(HelpPlugin.getDefault().getPatternHelpContextID());
-            IHelpResource[] relatedTopics = context.getRelatedTopics();
-            String href = relatedTopics[3].getHref();
-            dialog = new OpeningHelpWizardDialog(null, wizard, href);
-        } else {
-            // MOD yyi 2009-08-20,for 8689.Add help in "export pattern" wizard.
-            IContext context = HelpSystem.getContext(HelpPlugin.getDefault().getPatternHelpContextID());
-            IHelpResource[] relatedTopics = context.getRelatedTopics();
-            String href = relatedTopics[4].getHref();
-            dialog = new OpeningHelpWizardDialog(null, wizard, href);
-        }
+        // MOD yyi 2009-08-20,for 8689.Add help in "export pattern" wizard.
+        IContext context = HelpSystem.getContext(HelpPlugin.getDefault().getPatternHelpContextID());
+        IHelpResource[] relatedTopics = context.getRelatedTopics();
+        String href = relatedTopics[3].getHref();
+        dialog = new OpeningHelpWizardDialog(null, wizard, href);
         wizard.setWindowTitle(getText());
         if (WizardDialog.OK == dialog.open()) {
             try {
