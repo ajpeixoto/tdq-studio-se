@@ -52,7 +52,7 @@ public class ExportParserRuleWizardPage extends WizardPage {
 
     public ExportParserRuleWizardPage(IFolder folder, IRepositoryNode parserRuleFolder) {
         super(DefaultMessagesImpl.getString("ExportParserRuleWizardPage.ExportParserRuleWizardPage")); //$NON-NLS-1$
-        setTitle(DefaultMessagesImpl.getString("ExportParserRuleWizardPage.ExportParserRuleForExchange")); //$NON-NLS-1$
+        setTitle(DefaultMessagesImpl.getString("ExportParserRuleWizardPage.ExportParserRule")); //$NON-NLS-1$
         setDescription(DefaultMessagesImpl.getString("ExportParserRuleWizardPage.ChooseFolderExpParserRule")); //$NON-NLS-1$
         this.parserRuleFolder = parserRuleFolder;
         this.folder = folder;
