@@ -18,6 +18,10 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.sql.Time;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -42,6 +46,8 @@ public class TalendSerializerBase extends SerializerBase implements Serializable
     static final int TALEND_FORMAT_DATE = 183;
 
     static final int TALEND_FORMAT_TIME = 184;
+    
+    static final int TALEND_FORMAT_LOCALE_DATE_TIME=185;
 
     private static Logger log = Logger.getLogger(TalendSerializerBase.class);
 
@@ -112,6 +118,13 @@ public class TalendSerializerBase extends SerializerBase implements Serializable
             out.writeLong(((Timestamp) obj).getTime());
             return;
         }
+        
+        if (LocalDateTime.class.isInstance(obj)) {
+            out.write(TALEND_FORMAT_LOCALE_DATE_TIME);
+            out.writeLong(
+                    ((LocalDateTime) obj).toInstant(OffsetDateTime.now().getOffset()).toEpochMilli());
+            return;
+        }
         Object newObj = obj.toString();
         super.serialize(out, newObj, objectStack);
     }
@@ -129,7 +142,9 @@ public class TalendSerializerBase extends SerializerBase implements Serializable
         }
         // TDQ-10833 'java.sql.Timestamp' and 'TALEND_FORMAT_DATE' are as UnkownHeader on super deserialize. deserialize
         // it at here.
-
+        if (head == TALEND_FORMAT_LOCALE_DATE_TIME) {
+            return LocalDateTime.ofInstant(Instant.ofEpochMilli(is.readLong()), ZoneId.systemDefault());
+        }
         if (head == TALEND_FORMAT_TIME) {
             return new TalendFormatTime(new Time(is.readLong()));
         }
