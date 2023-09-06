@@ -232,10 +232,6 @@ public final class DQStructureManager {
             if (rulesParserFoler != null) {
                 rulesParserFoler.getProperty().getItem().getState().setPath(ERepositoryObjectType.TDQ_RULES_PARSER.getFolder());
             }
-            if (!project.getFolder(EResourceConstant.EXCHANGE.getPath()).exists()) {
-                ProxyRepositoryFactory.getInstance().createFolder(ERepositoryObjectType.TDQ_LIBRARIES, Path.EMPTY,
-                        EResourceConstant.EXCHANGE.getName());
-            }
             if (!project.getFolder(EResourceConstant.INDICATORS.getPath()).exists()) {
                 ProxyRepositoryFactory.getInstance().createFolder(ERepositoryObjectType.TDQ_LIBRARIES, Path.EMPTY,
                         EResourceConstant.INDICATORS.getName());

@@ -1142,7 +1142,6 @@ public class ItemRecord {
                     || name.equals(EResourceConstant.REPORTS.getName())
                     || name.equals(EResourceConstant.CONTEXT.getName())
                     || name.equals(EResourceConstant.HADOOP_CLUSTER.getName())
-                    || name.equals(EResourceConstant.EXCHANGE.getName())
                     || name.equals(EResourceConstant.RULES.getName())
                     || name.equals(EResourceConstant.SYSTEM_INDICATORS.getName())
                     || name.equals(EResourceConstant.JRXML_TEMPLATE.getName())

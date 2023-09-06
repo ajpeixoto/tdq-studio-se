@@ -43,7 +43,6 @@
   <plugin id="org.talend.daikon.exception" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.dataprofiler.common.ui" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.dataprofiler.core" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
-  <plugin id="org.talend.dataprofiler.ecos" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.dataprofiler.help" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.dataprofiler.migration" download-size="0" install-size="0" version="0.0.0" unpack="false"/>
   <plugin id="org.talend.dataprofiler.service" download-size="0" install-size="0" version="0.0.0" unpack="false"/>

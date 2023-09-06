@@ -13,20 +13,14 @@
 package org.talend.dataprofiler.core.ui.action.actions;
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
-import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.utils.WorkspaceUtils;
 import org.talend.commons.utils.io.FilesUtils;
-import org.talend.dataprofiler.ecos.jobs.ComponentInstaller;
-import org.talend.dataprofiler.ecos.model.IEcosComponent;
-import org.talend.dq.helper.FileUtils;
 import org.talend.resource.ResourceManager;
-import org.talend.utils.sugars.ReturnCode;
 
 /**
  * an object which can be import into TDQ, include an Object File (csv) and a Jar File list.
@@ -44,46 +38,6 @@ public class ImportObject {
      */
     public static ImportObject createImportObject(File pObjfile, List<File> pJarfiles) {
         return new ImportObject(pObjfile, pJarfiles);
-    }
-
-    /**
-     * build a ImportObject list.
-     *
-     * @param componet
-     * @param information
-     * @return
-     */
-    public static List<ImportObject> extractImportObject(IEcosComponent componet, List<ReturnCode> information) {
-        List<ImportObject> importObjects = new ArrayList<ImportObject>();
-        try {
-            String targetFolder = System.getProperty("java.io.tmpdir"); //$NON-NLS-1$
-            File componentFileFolder = ComponentInstaller.unzip(componet.getInstalledLocation(), targetFolder);
-
-            // get obj files(csv)
-            List<File> objFiles = FilesUtils.getAllFilesFromFolder(componentFileFolder, new FilenameFilter() {
-
-                public boolean accept(File dir, String name) {
-                    return !FilesUtils.isSVNFolder(dir) && name.endsWith(FileUtils.CSV);
-                }
-            });
-            if (objFiles.isEmpty()) {
-                information.add(new ReturnCode("No valid exchange extension file(CSV) found in " + componet.getName(), false)); //$NON-NLS-1$
-            } else {
-                // get jar files
-                List<File> jarFiles = FilesUtils.getAllFilesFromFolder(componentFileFolder, new FilenameFilter() {
-
-                    public boolean accept(File dir, String name) {
-                        return !FilesUtils.isSVNFolder(dir) && name.endsWith("jar"); //$NON-NLS-1$
-                    }
-                });
-                for (File file : objFiles) {
-                    importObjects.add(ImportObject.createImportObject(file, jarFiles));
-                }
-            }
-        } catch (Exception e) {
-            ExceptionHandler.process(e);
-        }
-        return importObjects;
     }
 
     private File objFile;

@@ -489,8 +489,6 @@ public final class RepositoryNodeHelper {
             return ERepositoryObjectType.TDQ_REPORT_ELEMENT;
         } else if (EResourceConstant.LIBRARIES.getPath().equals(path)) {
             return ERepositoryObjectType.TDQ_LIBRARIES;
-        } else if (EResourceConstant.EXCHANGE.getPath().equals(path)) {
-            return ERepositoryObjectType.TDQ_EXCHANGE;
         } else if (EResourceConstant.INDICATORS.getPath().equals(path)) {
             return ERepositoryObjectType.TDQ_INDICATOR_ELEMENT;
         } else if (EResourceConstant.SYSTEM_INDICATORS.getPath().equals(path)) {
@@ -2952,9 +2950,7 @@ public final class RepositoryNodeHelper {
      */
     private static boolean needFindInChildren(IRepositoryNode node) {
         boolean result = true;
-        String exchangeFolderClassName = "org.talend.dataprofiler.core.ui.exchange.ExchangeFolderRepNode";//$NON-NLS-1$
         if (node instanceof AnalysisRepNode || node instanceof ReportRepNode
-                || exchangeFolderClassName.equals(node.getClass().getName())
                 || node instanceof SysIndicatorDefinitionRepNode || node instanceof PatternRepNode
                 || node instanceof RuleRepNode || node instanceof SourceFileFolderRepNode
                 || node instanceof RecycleBinRepNode || node instanceof DBColumnRepNode

@@ -16,7 +16,6 @@ import org.eclipse.core.resources.IFolder;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.viewers.TreeSelection;
 import org.talend.dataprofiler.core.ui.action.actions.CreateRepositoryNodeAction;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeFolderRepNode;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
 import org.talend.dq.nodes.ContextFolderRepNode;
 import org.talend.dq.nodes.ReportSubFolderRepNode;
@@ -43,19 +42,13 @@ public class CreateNewRepositoryNodeFolder extends AbstractCommonActionProvider 
             return;
         }
 
-        // ADD msjian TDQ-10444: fix get error when click on the exchange node
-        if (isExchangeNode()) {
-            return;
-        }
-        // TDQ-10444~
-
         Object obj = ((TreeSelection) this.getContext().getSelection()).getFirstElement();
         RepositoryNode node = (RepositoryNode) obj;
         RepositoryNode parent = node.getParent();
         if (!(parent instanceof ReportSubFolderRepNode)) {
             if (parent != null || node instanceof ContextFolderRepNode) {
                 IFolder folder = WorkbenchUtils.getFolder(node);
-                if (!(node instanceof ExchangeFolderRepNode) && !ResourceManager.getRulesFolder().equals(folder)
+                if (!ResourceManager.getRulesFolder().equals(folder)
                         && !ResourceManager.getPatternFolder().equals(folder)
                         && !ResourceManager.getIndicatorFolder().equals(folder)
                         && !ResourceService.isSubFolder(ResourceManager.getSystemIndicatorFolder(), folder)

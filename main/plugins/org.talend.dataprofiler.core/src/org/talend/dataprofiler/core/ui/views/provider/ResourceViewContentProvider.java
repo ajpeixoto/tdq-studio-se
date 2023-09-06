@@ -47,18 +47,13 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryPrefConstants;
 import org.talend.core.model.repository.IRepositoryViewObject;
-import org.talend.core.model.utils.TalendPropertiesUtil;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.repository.model.repositoryObject.MetadataColumnRepositoryObject;
 import org.talend.core.runtime.CoreRuntimePlugin;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeCategoryRepNode;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeComponentRepNode;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeFolderRepNode;
 import org.talend.dataprofiler.core.ui.utils.ComparatorsFactory;
 import org.talend.dataprofiler.core.ui.utils.HadoopClusterUtils;
 import org.talend.dataprofiler.core.ui.views.DQRespositoryView;
-import org.talend.dataprofiler.ecos.model.IEcosCategory;
 import org.talend.dq.helper.ProxyRepositoryManager;
 import org.talend.dq.helper.RepositoryNodeHelper;
 import org.talend.dq.nodes.ContextFolderRepNode;
@@ -466,16 +461,11 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
                 IRepositoryViewObject viewObject = node.getObject();
                 if (viewObject instanceof MetadataColumnRepositoryObject) {
                     return false;
-                } else if (node instanceof ExchangeFolderRepNode || node instanceof ExchangeCategoryRepNode
-                        || node instanceof SysIndicatorFolderRepNode || element instanceof DBTableRepNode
+                } else if (node instanceof SysIndicatorFolderRepNode || element instanceof DBTableRepNode
                         || element instanceof DBViewRepNode || element instanceof DBCatalogRepNode
                         || element instanceof DBSchemaRepNode) {
-                    // ExchangeFolderRepNode always have children
-                    // ExchangeCategoryRepNode always have children
+                    // always have children
                     return true;
-                } else if (node instanceof ExchangeComponentRepNode) {
-                    // ExchangeComponentRepNode always don't have children
-                    return false;
                 } else if (element instanceof DBTableFolderRepNode) {
                     // MOD gdbu 2011-9-1 TDQ-3457
                     if (DQRepositoryNode.isOnFilterring()) {
@@ -491,34 +481,7 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
                     return dbViewFolder.hasChildren();
                     // ~TDQ-3457
                 }
-            } else if (element instanceof IEcosCategory) {
-                return true;
             }
-            // // MOD qiongli feature 9486
-            // if (element instanceof IFolder) {
-            // // MOD yyi 2010-09-30 15271: svn project can't load exchange nodes
-            // if (ResourceManager.isExchangeFolder((IFolder) element)) {
-            // return true;
-            // }
-            // // ~15271
-            // List<Object> obsLs = Arrays.asList(super.getChildren(element));
-            // if (obsLs.size() == 1) {
-            // Object obj = (Object) obsLs.get(0);
-            // if (obj instanceof IFolder && ((IFolder) obj).getName().equals(PluginConstant.SVN_SUFFIX))
-            // return false;
-            // }
-            // } else if (element instanceof DQRecycleBinNode) {
-            // DQRecycleBinNode rbn = (DQRecycleBinNode) element;
-            // Object obj = rbn.getObject();
-            // if (obj instanceof IFolder) {
-            // try {
-            // return ((IFolder) obj).members().length > 0;
-            // } catch (CoreException e) {
-            // log.error(e);
-            // }
-            // }
-            // return false;
-            // }
 
         } catch (MissingDriverException e) {
             if (PluginChecker.isOnlyTopLoaded()) {

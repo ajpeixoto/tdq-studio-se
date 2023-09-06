@@ -119,11 +119,6 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
             RepositoryNode node = (RepositoryNode) element;
             ERepositoryObjectType objectType = node.getObjectType();
 
-            // for the Exchange first level
-            if (node.getLabel().equals(EResourceConstant.EXCHANGE.getName())) {
-                return ImageLib.getImage(ImageLib.EXCHANGE);
-            }
-
             if (ERepositoryObjectType.REFERENCED_PROJECTS.getLabel().equals(node.getProperties(EProperties.LABEL))) {
                 return ImageLib.getImage(ImageLib.REFERENCED_PROJECT);
             } else if (node.getType().equals(ENodeType.REFERENCED_PROJECT)) {
@@ -288,8 +283,6 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
             return ImageLib.getImage(ImageLib.MATCH_RULE_ICON);
         } else if (type == ERepositoryObjectType.TDQ_SOURCE_FILE_ELEMENT) {
             return ImageLib.getImage(ImageLib.SOURCE_FILE);
-        } else if (type == ERepositoryObjectType.TDQ_EXCHANGE) {
-            return ImageLib.getImage(ImageLib.EXCHANGE);
         } else if (type == ERepositoryObjectType.FOLDER) {
             return ImageLib.getImage(ImageLib.FOLDERNODE_IMAGE);
         } else if (type == ERepositoryObjectType.TDQ_JRAXML_ELEMENT) {

@@ -87,11 +87,6 @@ public class FileTreeContentProvider implements ITreeContentProvider {
                         continue;
                     }
                 }
-                // TDQ-10933: Hide the Exchange node TDQ-11036: always hidden
-                if (EResourceConstant.EXCHANGE.getName().equals(itemRecord.getName())) {
-                    continue;
-                }
-                // TDQ-10933~
 
                 // TDQ-9495: Hide the Reports node when top
                 if (PluginChecker.isOnlyTopLoaded()) {

@@ -70,7 +70,6 @@ public enum EResourceConstant {
     ANALYSIS("Analyses", "TDQ_Data Profiling/Analyses", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     TEMP_MAPDB(".Work_MapDB", ".Work_MapDB", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     REPORTS("Reports", "TDQ_Data Profiling/Reports", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
-    EXCHANGE("Exchange", "TDQ_Libraries/Exchange", ResourceConstant.READONLY, ResourceConstant.NO_SUBFOLDER), //$NON-NLS-1$ $NON-NLS-2$
     INDICATORS("Indicators", "TDQ_Libraries/Indicators", ResourceConstant.READONLY, ResourceConstant.NO_SUBFOLDER), //$NON-NLS-1$ $NON-NLS-2$
     USER_DEFINED_INDICATORS("User Defined Indicators",//$NON-NLS-1$
                             "TDQ_Libraries/Indicators/User Defined Indicators",//$NON-NLS-1$
