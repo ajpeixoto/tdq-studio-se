@@ -23,8 +23,6 @@ import org.eclipse.jface.viewers.IDecoration;
 import org.eclipse.swt.graphics.Image;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeCategoryRepNode;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeComponentRepNode;
 import org.talend.dq.nodes.AnalysisRepNode;
 import org.talend.dq.nodes.DBCatalogRepNode;
 import org.talend.dq.nodes.DBColumnFolderRepNode;
@@ -179,9 +177,6 @@ public final class ImageLib {
 
     /** Icon for refresh workspace. */
     public static final String REFRESH_SPACE = "refresh.gif"; //$NON-NLS-1$
-
-    /** Icon for Talend Exchange folder. */
-    public static final String EXCHANGE = "ecosystem_view.png"; //$NON-NLS-1$
 
     /**
      * Icon of indicator's definition. {@link IndicatorNode#getImageName()}
@@ -741,8 +736,6 @@ public final class ImageLib {
                 imageName = ImageLib.HADOOP_CLUSTER;
             } else if (label.equals(EResourceConstant.LIBRARIES.getName())) {
                 imageName = ImageLib.LIBRARIES;
-            } else if (label.equals(EResourceConstant.EXCHANGE.getName())) {
-                imageName = ImageLib.EXCHANGE;
             } else {
                 imageName = ImageLib.FOLDERNODE_IMAGE;
             }
@@ -765,8 +758,6 @@ public final class ImageLib {
                 imageName = ImageLib.DQ_RULE;
             } else if (node instanceof SourceFileRepNode) {
                 imageName = ImageLib.SOURCE_FILE;
-            } else if (node instanceof ExchangeCategoryRepNode || node instanceof ExchangeComponentRepNode) {
-                imageName = ImageLib.EXCHANGE;
             } else if (node instanceof JrxmlTempleteRepNode) {
                 imageName = ImageLib.JRXML_ICON;
             }

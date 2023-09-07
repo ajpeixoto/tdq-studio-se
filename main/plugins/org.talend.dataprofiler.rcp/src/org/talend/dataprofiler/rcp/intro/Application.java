@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
@@ -33,9 +32,6 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.ui.gmf.util.DisplayUtils;
 import org.talend.commons.utils.network.NetworkUtil;
 import org.talend.commons.utils.network.TalendProxySelector;
-import org.talend.core.GlobalServiceRegister;
-import org.talend.core.model.utils.TalendPropertiesUtil;
-import org.talend.core.ui.branding.IBrandingService;
 import org.talend.dataprofiler.core.CorePlugin;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.license.LicenseManagement;
@@ -44,7 +40,6 @@ import org.talend.dataprofiler.core.license.LicenseWizardDialog;
 import org.talend.dataprofiler.rcp.i18n.Messages;
 import org.talend.registration.register.proxy.HttpProxyUtil;
 // import org.talend.dataprofiler.rcp.intro.linksbar.Workbench3xImplementation4CoolBar;
-import org.talend.registration.wizards.register.TalendForgeDialog;
 import org.talend.utils.StudioKeysFileCheck;
 import org.talend.utils.sugars.ReturnCode;
 
@@ -138,8 +133,6 @@ public class Application implements IApplication {
     }
 
     private boolean openLicenseAndRegister(Shell shell) throws BusinessException {
-        IBrandingService brandingService = (IBrandingService) GlobalServiceRegister.getDefault().getService(
-                IBrandingService.class);
         if (!LicenseManagement.isLicenseValidated()) {
             LicenseWizard licenseWizard = new LicenseWizard();
             LicenseWizardDialog dialog = new LicenseWizardDialog(shell, licenseWizard);
@@ -151,19 +144,6 @@ public class Application implements IApplication {
             }
         }
 
-        if (brandingService.getBrandingConfiguration().isUseProductRegistration()) {
-            IPreferenceStore prefStore = PlatformUI.getPreferenceStore();
-            if (brandingService.isPoweredbyTalend()) {
-                int count = prefStore.getInt(TalendForgeDialog.LOGINCOUNT);
-                if (count < 10 && StringUtils.isEmpty(prefStore.getString("test@talend.com"))) { //$NON-NLS-1$
-                    if (TalendPropertiesUtil.isEnabledUseBrowser()) {
-                        TalendForgeDialog tfDialog = new TalendForgeDialog(shell, null);
-                        tfDialog.setBlockOnOpen(true);
-                        tfDialog.open();
-                    }
-                }
-            }
-        }
         return true;
     }
 

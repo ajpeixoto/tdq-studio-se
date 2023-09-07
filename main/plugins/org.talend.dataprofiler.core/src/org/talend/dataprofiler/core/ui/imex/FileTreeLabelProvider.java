@@ -66,9 +66,6 @@ public class FileTreeLabelProvider extends LabelProvider {
                             break;
                         case REPORTS:
                             break;
-                        case EXCHANGE:
-                            image = ImageLib.getImage(ImageLib.EXCHANGE);
-                            break;
                         case DB_CONNECTIONS:
                             image = ImageLib.getImage(ImageLib.CONNECTION);
                             break;

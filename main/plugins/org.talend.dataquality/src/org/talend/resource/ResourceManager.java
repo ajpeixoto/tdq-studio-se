@@ -412,15 +412,6 @@ public final class ResourceManager {
     }
 
     /**
-     * DOC bZhou Comment method "getExchangeFolder".
-     *
-     * @return
-     */
-    public static IFolder getExchangeFolder() {
-        return getOneFolder(EResourceConstant.EXCHANGE);
-    }
-
-    /**
      * DOC bZhou Comment method "getSourceFileFolder".
      *
      * @return
@@ -577,16 +568,6 @@ public final class ResourceManager {
      */
     public static boolean isDBConnectionFolder(IResource resource) {
         return isOneFolder(resource, EResourceConstant.DB_CONNECTIONS);
-    }
-
-    /**
-     * DOC bZhou Comment method "isExchangeFolder".
-     *
-     * @param resource
-     * @return
-     */
-    public static boolean isExchangeFolder(IResource resource) {
-        return isOneFolder(resource, EResourceConstant.EXCHANGE);
     }
 
     /**

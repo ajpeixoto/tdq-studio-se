@@ -29,7 +29,6 @@ import org.talend.dataprofiler.core.service.TDQResourceChangeHandlerTest;
 import org.talend.dataprofiler.core.service.TOPRepositoryServiceTest;
 import org.talend.dataprofiler.core.ui.MultiColAnalysisCreationTest;
 import org.talend.dataprofiler.core.ui.action.actions.ExportConnectionToTOSActionRealTest;
-import org.talend.dataprofiler.core.ui.action.actions.ImportObjectTest;
 import org.talend.dataprofiler.core.ui.action.actions.handle.AnalysisHandleTest;
 import org.talend.dataprofiler.core.ui.action.actions.handle.DBConnectionDuplicateHandleTest;
 import org.talend.dataprofiler.core.ui.action.provider.AbstractCommonActionProviderRealProjectTest;
@@ -63,7 +62,7 @@ import org.talend.metadata.managment.SwitchContextGroupNameImplTest;
         CreateBenforLawIndicatorTaskTest.class, UpdateIndicatorForHiveTaskTest.class,
         UpdateMsSqlToJdbcTaskTest.class, ExportFactoryTest.class, ImportFactoryTest.class,
         TDQResourceChangeHandlerTest.class, TOPRepositoryServiceTest.class, AnalysisHandleTest.class,
-        DBConnectionDuplicateHandleTest.class, ExportConnectionToTOSActionRealTest.class, ImportObjectTest.class,
+        DBConnectionDuplicateHandleTest.class, ExportConnectionToTOSActionRealTest.class,
         AbstractCommonActionProviderRealProjectTest.class, AbstractCommonActionProviderTest.class,
         DrillDownEditorInputTest.class, AnalysisColumnTreeViewerTest.class, BenfordLawFrequencyStateTest.class,
         PatternStatisticsStateTest.class, ChartTableFactoryTest.class, InidcatorUnitTest.class,

@@ -25,9 +25,6 @@ import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.dataprofiler.core.service.AbstractSvnRepositoryService;
 import org.talend.dataprofiler.core.service.GlobalServiceRegister;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeCategoryRepNode;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeComponentRepNode;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeFolderRepNode;
 import org.talend.dq.helper.RepositoryNodeHelper;
 import org.talend.dq.nodes.AnalysisSubFolderRepNode;
 import org.talend.dq.nodes.DBCatalogRepNode;
@@ -83,14 +80,6 @@ public class AbstractCommonActionProvider extends CommonActionProvider {
         }
 
         return true;
-    }
-
-    /**
-     * if the current select is Exchange related node.
-     */
-    public boolean isExchangeNode() {
-        IRepositoryNode firstContextNode = getFirstRepositoryNode();
-        return firstContextNode instanceof ExchangeComponentRepNode || firstContextNode instanceof ExchangeCategoryRepNode;
     }
 
     /**
@@ -242,8 +231,7 @@ public class AbstractCommonActionProvider extends CommonActionProvider {
                 || node instanceof DBViewFolderRepNode || node instanceof DBTableRepNode || node instanceof DBViewRepNode
                 || node instanceof DBColumnFolderRepNode || node instanceof DBColumnRepNode || node instanceof DFTableRepNode
                 || node instanceof DFColumnFolderRepNode || node instanceof DFColumnRepNode
-                || node instanceof ExchangeCategoryRepNode || node instanceof ExchangeComponentRepNode
-                || node instanceof ExchangeFolderRepNode || isReportSubFolderVirtualNode(node)
+                || isReportSubFolderVirtualNode(node)
                 || isAnalysisSubFolderVirtualNode(node) || node instanceof ReportAnalysisRepNode
                 || node instanceof ReportFileRepNode;
     }

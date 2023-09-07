@@ -34,7 +34,6 @@ import org.talend.core.repository.model.AbstractEMFRepositoryFactory;
 import org.talend.core.repository.model.FolderHelper;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.core.runtime.CoreRuntimePlugin;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeFolderRepNode;
 import org.talend.dataprofiler.core.ui.utils.HadoopClusterUtils;
 import org.talend.dataquality.indicators.definition.IndicatorCategory;
 import org.talend.dataquality.indicators.definition.IndicatorDefinition;
@@ -224,12 +223,6 @@ public final class RepositoryNodeBuilder {
                 parentNode.getChildren().add(hcFolder);
                 return hcFolder;
             }
-        case EXCHANGE:
-            ExchangeFolderRepNode exchangeFolder = new ExchangeFolderRepNode(folder, parentNode, ENodeType.SYSTEM_FOLDER,
-                    inWhichProject);
-            folder.setRepositoryNode(exchangeFolder);
-            parentNode.getChildren().add(exchangeFolder);
-            return exchangeFolder;
         default:
             subFolderNode = new DQRepositoryNode(folder, parentNode, ENodeType.SYSTEM_FOLDER, inWhichProject);
             folder.setRepositoryNode(subFolderNode);

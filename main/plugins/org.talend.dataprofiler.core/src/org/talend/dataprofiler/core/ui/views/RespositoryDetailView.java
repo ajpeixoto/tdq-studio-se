@@ -65,9 +65,7 @@ import org.talend.cwm.relational.TdTable;
 import org.talend.dataprofiler.core.PluginConstant;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.ui.editor.CommonFormEditor;
-import org.talend.dataprofiler.core.ui.exchange.ExchangeComponentRepNode;
 import org.talend.dataprofiler.core.ui.utils.WorkbenchUtils;
-import org.talend.dataprofiler.ecos.model.IEcosComponent;
 import org.talend.dataquality.analysis.Analysis;
 import org.talend.dataquality.analysis.AnalysisContext;
 import org.talend.dataquality.analysis.AnalysisParameters;
@@ -299,10 +297,6 @@ public class RespositoryDetailView extends ViewPart implements ISelectionListene
                     TdColumn column = columnNode.getTdColumn();
                     createTdColumn(column);
                     isNeedcreateDefault = false;
-                } else if (fe instanceof IEcosComponent) {
-                    IEcosComponent component = (IEcosComponent) fe;
-                    createEcosComponent(component);
-                    isNeedcreateDefault = false;
                 } else if (fe instanceof RegularExpression) {
                     // MOD mzhao 2009-04-20,Bug 6349.
                     RegularExpression regularExpression = (RegularExpression) fe;
@@ -319,12 +313,6 @@ public class RespositoryDetailView extends ViewPart implements ISelectionListene
                     DQRepositoryNode node = (DQRepositoryNode) fe;
                     IFile file = ResourceManager.getRoot().getProject(node.getProject().getTechnicalLabel()).getFile(filePath);
                     createSqlFileDetail(file);
-                } else if (fe instanceof ExchangeComponentRepNode) {
-                    // MOD klliu 2001-02-28 bug 19154
-                    IEcosComponent ecosComponent = ((ExchangeComponentRepNode) fe).getEcosComponent();
-                    IEcosComponent component = ecosComponent;
-                    createEcosComponent(component);
-                    isNeedcreateDefault = false;
 
                     // ADD by msjian 2011-5-12 21186: don't check whether the selected object is "MDMConnectionRepNode"
                 } else if (fe instanceof DFConnectionRepNode) {
@@ -388,20 +376,6 @@ public class RespositoryDetailView extends ViewPart implements ISelectionListene
      */
     private void createDFconnectionName(String label) {
         newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.name"), label); //$NON-NLS-1$
-
-    }
-
-    /**
-     * DOC bZhou Comment method "createEcosComponent".
-     *
-     * @param component
-     */
-    private void createEcosComponent(IEcosComponent component) {
-        newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.Name"), component.getName()); //$NON-NLS-1$
-        newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.Author"), component.getAuthor()); //$NON-NLS-1$
-        newLabelAndText(gContainer,
-                DefaultMessagesImpl.getString("RespositoryDetailView.Description"), component.getDescription()); //$NON-NLS-1$
-        newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.Type"), component.getCategry().getName()); //$NON-NLS-1$
 
     }
 

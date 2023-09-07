@@ -305,7 +305,6 @@ public class LocalRepositoryObjectCRUD extends AbstractRepObjectCRUDAction {
             childObjectType.add(ERepositoryObjectType.TDQ_ANALYSIS_ELEMENT);
             childObjectType.add(ERepositoryObjectType.TDQ_REPORT_ELEMENT);
         } else if (targetObjectType.equals(ERepositoryObjectType.TDQ_LIBRARIES)) {
-            childObjectType.add(ERepositoryObjectType.TDQ_EXCHANGE);
             childObjectType.add(ERepositoryObjectType.TDQ_INDICATOR_ELEMENT);
             childObjectType.add(ERepositoryObjectType.TDQ_JRAXML_ELEMENT);
             childObjectType.add(ERepositoryObjectType.TDQ_PATTERN_ELEMENT);
