@@ -59,7 +59,7 @@
             context="Hive wizard"
             language="java"
             message="Wizard use for TOP"
-            name="commons-configuration2-2.8.0.jar" mvn_uri="mvn:org.apache.commons/commons-configuration2/2.8.0" 
+            name="commons-configuration2-2.9.0.jar" mvn_uri="mvn:org.apache.commons/commons-configuration2/2.9.0" 
             required="true">
       </libraryNeeded>
       <libraryNeeded
