@@ -84,6 +84,7 @@ public final class ContextHelper {
                     if (ct.getName().equals(contextGroupName)) {
                         for (Object obj : ct.getContextParameter()) {
                             ContextParameterType cpt = (ContextParameterType) obj;
+                            ContextUtils.populateContextParameter(cpt);
                             if (cpt.getName().equals(contextName)) {
                                 if (cpt.isPromptNeeded() && Platform.isRunning()) {
                                     value = JavaSqlFactory
@@ -170,6 +171,7 @@ public final class ContextHelper {
             if (contextType.getName().equals(contextGroupName)) {
                 for (Object obj : contextType.getContextParameter()) {
                     ContextParameterType cpt = (ContextParameterType) obj;
+                    ContextUtils.populateContextParameter(cpt);
                     String contextVarName = ContextParameterUtils.getNewScriptCode(cpt.getName(), LANGUAGE);
                     String value = cpt.getRawValue();
                     if (cpt.isPromptNeeded() && Platform.isRunning()) {
@@ -220,6 +222,7 @@ public final class ContextHelper {
         Map<String, String> contextValues = new HashMap<String, String>();
         EList<ContextParameterType> contextParameter = contextType.getContextParameter();
         for (ContextParameterType ctxPara : contextParameter) {
+            ContextUtils.populateContextParameter(ctxPara);
             // specially for Password type.
             contextValues.put(ContextParameterUtils.getNewScriptCode(ctxPara.getName(), LANGUAGE), ctxPara.getRawValue());
         }
