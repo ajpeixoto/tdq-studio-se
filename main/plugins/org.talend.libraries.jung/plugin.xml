@@ -6,7 +6,7 @@
               context="plugin:org.talend.libraries.jung"
               language="java"
               message="Needed for Jung plugin"
-              name="colt.jar" mvn_uri="mvn:org.talend.libraries/colt/6.0.0" 
+              name="colt-1.2.0.jar" mvn_uri="mvn:colt/colt/1.2.0" 
               required="true">
         </libraryNeeded>
     </extension>
