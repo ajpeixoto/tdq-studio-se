@@ -1,4 +1,6 @@
 change logs from talend
+2023-10-8 qiongli TDQ-21334: Enable SSL support for Metadata Oracle 18 Custom
+
 2023-3-1 msjian TDQ-20993: Removal of binary dependency libraries from source and rename jars
 
 2022-06-24 yyin TDQ-19618: add surpport for Object[] in MapDBDataset and related SqlexplorerService. 

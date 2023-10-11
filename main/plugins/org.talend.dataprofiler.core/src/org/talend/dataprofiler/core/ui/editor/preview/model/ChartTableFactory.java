@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.commons.codec.binary.StringUtils;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -84,6 +83,8 @@ import org.talend.dataquality.indicators.columnset.RecordMatchingIndicator;
 import org.talend.dataquality.indicators.columnset.util.ColumnsetSwitch;
 import org.talend.dataquality.indicators.sql.WhereRuleIndicator;
 import org.talend.dataquality.indicators.util.IndicatorsSwitch;
+import org.talend.dataquality.record.linkage.ui.composite.tableviewer.provider.DuplicateStatisticsRow;
+import org.talend.dataquality.record.linkage.ui.composite.tableviewer.provider.GroupStatisticsRow;
 import org.talend.dataquality.rules.JoinElement;
 import org.talend.dq.analysis.explore.DataExplorer;
 import org.talend.dq.analysis.explore.IDataExplorer;
@@ -96,8 +97,7 @@ import org.talend.dq.helper.SqlExplorerUtils;
 import org.talend.dq.indicators.preview.table.ChartDataEntity;
 import org.talend.dq.indicators.preview.table.WhereRuleChartDataEntity;
 import org.talend.dq.pattern.PatternTransformer;
-import org.talend.dataquality.record.linkage.ui.composite.tableviewer.provider.DuplicateStatisticsRow;
-import org.talend.dataquality.record.linkage.ui.composite.tableviewer.provider.GroupStatisticsRow;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.resource.ResourceManager;
 
@@ -132,6 +132,7 @@ public final class ChartTableFactory {
             final IDatabaseJobService service =
                     (IDatabaseJobService) GlobalServiceRegister.getDefault().getService(IJobService.class);
             if (service != null) {
+                boolean isCustomOracleSSL = MetadataConnectionUtils.isOracleCustomSSLUsed(tdDataProvider);
                 service.setIndicator(currentIndicator);
                 service.setAnalysis(analysis);
                 MenuItem item = null;
@@ -157,6 +158,10 @@ public final class ChartTableFactory {
                 }
 
                 if (item != null) {
+                    // TDQ-21334 Disable all generated job for Custom Oracle SSL
+                    if (isCustomOracleSSL) {
+                        item.setEnabled(false);
+                    }
                     item.setImage(ImageLib.getImage(ImageLib.ICON_PROCESS));
                     item.addSelectionListener(new SelectionAdapter() {
 
