@@ -11,16 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
-import net.sourceforge.sqlexplorer.ExplorerException;
-import net.sourceforge.sqlexplorer.Messages;
-import net.sourceforge.sqlexplorer.SQLCannotConnectException;
-import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
-import net.sourceforge.sqlexplorer.util.AliasAndManaDriverHelper;
-import net.sourceforge.squirrel_sql.fw.id.IIdentifier;
-import net.sourceforge.squirrel_sql.fw.persist.ValidationException;
-import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
-import net.sourceforge.squirrel_sql.fw.util.beanwrapper.StringWrapper;
-
 import org.apache.log4j.Logger;
 import org.dom4j.Element;
 import org.dom4j.tree.DefaultElement;
@@ -35,7 +25,19 @@ import org.talend.core.model.metadata.builder.database.HotClassLoader;
 import org.talend.core.model.metadata.builder.database.JDBCDriverLoader;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
 import org.talend.metadata.managment.hive.HiveClassLoaderFactory;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.utils.sql.ConnectionUtils;
+import org.talend.utils.sugars.TypedReturnCode;
+
+import net.sourceforge.sqlexplorer.ExplorerException;
+import net.sourceforge.sqlexplorer.Messages;
+import net.sourceforge.sqlexplorer.SQLCannotConnectException;
+import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
+import net.sourceforge.sqlexplorer.util.AliasAndManaDriverHelper;
+import net.sourceforge.squirrel_sql.fw.id.IIdentifier;
+import net.sourceforge.squirrel_sql.fw.persist.ValidationException;
+import net.sourceforge.squirrel_sql.fw.sql.ISQLDriver;
+import net.sourceforge.squirrel_sql.fw.util.beanwrapper.StringWrapper;
 
 /**
  * Manages a JDBC Driver
@@ -399,18 +401,9 @@ public class ManagedDriver implements Comparable<ManagedDriver> {
      * @throws SQLException
      */
     public SQLConnection getConnection(User user) throws SQLException {
-        Properties props = new Properties();
-        // MOD msjian TDQ-8463: for the string "user" and "password", no need to do international.bacause some
-        // jars(e.g:ojdbc14.jar) don't support international and cause to get connection error
-        if (user.getUserName() != null) {
-            props.put("user", user.getUserName()); //$NON-NLS-1$
-        }
-        if (user.getPassword() != null) {
-            props.put("password", user.getPassword());//$NON-NLS-1$
-        }
+        DatabaseConnection dbConn = user.getDatabaseConnection();
         if (!isDriverClassLoaded()) {
             try {
-                DatabaseConnection dbConn = user.getDatabaseConnection();
                 if (dbConn != null) {
                     registerSQLDriver(dbConn);
                 }
@@ -425,11 +418,28 @@ public class ManagedDriver implements Comparable<ManagedDriver> {
 
         Connection jdbcConn = null;
         try {
-            String dbUrl = user.getAlias().getUrl();
-            if (ConnectionUtils.isHsql(dbUrl)) {
-                dbUrl = ConnectionUtils.addShutDownForHSQLUrl(dbUrl, user.getDatabaseConnection().getAdditionalParams());
+            // TDQ-21334 Reuse UP code to create Connection for Oracle Custom database
+            if (MetadataConnectionUtils.isOracleCustomSSLUsed(dbConn)) {
+                TypedReturnCode<Connection> rcConnection = MetadataConnectionUtils.createConnection(dbConn);
+                jdbcConn = rcConnection.getObject();
+            } else {
+                Properties props = new Properties();
+                // MOD msjian TDQ-8463: for the string "user" and "password", no need to do international.bacause some
+                // jars(e.g:ojdbc14.jar) don't support international and cause to get connection error
+                if (user.getUserName() != null) {
+                    props.put("user", user.getUserName()); //$NON-NLS-1$
+                }
+                if (user.getPassword() != null) {
+                    props.put("password", user.getPassword());//$NON-NLS-1$
+                }
+                String dbUrl = user.getAlias().getUrl();
+                if (ConnectionUtils.isHsql(dbUrl)) {
+                    dbUrl = ConnectionUtils.addShutDownForHSQLUrl(dbUrl,
+                            user.getDatabaseConnection().getAdditionalParams());
+                }
+                jdbcConn = jdbcDriver.connect(dbUrl, props);
             }
-            jdbcConn = jdbcDriver.connect(dbUrl, props);
+
         } catch (SQLException e) {
             throw new SQLCannotConnectException(user, e);
         }

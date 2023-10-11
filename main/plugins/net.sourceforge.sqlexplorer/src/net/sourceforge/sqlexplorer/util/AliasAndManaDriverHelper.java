@@ -15,14 +15,11 @@ package net.sourceforge.sqlexplorer.util;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-
-import net.sourceforge.sqlexplorer.dbproduct.DriverManager;
-import net.sourceforge.sqlexplorer.dbproduct.ManagedDriver;
-import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
@@ -49,6 +46,11 @@ import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SwitchHelpers;
 import org.talend.metadata.managment.connection.manager.DatabaseConnConstants;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
+
+import net.sourceforge.sqlexplorer.dbproduct.DriverManager;
+import net.sourceforge.sqlexplorer.dbproduct.ManagedDriver;
+import net.sourceforge.sqlexplorer.plugin.SQLExplorerPlugin;
 
 /**
  * created by qiongli on 2014-5-8 Detailled comment
@@ -118,7 +120,6 @@ public class AliasAndManaDriverHelper {
             return null;
         }
         String managedDriverId = joinManagedDriverId(dbConn);
-        String databaseType = dbConn.getDatabaseType();
         manaDriver = driverManager.getDriver(managedDriverId);
 
         return manaDriver;
@@ -184,20 +185,28 @@ public class AliasAndManaDriverHelper {
      */
     public void addJars(Connection connection, ManagedDriver manDr) throws MalformedURLException {
         List<String> driverJarNameList = new ArrayList<String>();
-        DatabaseConnection dbConnnection = (DatabaseConnection) connection;
-        String driverJarPath = JavaSqlFactory.getDriverJarPath(dbConnnection);
-        if (ConnectionHelper.isJDBC(dbConnnection) && driverJarPath != null) {
+        DatabaseConnection dbConnection = (DatabaseConnection) connection;
+        String driverJarPath = JavaSqlFactory.getDriverJarPath(dbConnection);
+        if (ConnectionHelper.isJDBC(dbConnection) && driverJarPath != null) {
             String[] pathArray = driverJarPath.split(";"); //$NON-NLS-1$
             for (String path : pathArray) {
                 driverJarNameList.add(TalendQuoteUtils.removeQuotes(path));
             }
         } else {
-            String databaseType = dbConnnection.getDatabaseType();
+            String databaseType = dbConnection.getDatabaseType();
             if (StringUtils.equals(EDatabaseTypeName.IMPALA.getDisplayName(), databaseType)) {
-                driverJarNameList = getImpalaDriverJarNameList(dbConnnection);
+                driverJarNameList = getImpalaDriverJarNameList(dbConnection);
             } else {
                 driverJarNameList = EDatabaseVersion4Drivers.getDrivers(databaseType,
-                        ConvertionHelper.getDriverVersionString(dbConnnection));
+                        ConvertionHelper.getDriverVersionString(dbConnection));
+                if (MetadataConnectionUtils.isOracleCustomSSLUsed(dbConnection)) {
+                    if (EDatabaseVersion4Drivers.ORACLE_18.getVersionValue()
+                            .equals(dbConnection.getDbVersionString())) {
+                        driverJarNameList.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS_18_ABOVE));
+                    } else {
+                        driverJarNameList.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS));
+                    }
+                }
             }
         }
         manDr.setJars(getDriverJarRealPaths(driverJarNameList));
@@ -212,8 +221,6 @@ public class AliasAndManaDriverHelper {
 
             IHDistribution impalaDistribution = hadoopService.getImpalaDistributionManager().getDistribution(distribution, false);
             if (impalaDistribution != null) {
-                String impalaIndex = EDatabaseTypeName.IMPALA.getProduct() + ClassLoaderFactory.KEY_SEPARATOR
-                        + impalaDistribution.getName();
                 if (impalaDistribution.useCustom()) {
                     // TODO handle custom impala here
                 } else {

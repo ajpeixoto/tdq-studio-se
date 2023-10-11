@@ -18,6 +18,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.sql.Driver;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -52,6 +53,7 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
 import org.talend.core.utils.TalendQuoteUtils;
@@ -342,7 +344,13 @@ public class SqlexplorerService implements ISqlexplorerService {
             // "librariesIndex.xml".
             try {
                 List<String> jarNames = EDatabaseVersion4Drivers.getDrivers(dbType, dbVersion);
-				if (jarNames.isEmpty() && ("JDBC".equals(dbType) || "General JDBC".equals(dbType))) {
+                if (MetadataConnectionUtils.isOracleCustomSSLUsed(dbConn)) {
+                    if (EDatabaseVersion4Drivers.ORACLE_18.getVersionValue().equals(dbConn.getDbVersionString())) {
+                        jarNames.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS_18_ABOVE));
+                    } else {
+                        jarNames.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS));
+                    }
+                } else if (jarNames.isEmpty() && ("JDBC".equals(dbType) || "General JDBC".equals(dbType))) {
                     String driverJarPath = JavaSqlFactory.getDriverJarPath(dbConn);
                     if (driverJarPath != null) {
                         String[] pathArray = driverJarPath.split(";"); //$NON-NLS-1$
