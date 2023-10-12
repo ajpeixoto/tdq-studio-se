@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.dq.helper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.talend.core.model.context.link.ContextLinkService;
 import org.talend.core.model.context.link.ItemContextLink;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
+import org.talend.core.model.process.IContext;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.Item;
@@ -80,12 +82,20 @@ public final class ContextHelper {
             boolean findContext = false;
             if (contextVarName.startsWith(CONTEXT_PREFFIX)) {
                 String contextName = contextVarName.substring(CONTEXT_PREFFIX.length(), contextVarName.length());
+                List<IContext> iContextLs = new ArrayList<IContext>();
+                if (contexts != null) {
+                    for (ContextType contxType : contexts) {
+                        IContext context = ContextUtils.convert2IContext(contxType);
+                        iContextLs.add(context);
+                    }
+                }
                 for (ContextType ct : contexts) {
                     if (ct.getName().equals(contextGroupName)) {
                         for (Object obj : ct.getContextParameter()) {
                             ContextParameterType cpt = (ContextParameterType) obj;
                             if (cpt.getName().equals(contextName)) {
-                                if (cpt.isPromptNeeded() && Platform.isRunning()) {
+                                if ((cpt.isPromptNeeded() || ContextUtils.isPromptNeeded(iContextLs, cpt.getName()))
+                                        && Platform.isRunning()) {
                                     value = JavaSqlFactory
                                             .getReportPromptConValueFromCache(contextGroupName,
                                                     cpt.getRepositoryContextId(), contextVarName);
@@ -166,13 +176,21 @@ public final class ContextHelper {
     public static String getUrlWithoutContext(List<ContextType> context, String contextGroupName, String contextString) {
         // key is the context script code(start with context.), value is the context value
         Map<String, String> contextValues = new HashMap<String, String>();
+        List<IContext> iContextLs = new ArrayList<IContext>();
+        if (context != null) {
+            for (ContextType contxType : context) {
+                IContext ctx = ContextUtils.convert2IContext(contxType);
+                iContextLs.add(ctx);
+            }
+        }
         for (ContextType contextType : context) {
             if (contextType.getName().equals(contextGroupName)) {
                 for (Object obj : contextType.getContextParameter()) {
                     ContextParameterType cpt = (ContextParameterType) obj;
                     String contextVarName = ContextParameterUtils.getNewScriptCode(cpt.getName(), LANGUAGE);
                     String value = cpt.getRawValue();
-                    if (cpt.isPromptNeeded() && Platform.isRunning()) {
+                    if ((cpt.isPromptNeeded() || ContextUtils.isPromptNeeded(iContextLs, cpt.getName()))
+                            && Platform.isRunning()) {
                         value = JavaSqlFactory
                                 .getReportPromptConValueFromCache(contextGroupName, cpt.getRepositoryContextId(),
                                         contextVarName);

@@ -426,7 +426,7 @@ public class EditorPreferencePage extends PreferencePage implements IWorkbenchPr
 
         unfoldContextGroupSettingsButton = new Button(unfoldSelectSectionsComposite, SWT.CHECK);
         unfoldContextGroupSettingsButton.setText(DefaultMessagesImpl
-                .getString("AbstractMetadataFormPage.contextGroupSettingsSection")); //$NON-NLS-1$
+                .getString("AbstractMetadataFormPage.contextSettingsSection")); //$NON-NLS-1$
         setCurrentUnfoldContextGroupSettings(isUnfoldContextGroupSettings());
         unfoldContextGroupSettingsButton.setSelection(getCurrentUnfoldContextGroupSettings());
         unfoldContextGroupSettingsButton.addSelectionListener(new SelectionListener() {
