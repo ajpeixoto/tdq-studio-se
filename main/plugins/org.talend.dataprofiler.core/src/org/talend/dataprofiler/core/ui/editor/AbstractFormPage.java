@@ -151,7 +151,7 @@ public abstract class AbstractFormPage extends FormPage {
             } else if (sectionTitle.equalsIgnoreCase(DefaultMessagesImpl.getString("ColumnMasterDetailsPage.AnalysisParameter"))) { //$NON-NLS-1$
                 return EditorPreferencePage.isUnfoldAnalysisParameters();
             } else if (sectionTitle.equalsIgnoreCase(DefaultMessagesImpl
-                    .getString("AbstractMetadataFormPage.contextGroupSettingsSection"))) { //$NON-NLS-1$
+                    .getString("AbstractMetadataFormPage.contextSettingsSection"))) { //$NON-NLS-1$
                 return EditorPreferencePage.isUnfoldContextGroupSettings();
             }
         }

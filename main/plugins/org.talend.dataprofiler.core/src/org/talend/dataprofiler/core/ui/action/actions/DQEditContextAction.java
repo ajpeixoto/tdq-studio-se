@@ -51,9 +51,9 @@ public class DQEditContextAction extends AContextualAction {
         this.isReadOnly = isReadOnly;
         setImageDescriptor(ImageLib.getImageDescriptor(ImageLib.CONTEXT));
         if (isReadOnly) {
-            setText(DefaultMessagesImpl.getString("DQCreateContextAction.readContext"));
+            setText(DefaultMessagesImpl.getString("DQCreateContextAction.readContextTitle"));
         } else {
-            setText(DefaultMessagesImpl.getString("DQCreateContextAction.editContext"));
+            setText(DefaultMessagesImpl.getString("DQCreateContextAction.editContextTitle"));
         }
     }
 

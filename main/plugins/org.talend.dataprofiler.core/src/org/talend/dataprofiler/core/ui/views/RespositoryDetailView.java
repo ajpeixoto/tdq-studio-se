@@ -595,12 +595,14 @@ public class RespositoryDetailView extends ViewPart implements ISelectionListene
             if (contextItem != null) {
                 newLabelAndText(
                         gContainer,
-                        DefaultMessagesImpl.getString("RespositoryDetailView.contextGroupName"), contextItem.getProperty().getLabel()); //$NON-NLS-1$
+                        DefaultMessagesImpl.getString("RespositoryDetailView.contextName"), //$NON-NLS-1$
+                        contextItem.getProperty().getLabel());
             }
         }
         String contextName = connection.getContextName();
         if (contextName != null) {
-            newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.contextName"), contextName); //$NON-NLS-1$
+            newLabelAndText(gContainer, DefaultMessagesImpl.getString("RespositoryDetailView.contextEnvironmentName"), //$NON-NLS-1$
+                    contextName);
         }
 
     }

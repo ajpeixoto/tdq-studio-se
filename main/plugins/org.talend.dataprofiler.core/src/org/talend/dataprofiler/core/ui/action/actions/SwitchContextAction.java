@@ -69,7 +69,8 @@ public class SwitchContextAction extends Action {
 
                  if(isUpdated) {
                     if (log.isDebugEnabled()) {
-                        log.debug(DefaultMessagesImpl.getString("SwitchContextAction.saveMessage", chooseContext, "successful"));//$NON-NLS-1$ //$NON-NLS-2$
+                        log.debug(DefaultMessagesImpl.getString("SwitchContextAction.saveContextMessage", chooseContext, //$NON-NLS-1$
+                                "successful"));//$NON-NLS-1$
                     }
 
                     // ADD msjian TDQ-8834 2014-4-10: after switch the context, update the sql explore alias
@@ -92,7 +93,7 @@ public class SwitchContextAction extends Action {
                 .openWarning(CorePlugin.getDefault().getWorkbench().getDisplay().getActiveShell(),
                         DefaultMessagesImpl.getString("SwitchContextAction.nullParameterError.title"), //$NON-NLS-1$
                         DefaultMessagesImpl.getString("SwitchContextAction.nullParameterError.nochoose.content")); //$NON-NLS-1$
-        log.error(DefaultMessagesImpl.getString("SwitchContextAction.saveMessage", chooseContext, "failed"));//$NON-NLS-1$ //$NON-NLS-2$
+        log.error(DefaultMessagesImpl.getString("SwitchContextAction.saveContextMessage", chooseContext, "failed"));//$NON-NLS-1$ //$NON-NLS-2$
     }
 
     public static boolean popupSwitchContextConfirmDialog(String chooseContext) {
@@ -101,7 +102,7 @@ public class SwitchContextAction extends Action {
                         DefaultMessagesImpl.getString("SwitchContextAction.nullParameterError.title"), //$NON-NLS-1$
                         DefaultMessagesImpl.getString("SwitchContextAction.nullParameterError.confirm.content")); //$NON-NLS-1$
         if (!confirm) {
-            log.error(DefaultMessagesImpl.getString("SwitchContextAction.saveMessage", chooseContext, "failed"));//$NON-NLS-1$ //$NON-NLS-2$
+            log.error(DefaultMessagesImpl.getString("SwitchContextAction.saveContextMessage", chooseContext, "failed"));//$NON-NLS-1$ //$NON-NLS-2$
         }
         return confirm;
     }

@@ -41,7 +41,7 @@ public class DQCreateContextAction extends Action implements ICheatSheetAction {
     public DQCreateContextAction(RepositoryNode node) {
         this.node = node;
         setImageDescriptor(ImageLib.createAddedIcon(ImageLib.CONTEXT, IDecoration.TOP_RIGHT));
-        setText(DefaultMessagesImpl.getString("DQCreateContextAction.createContext"));
+        setText(DefaultMessagesImpl.getString("DQCreateContextAction.createContextTitle"));
     }
 
     @Override

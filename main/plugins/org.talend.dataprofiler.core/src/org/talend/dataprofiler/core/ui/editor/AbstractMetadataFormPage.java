@@ -66,6 +66,7 @@ import org.talend.model.bridge.ReponsitoryContextBridge;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.utils.sugars.ReturnCode;
+
 import orgomg.cwm.objectmodel.core.CorePackage;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwm.objectmodel.core.TaggedValue;
@@ -647,7 +648,8 @@ public abstract class AbstractMetadataFormPage extends AbstractFormPage {
         contextGroupSection = createSection(
                 form,
                 topComp,
-                DefaultMessagesImpl.getString("AbstractMetadataFormPage.contextGroupSettingsSection"), DefaultMessagesImpl.getString("AbstractMetadataFormPage.contextGroupSettingsSectionDescription")); //$NON-NLS-1$ //$NON-NLS-2$
+                DefaultMessagesImpl.getString("AbstractMetadataFormPage.contextSettingsSection"), //$NON-NLS-1$
+                DefaultMessagesImpl.getString("AbstractMetadataFormPage.contextGroupSettingsSectionDescription")); //$NON-NLS-1$
         Composite contextGroupSectionComp = toolkit.createComposite(contextGroupSection);
         contextGroupSectionComp.setLayout(new GridLayout());
         contextComposite = new ContextComposite((SupportContextEditor) currentEditor, contextGroupSectionComp, SWT.NONE);
