@@ -133,11 +133,15 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
                     image = OverlayImageProvider.getImageWithWarn(image).createImage();
                 }
             }
+
             if (objectType != null && ERepositoryObjectType.METADATA_CON_CATALOG.equals(objectType)) {
                 return ImageLib.getImage(ImageLib.CATALOG);
             } else if (objectType != null && ERepositoryObjectType.METADATA_CON_SCHEMA.equals(objectType)) {
                 return ImageLib.getImage(ImageLib.SCHEMA);
+            } else if (objectType != null && ConnectionUtils.isTCKJDBC(objectType)) {
+                image = ImageLib.getImage(ImageLib.NEW_JDBC);
             }
+
             // for the key of the column
             if (node instanceof DBColumnRepNode) {
                 if (((DBColumnRepNode) node).isKey()) {

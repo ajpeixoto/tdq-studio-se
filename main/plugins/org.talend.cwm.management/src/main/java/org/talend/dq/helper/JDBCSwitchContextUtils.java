@@ -21,6 +21,7 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.dq.nodes.DBConnectionRepNode;
+import org.talend.dq.nodes.TCKConnectionRepNode;
 import org.talend.metadata.managment.ui.convert.DbConnectionAdapter;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
@@ -75,6 +76,9 @@ public class JDBCSwitchContextUtils {
             connNode = connNode.getParent();
         }
         if (connNode.getObjectType().equals(ERepositoryObjectType.JDBC) && connNode instanceof DBConnectionRepNode) {
+            conn = ((DBConnectionRepNode) connNode).getDatabaseConnection();
+        }
+        if (connNode instanceof TCKConnectionRepNode) {
             conn = ((DBConnectionRepNode) connNode).getDatabaseConnection();
         }
 

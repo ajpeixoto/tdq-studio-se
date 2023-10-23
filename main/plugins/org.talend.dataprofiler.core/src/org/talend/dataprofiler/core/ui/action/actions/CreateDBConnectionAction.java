@@ -12,15 +12,25 @@
 // ============================================================================
 package org.talend.dataprofiler.core.ui.action.actions;
 
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.jface.window.Window;
 import org.eclipse.jface.wizard.IWizard;
+import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.jface.wizard.WizardDialog;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
+import org.talend.core.runtime.services.IGenericWizardService;
+import org.talend.core.service.ITCKUIService;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.ui.action.AbstractMetadataCreationAction;
 import org.talend.dq.helper.RepositoryNodeHelper;
 import org.talend.repository.model.RepositoryNode;
+import org.talend.repository.model.RepositoryNodeUtilities;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
+import org.talend.repository.ui.wizards.metadata.connection.database.NewDatabaseWizard;
 import org.talend.resource.EResourceConstant;
 
 /**
@@ -43,7 +53,37 @@ public class CreateDBConnectionAction extends AbstractMetadataCreationAction {
 
     @Override
     protected IWizard createWizard() {
-        return new DatabaseWizard(PlatformUI.getWorkbench(), true, node, getExistingNames());
+        IPath pathToSave = null;
+        switch (node.getType()) {
+        case SIMPLE_FOLDER:
+            pathToSave = RepositoryNodeUtilities.getPath(node);
+            break;
+        case SYSTEM_FOLDER:
+            pathToSave = new Path(""); //$NON-NLS-1$
+            break;
+        }
+
+        NewDatabaseWizard newDatabaseWizard = new NewDatabaseWizard(PlatformUI.getWorkbench(), true, false, node);
+        WizardDialog wizardDialog = new WizardDialog(Display.getCurrent().getActiveShell(), newDatabaseWizard);
+        wizardDialog.setPageSize(780, 540);
+        wizardDialog.create();
+        int returnCode = wizardDialog.open();
+        if (returnCode == Window.CANCEL) {
+            return null;
+        }
+        Wizard databaseWizard;
+        String selectedDBType = newDatabaseWizard.getSelectedDBType();
+        if (ITCKUIService.get() != null && ITCKUIService.get().getTCKJDBCType().getLabel().equals(selectedDBType)) {
+            databaseWizard = ITCKUIService.get().createTCKWizard(selectedDBType, pathToSave);
+        } else if (IGenericWizardService.get().getIfAdditionalJDBCDBType(selectedDBType)) {
+            // addtional jdbc, include singlestore and delta lake.
+            databaseWizard = ITCKUIService.get().createTCKWizard(selectedDBType, pathToSave);
+        } else {
+            databaseWizard = new DatabaseWizard(PlatformUI.getWorkbench(), true, node, getExistingNames());
+            DatabaseWizard.class.cast(databaseWizard).setToolBar(false);
+            DatabaseWizard.class.cast(databaseWizard).setDbType(selectedDBType);
+        }
+        return databaseWizard;
     }
 
     @Override

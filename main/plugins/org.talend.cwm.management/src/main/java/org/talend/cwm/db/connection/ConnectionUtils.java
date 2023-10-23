@@ -1500,6 +1500,13 @@ public final class ConnectionUtils {
         return false;
     }
 
+    public static boolean isTCKJDBC(ERepositoryObjectType contentType) {
+        if (ERepositoryObjectType.METADATA_TACOKIT_JDBC.equals(contentType)) {
+            return true;
+        }
+        return false;
+    }
+
     /**
      * judge if it is a TCOMP JDBC connection according to data type String
      *

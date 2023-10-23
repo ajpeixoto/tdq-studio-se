@@ -24,6 +24,7 @@ import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.update.RepositoryUpdateManager;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.cwm.db.connection.ConnectionUtils;
 import org.talend.dataprofiler.core.CorePlugin;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
@@ -34,6 +35,8 @@ import org.talend.repository.RepositoryWorkUnit;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 import org.talend.repository.ui.wizards.metadata.connection.database.DatabaseWizard;
+import org.talend.sdk.component.studio.metadata.action.EditTaCoKitConfigurationAction;
+import org.talend.sdk.component.studio.metadata.node.ITaCoKitRepositoryNode;
 
 /**
  * created by msjian on 2019年6月19日
@@ -88,8 +91,14 @@ public class EditDatabaseConnectionAction extends Action {
                         ExceptionHandler.process(e);
                     }
                     // TDQ-18173~
-
+                    
                     Wizard wizard = new DatabaseWizard(PlatformUI.getWorkbench(), false, (RepositoryNode) node, null);
+                    if (ConnectionUtils.isTCKJDBC(node.getObjectType())) {
+                        EditTaCoKitConfigurationAction editTCKAction = new EditTaCoKitConfigurationAction();
+                        editTCKAction.setRepositoryNode((ITaCoKitRepositoryNode) node);
+                        wizard = editTCKAction.createWizard(PlatformUI.getWorkbench());
+                    }
+
                     WizardDialog dialog = new WizardDialog(null, wizard);
                     if (Window.OK == dialog.open()) {
                         CorePlugin.getDefault().refreshDQView(node);

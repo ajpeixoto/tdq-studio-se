@@ -35,6 +35,7 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.WorkspaceUtils;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.core.model.metadata.builder.database.DqRepositoryViewService;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Information;
@@ -424,7 +425,11 @@ public abstract class AElementPersistance {
             item = PropertiesFactory.eINSTANCE.createTDQBusinessRuleItem();
             ((TDQBusinessRuleItem) item).setDqrule((DQRule) element);
         } else if (ModelElementIdentifier.isDataProvider(element)) {
-            if (element instanceof DatabaseConnection) {
+            if (element instanceof TacokitDatabaseConnection) {
+                item = org.talend.core.model.properties.PropertiesFactory.eINSTANCE
+                        .createTacokitDatabaseConnectionItem();
+                ((ConnectionItem) item).setConnection((TacokitDatabaseConnection) element);
+            } else if (element instanceof DatabaseConnection) {
                 item = org.talend.core.model.properties.PropertiesFactory.eINSTANCE.createDatabaseConnectionItem();
                 ((ConnectionItem) item).setConnection((DatabaseConnection) element);
             }

@@ -14,6 +14,7 @@ package org.talend.dq.nodes;
 
 import java.util.List;
 
+import org.talend.commons.exception.ExceptionHandler;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.utils.data.container.Container;
 import org.talend.commons.utils.data.container.RootContainer;
@@ -26,6 +27,7 @@ import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.Folder;
 import org.talend.core.model.repository.IRepositoryViewObject;
+import org.talend.cwm.db.connection.ConnectionUtils;
 import org.talend.cwm.management.i18n.Messages;
 import org.talend.dq.helper.AnalysisExecutorHelper;
 import org.talend.repository.model.IRepositoryNode;
@@ -127,11 +129,23 @@ public class DBConnectionFolderRepNode extends DQFolderRepNode {
             if (!withDeleted && viewObject.isDeleted()) {
                 continue;
             }
-            DBConnectionRepNode repNode = new DBConnectionRepNode(viewObject, this, ENodeType.REPOSITORY_ELEMENT, project);
-            repNode.setProperties(EProperties.LABEL, viewObject.getLabel());
-            repNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
-            viewObject.setRepositoryNode(repNode);
-            super.getChildren().add(repNode);
+
+            // TCK jdbc
+            if (ConnectionUtils.isTCKJDBC(viewObject.getRepositoryObjectType())) {
+                TCKConnectionRepNode repNode =
+                        new TCKConnectionRepNode(viewObject, this, ENodeType.REPOSITORY_ELEMENT, project);
+                repNode.setProperties(EProperties.LABEL, viewObject.getLabel());
+                repNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_TACOKIT_JDBC);
+                viewObject.setRepositoryNode(repNode);
+                super.getChildren().add(repNode);
+            } else {
+                DBConnectionRepNode repNode =
+                        new DBConnectionRepNode(viewObject, this, ENodeType.REPOSITORY_ELEMENT, project);
+                repNode.setProperties(EProperties.LABEL, viewObject.getLabel());
+                repNode.setProperties(EProperties.CONTENT_TYPE, ERepositoryObjectType.METADATA_CONNECTIONS);
+                viewObject.setRepositoryNode(repNode);
+                super.getChildren().add(repNode);
+            }
 
             // Update software system
             updateSoftwareSystem(viewObject);

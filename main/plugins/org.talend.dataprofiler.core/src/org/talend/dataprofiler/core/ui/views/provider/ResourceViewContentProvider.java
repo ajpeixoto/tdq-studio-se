@@ -67,6 +67,7 @@ import org.talend.dq.nodes.DBViewRepNode;
 import org.talend.dq.nodes.DQRepositoryNode;
 import org.talend.dq.nodes.RecycleBinRepNode;
 import org.talend.dq.nodes.SysIndicatorFolderRepNode;
+import org.talend.dq.nodes.TCKConnectionRepNode;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -249,6 +250,11 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
         }
         if (node instanceof ContextFolderRepNode) {
             children = ((ContextFolderRepNode) node).getChildren();
+        } else if (node instanceof TCKConnectionRepNode) {
+            if (children.isEmpty()) {
+                // for tck jdbc node, when first time, get children again
+                children = ((TCKConnectionRepNode) node).getChildren();
+            }
         }
         if (isFixedOrder(label)) {
             // TDQ-16041 no need to sort for system nodes( first and second level)
@@ -459,6 +465,10 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
             if (element instanceof IRepositoryNode) {
                 IRepositoryNode node = (IRepositoryNode) element;
                 IRepositoryViewObject viewObject = node.getObject();
+                if (node instanceof TCKConnectionRepNode) {
+                    // TCKConnectionRepNode always have children
+                    return true;
+                }
                 if (viewObject instanceof MetadataColumnRepositoryObject) {
                     return false;
                 } else if (node instanceof SysIndicatorFolderRepNode || element instanceof DBTableRepNode

@@ -35,7 +35,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.emf.ecore.xmi,
  org.talend.studio.studio-utils,
  org.apache.commons.lang3,
- org.talend.model
+ org.talend.model,
+ org.talend.sdk.component.studio-integration
 Bundle-Vendor: .Talend SA.
 Bundle-ClassPath: .,
  dist/org.talend.cwm.management.jar
