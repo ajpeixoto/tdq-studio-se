@@ -16,6 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
@@ -97,7 +99,12 @@ public class DBConnectionRepNode extends ConnectionRepNode {
 
                     // fill TCK JDBC connection
                     ConnectionItem connectionItem = (ConnectionItem) this.getObject().getProperty().getItem();
-                    MetadataConnectionUtils.fillConnectionInformation(connectionItem);
+
+                    DatabaseConnection copyConnection =
+                            (DatabaseConnection) MetadataConnectionUtils.prepareConection(databaseConnection);
+                    IMetadataConnection metaConnection = ConvertionHelper.convert(copyConnection);
+
+                    MetadataConnectionUtils.fillConnectionInformation(connectionItem, metaConnection);
                 }
             }
         }
