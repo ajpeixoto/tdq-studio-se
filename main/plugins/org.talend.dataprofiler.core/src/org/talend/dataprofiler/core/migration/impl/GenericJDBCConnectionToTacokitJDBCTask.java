@@ -58,7 +58,7 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
      * @see org.talend.dataprofiler.migration.IMigrationTask#getOrder()
      */
     public Date getOrder() {
-        return createDate(2023, 9, 8);
+        return createDate(2023, 10, 30);
     }
 
     /*
