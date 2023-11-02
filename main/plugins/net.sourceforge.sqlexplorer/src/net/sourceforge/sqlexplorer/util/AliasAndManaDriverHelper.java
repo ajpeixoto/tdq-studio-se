@@ -37,11 +37,13 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
 import org.talend.core.runtime.hd.IHDistribution;
 import org.talend.core.runtime.hd.IHDistributionVersion;
+import org.talend.core.runtime.maven.MavenUrlHelper;
 import org.talend.core.utils.TalendQuoteUtils;
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.cwm.helper.SwitchHelpers;
@@ -115,6 +117,10 @@ public class AliasAndManaDriverHelper {
         DriverManager driverManager = SQLExplorerPlugin.getDefault().getDriverModel();
         DatabaseConnection dbConn = SwitchHelpers.DATABASECONNECTION_SWITCH.doSwitch(connection);
         String driverClass = JavaSqlFactory.getDriverClass(connection);
+        // if (dbConn instanceof TacokitDatabaseConnection) {
+        // String trueDbType = ConvertionHelper.getDbTypeByClassNameAndDriverJar(driverClass, null);
+        // dbConn.setDatabaseType(trueDbType);
+        // }
         if (dbConn == null || dbConn.getDatabaseType() == null || driverClass == null) {
             log.error("can not find a right ManagedDriver by null!");
             return null;
@@ -184,6 +190,16 @@ public class AliasAndManaDriverHelper {
      * @throws MalformedURLException
      */
     public void addJars(Connection connection, ManagedDriver manDr) throws MalformedURLException {
+        List<String> driverJarNameList = getDriverJarNameList(connection);
+        manDr.setJars(getDriverJarRealPaths(driverJarNameList));
+    }
+
+    /**
+     * DOC msjian Comment method "getDriverJarNameList".
+     * @param connection
+     * @return
+     */
+    public List<String> getDriverJarNameList(Connection connection) {
         List<String> driverJarNameList = new ArrayList<String>();
         DatabaseConnection dbConnection = (DatabaseConnection) connection;
         String driverJarPath = JavaSqlFactory.getDriverJarPath(dbConnection);
@@ -191,6 +207,12 @@ public class AliasAndManaDriverHelper {
             String[] pathArray = driverJarPath.split(";"); //$NON-NLS-1$
             for (String path : pathArray) {
                 driverJarNameList.add(TalendQuoteUtils.removeQuotes(path));
+            }
+        } else if (dbConnection instanceof TacokitDatabaseConnection && driverJarPath != null) {
+            String[] pathArray = driverJarPath.split(";"); //$NON-NLS-1$
+            for (String path : pathArray) {
+                String driverJarName = MavenUrlHelper.generateModuleNameByMavenURI(path);
+                driverJarNameList.add(driverJarName);
             }
         } else {
             String databaseType = dbConnection.getDatabaseType();
@@ -209,7 +231,7 @@ public class AliasAndManaDriverHelper {
                 }
             }
         }
-        manDr.setJars(getDriverJarRealPaths(driverJarNameList));
+        return driverJarNameList;
     }
 
     private List<String> getImpalaDriverJarNameList(DatabaseConnection dbConnnection) {
@@ -256,7 +278,7 @@ public class AliasAndManaDriverHelper {
     public String joinManagedDriverId(DatabaseConnection dbConn) {
         String databaseType = dbConn.getDatabaseType();
         String id = PluginConstant.EMPTY_STRING;
-        if (databaseType.equalsIgnoreCase(EDatabaseTypeName.HIVE.getXmlName())) {
+        if (databaseType != null && databaseType.equalsIgnoreCase(EDatabaseTypeName.HIVE.getXmlName())) {
             id = joinHiveManagedDriverId(dbConn);
         } else {
             String driverClassName = JavaSqlFactory.getDriverClass(dbConn);

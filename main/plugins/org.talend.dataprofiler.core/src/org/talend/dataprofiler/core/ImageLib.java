@@ -138,6 +138,8 @@ public final class ImageLib {
 
     public static final String CATALOG = "catalog.png"; //$NON-NLS-1$
 
+    public static final String NEW_JDBC = "jdbc.png"; //$NON-NLS-1$
+
     public static final String ASC_SORT = "asc.gif"; //$NON-NLS-1$
 
     public static final String DESC_SORT = "desc.gif"; //$NON-NLS-1$

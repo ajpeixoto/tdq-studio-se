@@ -45,6 +45,7 @@ import org.talend.dataquality.properties.TDQReportItem;
 import org.talend.dataquality.reports.TdReport;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextParameterType;
 import org.talend.designer.core.model.utils.emf.talendfile.ContextType;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 
 /**
  * created by xqliu on Jul 24, 2013 Detailled comment
@@ -504,7 +505,7 @@ public final class ContextHelper {
     }
 
     public static Connection getPromptContextValuedConnection(Connection connection) {
-        Connection copyConnection = EObjectHelper.deepCopy(connection);
+        Connection copyConnection = MetadataConnectionUtils.deepCopyAll(connection);
         JavaSqlFactory.setPromptContextValues(copyConnection);
         return copyConnection;
     }

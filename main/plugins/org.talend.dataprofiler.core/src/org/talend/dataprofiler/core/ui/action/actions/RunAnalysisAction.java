@@ -398,14 +398,6 @@ public class RunAnalysisAction extends Action implements ICheatSheetAction {
         }
     }
 
-    public boolean isConnectionAvailable(DataManager datamanager, String anaName) {
-        Connection copyConnection = ConnectionUtils.prepareConection(datamanager);
-        if (copyConnection == null) {
-            return false;
-        }
-        return ConnectionUtils.checkConnection(copyConnection, anaName);
-    }
-
     public boolean isConnectionAvailable(DataManager datamanager, Analysis ana) {
         Connection copyConnection = ConnectionUtils.prepareConection(datamanager);
         if (copyConnection == null) {

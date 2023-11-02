@@ -59,6 +59,7 @@ import org.talend.dataquality.reports.TdReport;
 import org.talend.dq.factory.ModelElementFileFactory;
 import org.talend.dq.helper.resourcehelper.ResourceFileMap;
 import org.talend.dq.nodes.ReportRepNode;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.resource.EResourceConstant;
 import org.talend.resource.ResourceManager;
@@ -473,43 +474,7 @@ public final class EObjectHelper {
     }
 
     public static <T extends EObject> T deepCopy(T emfObject) {
-        EcoreUtil.Copier copier = new EcoreUtil.Copier(Boolean.TRUE, Boolean.FALSE);
-        preDeepCopy(emfObject, copier);
-        T copy = (T) copier.copy(emfObject);
-        copier.copyReferences();
-        return copy;
-    }
-
-    private static void preDeepCopy(EObject emfObject, EcoreUtil.Copier copier) {
-        Stack<EObject> work = new Stack<EObject>();
-        work.push(emfObject);
-        Collection<EObject> collection = new LinkedHashSet<EObject>();
-        while (!work.isEmpty()) {
-            EObject o = work.pop();
-            if (collection.contains(o)) {
-                continue;
-            }
-            collection.add(o);
-            List<EObject> list = o.eContents();
-            for (EObject eo : list) {
-                if (!collection.contains(eo)) {
-                    work.push(eo);
-                }
-            }
-            list = o.eCrossReferences();
-            for (EObject eo : list) {
-                if (!collection.contains(eo)) {
-                    work.push(eo);
-                }
-            }
-            EObject container = o.eContainer();
-            if (container != null && !collection.contains(container)) {
-                work.push(container);
-            }
-        }
-        collection = copier.copyAll(collection);
-        copier.copyReferences();
-
+        return MetadataConnectionUtils.deepCopy(emfObject);
     }
 
     public static File modelElement2File(ModelElement mElement) {

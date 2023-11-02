@@ -67,6 +67,7 @@ import org.talend.dq.nodes.DBViewRepNode;
 import org.talend.dq.nodes.DQRepositoryNode;
 import org.talend.dq.nodes.RecycleBinRepNode;
 import org.talend.dq.nodes.SysIndicatorFolderRepNode;
+import org.talend.dq.nodes.TCKConnectionRepNode;
 import org.talend.repository.ProjectManager;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
@@ -249,6 +250,11 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
         }
         if (node instanceof ContextFolderRepNode) {
             children = ((ContextFolderRepNode) node).getChildren();
+        } else if (node instanceof TCKConnectionRepNode) {
+            if (children.isEmpty()) {
+                // for tck jdbc node, when first time, get children again
+                children = ((TCKConnectionRepNode) node).getChildren();
+            }
         }
         if (isFixedOrder(label)) {
             // TDQ-16041 no need to sort for system nodes( first and second level)
@@ -459,6 +465,10 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
             if (element instanceof IRepositoryNode) {
                 IRepositoryNode node = (IRepositoryNode) element;
                 IRepositoryViewObject viewObject = node.getObject();
+                if (node instanceof TCKConnectionRepNode) {
+                    // TCKConnectionRepNode always have children
+                    return true;
+                }
                 if (viewObject instanceof MetadataColumnRepositoryObject) {
                     return false;
                 } else if (node instanceof SysIndicatorFolderRepNode || element instanceof DBTableRepNode
@@ -481,7 +491,32 @@ public class ResourceViewContentProvider extends WorkbenchContentProvider {
                     return dbViewFolder.hasChildren();
                     // ~TDQ-3457
                 }
-            }
+            } 
+            // // MOD qiongli feature 9486
+            // if (element instanceof IFolder) {
+            // // MOD yyi 2010-09-30 15271: svn project can't load exchange nodes
+            // if (ResourceManager.isExchangeFolder((IFolder) element)) {
+            // return true;
+            // }
+            // // ~15271
+            // List<Object> obsLs = Arrays.asList(super.getChildren(element));
+            // if (obsLs.size() == 1) {
+            // Object obj = (Object) obsLs.get(0);
+            // if (obj instanceof IFolder && ((IFolder) obj).getName().equals(PluginConstant.SVN_SUFFIX))
+            // return false;
+            // }
+            // } else if (element instanceof DQRecycleBinNode) {
+            // DQRecycleBinNode rbn = (DQRecycleBinNode) element;
+            // Object obj = rbn.getObject();
+            // if (obj instanceof IFolder) {
+            // try {
+            // return ((IFolder) obj).members().length > 0;
+            // } catch (CoreException e) {
+            // log.error(e);
+            // }
+            // }
+            // return false;
+            // }
 
         } catch (MissingDriverException e) {
             if (PluginChecker.isOnlyTopLoaded()) {

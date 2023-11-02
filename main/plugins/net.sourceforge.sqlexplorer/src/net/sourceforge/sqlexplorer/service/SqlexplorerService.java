@@ -53,6 +53,7 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.core.model.metadata.builder.database.ExtractMetaDataUtils;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.metadata.builder.database.PluginConstant;
@@ -227,7 +228,6 @@ public class SqlexplorerService implements ISqlexplorerService {
         AliasManager aliasManager = sqlPlugin.getAliasManager();
         DriverManager driverManager = sqlPlugin.getDriverModel();
 
-        List<String> tdqSupportDBType = MetadataConnectionUtils.getTDQSupportDBTemplate();
         // if all dataproviders are not supported on DQ side,don't save files SQLAliases.xml and
         // SQLDrivers.xml.Otherwise,save it.
         AliasAndManaDriverHelper aliasManaDriverHelper = AliasAndManaDriverHelper.getInstance();
@@ -237,11 +237,10 @@ public class SqlexplorerService implements ISqlexplorerService {
                 // MOD bug mzhao filter the other connections except database connection.
                 if (connection != null && connection instanceof DatabaseConnection) {
                     // TDQ-8379 do nothing if the database type isn't supproted on DQ side.
-                    DatabaseConnection dbConn = ((DatabaseConnection) connection);
-                    String databaseType = dbConn.getDatabaseType();
-                    if (!tdqSupportDBType.contains(databaseType)) {
+                    if (!MetadataConnectionUtils.isTDQSupportDBTemplate(connection)) {
                         continue;
                     }
+                    DatabaseConnection dbConn = ((DatabaseConnection) connection);
                     // only new Alias when it is not in aliasManager
                     Alias alias = aliasManager.getAlias(dataProvider.getName());
                     String url = JavaSqlFactory.getURL(connection);
@@ -343,22 +342,7 @@ public class SqlexplorerService implements ISqlexplorerService {
             // find driver jars from 'temp\dbWizard', prefrence page or installation path 'lib\java',
             // "librariesIndex.xml".
             try {
-                List<String> jarNames = EDatabaseVersion4Drivers.getDrivers(dbType, dbVersion);
-                if (MetadataConnectionUtils.isOracleCustomSSLUsed(dbConn)) {
-                    if (EDatabaseVersion4Drivers.ORACLE_18.getVersionValue().equals(dbConn.getDbVersionString())) {
-                        jarNames.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS_18_ABOVE));
-                    } else {
-                        jarNames.addAll(Arrays.asList(ExtractMetaDataUtils.ORACLE_SSL_JARS));
-                    }
-                } else if (jarNames.isEmpty() && ("JDBC".equals(dbType) || "General JDBC".equals(dbType))) {
-                    String driverJarPath = JavaSqlFactory.getDriverJarPath(dbConn);
-                    if (driverJarPath != null) {
-                        String[] pathArray = driverJarPath.split(";"); //$NON-NLS-1$
-                        for (String path : pathArray) {
-                            jarNames.add(TalendQuoteUtils.removeQuotes(path));
-                        }
-                    }
-                }
+                List<String> jarNames = aliasManaHelper.getDriverJarNameList(dbConn);
                 LinkedList<String> driverJarRealPaths = aliasManaHelper.getDriverJarRealPaths(jarNames);
                 if (!driverJarRealPaths.isEmpty()) {
                     manDr.getJars().clear();

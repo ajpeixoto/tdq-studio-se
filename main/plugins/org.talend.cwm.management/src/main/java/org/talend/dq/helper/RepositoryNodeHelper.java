@@ -4121,9 +4121,10 @@ public final class RepositoryNodeHelper {
 
     public static boolean isSupportedConnection(IRepositoryNode repNode) {
         ERepositoryObjectType objectType = repNode.getObjectType();
-
-        if (objectType == ERepositoryObjectType.METADATA_CONNECTIONS
-                || ConnectionUtils.isTcompJdbc(objectType.getLabel())) {
+            
+        if ((objectType == ERepositoryObjectType.METADATA_CONNECTIONS
+                || ConnectionUtils.isTcompJdbc(objectType.getLabel())) ||
+                ConnectionUtils.isTCKJDBC(objectType)) {
             ConnectionItem connectionItem = null;
             try {
                 connectionItem = (ConnectionItem) repNode.getObject().getProperty().getItem();

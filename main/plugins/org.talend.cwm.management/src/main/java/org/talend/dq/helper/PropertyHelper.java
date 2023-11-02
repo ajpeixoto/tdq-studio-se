@@ -48,6 +48,7 @@ import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.properties.TDQItem;
+import org.talend.core.model.properties.TacokitDatabaseConnectionItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -570,6 +571,11 @@ public final class PropertyHelper {
 
             @Override
             public Object caseMDMConnectionItem(MDMConnectionItem object) {
+                return object.getConnection();
+            }
+
+            @Override
+            public Object caseTacokitDatabaseConnectionItem(TacokitDatabaseConnectionItem object) {
                 return object.getConnection();
             }
 

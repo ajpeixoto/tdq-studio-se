@@ -16,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
+import org.talend.core.model.metadata.IMetadataConnection;
+import org.talend.core.model.metadata.builder.ConvertionHelper;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
+import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.ERepositoryObjectType;
@@ -26,6 +29,7 @@ import org.talend.core.repository.model.repositoryObject.MetadataSchemaRepositor
 import org.talend.cwm.helper.ConnectionHelper;
 import org.talend.dq.helper.RepositoryNodeHelper;
 import org.talend.dq.nodes.factory.DQRepNodeCreateFactory;
+import org.talend.metadata.managment.utils.MetadataConnectionUtils;
 import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.RepositoryNode;
 
@@ -88,6 +92,19 @@ public class DBConnectionRepNode extends ConnectionRepNode {
                     afterPackageFilter = filterPackages(filterCharater, afterGlobalFilter);
                     return afterPackageFilter == null ? afterGlobalFilter : afterPackageFilter;
                     // ~22204
+                }
+            } else if (dataPackage != null && dataPackage.size() == 0) {
+                // for tck jdbc, after created, the first time create a fake node to expend
+                if (databaseConnection instanceof TacokitDatabaseConnection) {
+
+                    // fill TCK JDBC connection
+                    ConnectionItem connectionItem = (ConnectionItem) this.getObject().getProperty().getItem();
+
+                    DatabaseConnection copyConnection =
+                            (DatabaseConnection) MetadataConnectionUtils.prepareConection(databaseConnection);
+                    IMetadataConnection metaConnection = ConvertionHelper.convert(copyConnection);
+
+                    MetadataConnectionUtils.fillConnectionInformation(connectionItem, metaConnection);
                 }
             }
         }
