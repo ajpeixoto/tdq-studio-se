@@ -42,6 +42,7 @@ import org.talend.commons.emf.FactoriesUtil;
 import org.talend.commons.exception.LoginException;
 import org.talend.commons.exception.PersistenceException;
 import org.talend.commons.runtime.model.repository.ERepositoryStatus;
+import org.talend.commons.utils.VersionUtils;
 import org.talend.commons.utils.WorkspaceUtils;
 import org.talend.core.model.context.link.ContextLinkService;
 import org.talend.core.model.metadata.builder.connection.Connection;
@@ -52,7 +53,6 @@ import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesPackage;
 import org.talend.core.model.properties.Property;
-import org.talend.core.model.properties.TDQItem;
 import org.talend.core.model.properties.User;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -64,6 +64,7 @@ import org.talend.cwm.helper.ModelElementHelper;
 import org.talend.cwm.helper.ResourceHelper;
 import org.talend.cwm.helper.TaggedValueHelper;
 import org.talend.cwm.relational.TdExpression;
+import org.talend.dataprofiler.core.PluginConstant;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.migration.AbstractWorksapceUpdateTask;
 import org.talend.dataprofiler.core.migration.helper.IndicatorDefinitionFileHelper;
@@ -83,7 +84,6 @@ import org.talend.dataquality.domain.pattern.PatternFactory;
 import org.talend.dataquality.domain.pattern.RegularExpression;
 import org.talend.dataquality.helpers.IndicatorCategoryHelper;
 import org.talend.dataquality.indicators.Indicator;
-import org.talend.dataquality.indicators.IndicatorParameters;
 import org.talend.dataquality.indicators.PatternMatchingIndicator;
 import org.talend.dataquality.indicators.RegexpMatchingIndicator;
 import org.talend.dataquality.indicators.columnset.AllMatchIndicator;
@@ -105,10 +105,7 @@ import org.talend.dq.CWMPlugin;
 import org.talend.dq.helper.ContextHelper;
 import org.talend.dq.helper.EObjectHelper;
 import org.talend.dq.helper.PropertyHelper;
-import org.talend.dq.helper.RepositoryNodeHelper;
-import org.talend.dq.helper.UDIHelper;
 import org.talend.dq.helper.resourcehelper.PrvResourceFileHelper;
-import org.talend.dq.indicators.definitions.DefinitionHandler;
 import org.talend.dq.writer.EMFSharedResources;
 import org.talend.dq.writer.impl.ElementWriterFactory;
 import org.talend.model.bridge.ReponsitoryContextBridge;
@@ -123,16 +120,9 @@ import orgomg.cwm.objectmodel.core.Dependency;
 import orgomg.cwm.objectmodel.core.ModelElement;
 import orgomg.cwmx.analysis.informationreporting.Report;
 
-/**
- * DOC bZhou class global comment. Detailled comment
- */
 public class FileSystemImportWriter implements IImportWriter {
 
     private static Logger log = Logger.getLogger(FileSystemImportWriter.class);
-
-    private static final String VERSION_FILE_NAME = ".version.txt";//$NON-NLS-1$
-
-    private static final String DEFINITION_FILE_NAME = DefinitionHandler.FILENAME;
 
     private List<IMigrationTask> commTasks = new ArrayList<IMigrationTask>();
 
@@ -140,9 +130,9 @@ public class FileSystemImportWriter implements IImportWriter {
 
     private File versionFile;
 
-    private File definitionFile;
-
     private IPath basePath;
+
+    private Project project;
 
     private String projectName;
 
@@ -163,7 +153,6 @@ public class FileSystemImportWriter implements IImportWriter {
      * @see org.talend.dataprofiler.core.ui.imex.model.IImexWriter#populate(org.talend.dataprofiler.core.ui.imex.model.
      * ItemRecord [], boolean)
      */
-
     @Override
     public ItemRecord[] populate(ItemRecord[] elements, boolean isOverWrite) {
         List<ItemRecord> inValidRecords = new ArrayList<ItemRecord>();
@@ -335,17 +324,6 @@ public class FileSystemImportWriter implements IImportWriter {
      */
     private boolean isPattern(ModelElement element) {
         return element instanceof Pattern;
-    }
-
-    /**
-     *
-     * judge if the record is a DataBaseConnection or not.
-     *
-     * @param element
-     * @return
-     */
-    private boolean isDBConnection(ModelElement element) {
-        return element instanceof DatabaseConnection;
     }
 
     /**
@@ -1412,207 +1390,6 @@ public class FileSystemImportWriter implements IImportWriter {
         }
     }
 
-    /**
-     * remove the old client dependency add a new one in Anlaysis.
-     *
-     * @param supplierItem
-     * @param modelElement
-     * @throws PersistenceException
-     */
-    private void updateAnalysisClientDependence(Property clientProperty, Property anaProperty)
-            throws PersistenceException {
-        ModelElement anaModelElement = PropertyHelper.getModelElement(anaProperty);
-        if (anaModelElement != null) {
-            Analysis analysis = (Analysis) anaModelElement;
-            EList<Dependency> clientDependency = anaModelElement.getClientDependency();
-            Iterator<Dependency> it = clientDependency.iterator();
-            ModelElement supplierModelElement = PropertyHelper.getModelElement(clientProperty);
-            Resource supModeResource = supplierModelElement.eResource();
-            while (it.hasNext()) {
-                Dependency clientDep = it.next();
-                // when the client dependence is proxy and its lastSegment of uri is same as
-                // systemSupplyModelElement,remove it.
-                if (clientDep.eResource() == null) {
-                    URI clientDepURI = ((InternalEObject) clientDep).eProxyURI();
-                    boolean isUDI = clientDepURI
-                            .path()
-                            .contains(ResourceManager.getUDIFolder().getProjectRelativePath().toString());
-                    boolean isPattern = clientDepURI
-                            .path()
-                            .contains(ResourceManager.getPatternFolder().getProjectRelativePath().toString());
-                    if (supModeResource != null && (isUDI || isPattern)
-                            && clientDepURI.lastSegment().equals(supModeResource.getURI().lastSegment())) {
-                        it.remove();
-                        break;
-                    }
-                }
-            }
-            DependenciesHandler.getInstance().setUsageDependencyOn(anaModelElement, supplierModelElement);
-            // TDQ-8436 remove the old pattern and add the new pattern in analysis Indicator Parameters.
-            if (isPattern(supplierModelElement)) {
-                updatePatternInAnaParams(supplierModelElement, analysis);
-                ElementWriterFactory.getInstance().createPatternWriter().save(clientProperty.getItem(), true);
-            }
-
-            // remove old udi and set a new one in the analysis indicators.
-            if (supplierModelElement instanceof UDIndicatorDefinition) {
-                if (analysis.getResults() != null) {
-                    EList<Indicator> indicators = analysis.getResults().getIndicators();
-                    Iterator<Indicator> itIndicators = indicators.iterator();
-                    while (itIndicators.hasNext()) {
-                        Indicator indicator = itIndicators.next();
-                        IndicatorDefinition indicatorDefinition = indicator.getIndicatorDefinition();
-                        if (indicatorDefinition.eResource() == null) {
-                            URI indicatorDefURI = ((InternalEObject) indicatorDefinition).eProxyURI();
-                            if (supModeResource != null && UDIHelper.isUDI(indicator)
-                                    && indicatorDefURI.lastSegment().equals(supModeResource.getURI().lastSegment())) {
-                                indicator.setIndicatorDefinition((UDIndicatorDefinition) supplierModelElement);
-                                break;
-                            }
-                        }
-                    }
-                    ElementWriterFactory
-                            .getInstance()
-                            .createIndicatorDefinitionWriter()
-                            .save(clientProperty.getItem(), true);
-                }
-            }
-
-            // only save analysis item at here.
-            ProxyRepositoryFactory.getInstance().save(anaProperty.getItem(), true);
-        }
-
-    }
-
-    /**
-     * remove the old client dependency add a new one in Anlaysis.
-     *
-     * @param supplierItem
-     * @param modelElement
-     * @throws PersistenceException
-     */
-    private void updateAnalysisClientDependence(TDQItem supplierItem, Property property) throws PersistenceException {
-        ModelElement anaModelElement = PropertyHelper.getModelElement(property);
-        if (anaModelElement != null) {
-            Analysis analysis = (Analysis) anaModelElement;
-            EList<Dependency> clientDependency = anaModelElement.getClientDependency();
-            Iterator<Dependency> it = clientDependency.iterator();
-            ModelElement supplierModelElement = RepositoryNodeHelper.getResourceModelElement(supplierItem);
-            Resource supModeResource = supplierModelElement.eResource();
-            while (it.hasNext()) {
-                Dependency clientDep = it.next();
-                // when the client dependence is proxy and its lastSegment of uri is same as
-                // systemSupplyModelElement,remove it.
-                if (clientDep.eResource() == null) {
-                    URI clientDepURI = ((InternalEObject) clientDep).eProxyURI();
-                    boolean isUDI = clientDepURI
-                            .path()
-                            .contains(ResourceManager.getUDIFolder().getProjectRelativePath().toString());
-                    boolean isPattern = clientDepURI
-                            .path()
-                            .contains(ResourceManager.getPatternFolder().getProjectRelativePath().toString());
-                    if (supModeResource != null && (isUDI || isPattern)
-                            && clientDepURI.lastSegment().equals(supModeResource.getURI().lastSegment())) {
-                        it.remove();
-                        break;
-                    }
-                }
-            }
-            DependenciesHandler.getInstance().setUsageDependencyOn(anaModelElement, supplierModelElement);
-            // TDQ-8436 remove the old pattern and add the new pattern in analysis Indicator Parameters.
-            if (isPattern(supplierModelElement)) {
-                updatePatternInAnaParams(supplierModelElement, analysis);
-                ElementWriterFactory.getInstance().createPatternWriter().save(supplierItem, true);
-            }
-
-            // remove old udi and set a new one in the analysis indicators.
-            if (supplierModelElement instanceof UDIndicatorDefinition) {
-                if (analysis.getResults() != null) {
-                    EList<Indicator> indicators = analysis.getResults().getIndicators();
-                    Iterator<Indicator> itIndicators = indicators.iterator();
-                    while (itIndicators.hasNext()) {
-                        Indicator indicator = itIndicators.next();
-                        IndicatorDefinition indicatorDefinition = indicator.getIndicatorDefinition();
-                        if (indicatorDefinition.eResource() == null) {
-                            URI indicatorDefURI = ((InternalEObject) indicatorDefinition).eProxyURI();
-                            if (supModeResource != null && UDIHelper.isUDI(indicator)
-                                    && indicatorDefURI.lastSegment().equals(supModeResource.getURI().lastSegment())) {
-                                indicator.setIndicatorDefinition((UDIndicatorDefinition) supplierModelElement);
-                                break;
-                            }
-                        }
-                    }
-                    ElementWriterFactory.getInstance().createIndicatorDefinitionWriter().save(supplierItem, true);
-                }
-            }
-
-            // only save analysis item at here.
-            ProxyRepositoryFactory.getInstance().save(property.getItem(), true);
-        }
-
-    }
-
-    /**
-     * if there is a same name pattern in current workspace,update the pattern in imported analysis IndicatorParameters.
-     *
-     * @param systemSupplyModelElement
-     * @param analysis
-     */
-    private void updatePatternInAnaParams(ModelElement systemSupplyModelElement, Analysis analysis) {
-        if (analysis.getResults() != null) {
-            EList<Indicator> indicators = analysis.getResults().getIndicators();
-            IndicatorParameters parameters = null;
-            for (Indicator indicator : indicators) {
-                // AllMatchIndicator is in column set analysis.
-                if (indicator instanceof AllMatchIndicator) {
-                    EList<RegexpMatchingIndicator> list =
-                            ((AllMatchIndicator) indicator).getCompositeRegexMatchingIndicators();
-                    for (RegexpMatchingIndicator regMatchIndicator : list) {
-                        parameters = regMatchIndicator.getParameters();
-                        removOldAddSysPatternInAnaParams(parameters, (Pattern) systemSupplyModelElement, analysis);
-                    }
-                } else if (indicator instanceof PatternMatchingIndicator) {
-                    parameters = ((PatternMatchingIndicator) indicator).getParameters();
-                    removOldAddSysPatternInAnaParams(parameters, (Pattern) systemSupplyModelElement, analysis);
-                }
-            }
-        }
-    }
-
-    /**
-     *
-     * remove the old pattern from IndicatorParameters of imported analysis ,then add the current workspace pattern into
-     * IndicatorParameters.
-     *
-     * @param indParameters
-     * @param sysPattern
-     * @param analysis
-     */
-    private void removOldAddSysPatternInAnaParams(IndicatorParameters indParameters, Pattern sysPattern,
-            Analysis analysis) {
-        if (null == indParameters || null == indParameters.getDataValidDomain()) {
-            return;
-        }
-        EList<Pattern> patterns = indParameters.getDataValidDomain().getPatterns();
-        Iterator<Pattern> itPatterns = patterns.iterator();
-        while (itPatterns.hasNext()) {
-            Pattern oldPattern = itPatterns.next();
-            if (oldPattern.eResource() == null) {
-                URI oldPatternUri = EObjectHelper.getURI(oldPattern);
-                URI sysPatternUri = EObjectHelper.getURI(sysPattern);
-                if (oldPatternUri != null && sysPatternUri != null
-                        && sysPatternUri.lastSegment().equals(oldPatternUri.lastSegment())) {
-                    itPatterns.remove();
-                    indParameters.getDataValidDomain().getPatterns().add(sysPattern);
-                    log
-                            .info("Pattern '" + sysPattern.getName() + "' is updated in Analysis '" + analysis.getName() //$NON-NLS-1$ //$NON-NLS-2$
-                                    + "'"); //$NON-NLS-1$
-                    break;
-                }
-            }
-        }
-    }
-
     private PatternComponent createPatternComponent(PatternComponent oldComponent) {
         RegularExpression newComponent = PatternFactory.eINSTANCE.createRegularExpression();
         newComponent.setExpression(((RegularExpression) oldComponent).getExpression());
@@ -1790,27 +1567,36 @@ public class FileSystemImportWriter implements IImportWriter {
 
         List<IMigrationTask> modelTasks = new ArrayList<IMigrationTask>();
 
+        ProductVersion version = null;
         if (versionFile != null && versionFile.exists()) {
-            ProductVersion version = WorkspaceVersionHelper.getDisplayVersion(new Path(versionFile.getAbsolutePath()));
-            MigrationTaskManager manager = new MigrationTaskManager(version, MigrationTaskType.FILE);
-            List<IMigrationTask> taskList = manager.getValidTasks();
+            version = WorkspaceVersionHelper.getDisplayVersion(new Path(versionFile.getAbsolutePath()));
+        } else {
+            // get version from the talend.project file
+            if (project != null) {
+                String toOpenProjectVersion = VersionUtils
+                        .getProductVersionWithoutBranding(project.getProductVersion());
+                version = ProductVersion.fromString(toOpenProjectVersion, true, true);
+            }
+        }
+        if (version == null) {
+            return;
+        }
 
-            if (!taskList.isEmpty()) {
-
-                for (IMigrationTask task : taskList) {
-                    if (task.isModelTask()) {
-                        ((AbstractWorksapceUpdateTask) task).setWorkspacePath(basePath);
-                        modelTasks.add(task);
-                    } else {
-                        // MOD msjian TDQ-7365 2013-5-27: only added the not inclued tasks
-                        if (!commTasks.contains(task)) {
-                            commTasks.add(task);
-                        }
-                        // TDQ-7365~
+        MigrationTaskManager manager = new MigrationTaskManager(version, MigrationTaskType.FILE);
+        List<IMigrationTask> taskList = manager.getValidTasks();
+        if (!taskList.isEmpty()) {
+            for (IMigrationTask task : taskList) {
+                if (task.isModelTask()) {
+                    ((AbstractWorksapceUpdateTask) task).setWorkspacePath(basePath);
+                    modelTasks.add(task);
+                } else {
+                    // MOD msjian TDQ-7365 2013-5-27: only added the not inclued tasks
+                    if (!commTasks.contains(task)) {
+                        commTasks.add(task);
                     }
+                    // TDQ-7365~
                 }
             }
-
         }
 
         if (!modelTasks.isEmpty()) {
@@ -1827,12 +1613,11 @@ public class FileSystemImportWriter implements IImportWriter {
     public ItemRecord computeInput(IPath path) {
 
         if (path != null) {
-            versionFile = path.append(EResourceConstant.LIBRARIES.getPath()).append(VERSION_FILE_NAME).toFile();
-            definitionFile = path.append(EResourceConstant.LIBRARIES.getPath()).append(DEFINITION_FILE_NAME).toFile();
-
-            if (!versionFile.exists()) {
-                return null;
-            }
+            // TDQ-21520 msjian: not check the versionFile must exist, to support items export From DI side.
+            // because export from DI side doesn't have this file.
+            versionFile = path.append(EResourceConstant.LIBRARIES.getPath())
+                    .append(PluginConstant.VERSION_FILE_PATH)
+                    .toFile();
 
             tempFolder = backUPWorksapce(path);
             if (tempFolder == null) {
@@ -1846,7 +1631,7 @@ public class FileSystemImportWriter implements IImportWriter {
             if (projPath.toFile().exists()) {
                 Object projOBJ = EObjectHelper.retrieveEObject(projPath, PropertiesPackage.eINSTANCE.getProject());
                 if (projOBJ != null) {
-                    Project project = (Project) projOBJ;
+                    project = (Project) projOBJ;
                     projectName = project.getTechnicalLabel();
                 }
             } else {
@@ -1914,8 +1699,6 @@ public class FileSystemImportWriter implements IImportWriter {
         List<String> errors = new ArrayList<String>();
         if (!checkBasePath()) {
             errors.add(DefaultMessagesImpl.getString("FileSystemImportWriter.RootInvalid"));//$NON-NLS-1$
-        } else if (!checkVersion()) {
-            errors.add(DefaultMessagesImpl.getString("FileSystemImportWriter.VeriryVersion"));//$NON-NLS-1$
         } else if (!checkProject()) {
             errors.add(DefaultMessagesImpl.getString("FileSystemImportWriter.InvalidProject"));//$NON-NLS-1$
         } else if (!checkTempPath()) {
@@ -1935,22 +1718,12 @@ public class FileSystemImportWriter implements IImportWriter {
     }
 
     /**
-     * DOC bZhou Comment method "checkVersion".
-     *
-     * @return
-     */
-    private boolean checkVersion() {
-        return versionFile.exists();
-    }
-
-    /**
      * DOC bZhou Comment method "checkBasePath".
      *
      * @return
      */
     private boolean checkBasePath() {
-        return basePath != null && basePath.toFile().exists()
-                && basePath.append(EResourceConstant.LIBRARIES.getPath()).toFile().exists();
+        return basePath != null && basePath.toFile().exists();
     }
 
     private boolean checkTempPath() {
@@ -1958,7 +1731,7 @@ public class FileSystemImportWriter implements IImportWriter {
     }
 
     /**
-     * remove invalid client depenedences before migration.
+     * remove invalid client dependences before migration.
      */
     private void removeInvalidDependency(Property property) {
         ModelElement modelElement = PropertyHelper.getModelElement(property);
@@ -2002,7 +1775,7 @@ public class FileSystemImportWriter implements IImportWriter {
                 }
             }
         }
-        // remove clint Dependency from model
+        // remove client Dependency from model
         Iterator<Dependency> ClientDependencyIterator = modelElement.getClientDependency().iterator();
         while (ClientDependencyIterator.hasNext()) {
             Dependency dependency = ClientDependencyIterator.next();
@@ -2012,7 +1785,7 @@ public class FileSystemImportWriter implements IImportWriter {
                 ClientDependencyIterator.remove();
                 needSaveResource = true;
             }
-            // else remove the elemet from dependency
+            // else remove the element from dependency
             Iterator<ModelElement> suppLiterator = suppliers.iterator();
             while (suppLiterator.hasNext()) {
                 ModelElement supplier = suppLiterator.next();

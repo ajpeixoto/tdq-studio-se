@@ -19,13 +19,10 @@ import org.apache.log4j.Logger;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.emf.ecore.util.EcoreUtil;
+import org.talend.core.repository.constants.FileConstants;
 import org.talend.dataprofiler.core.ui.utils.DqFileUtils;
-import org.talend.resource.EResourceConstant;
 import org.talend.utils.io.FilesUtils;
 
-/**
- * DOC bZhou class global comment. Detailled comment
- */
 public class ZipFileImportWriter extends FileSystemImportWriter {
 
     private static Logger log = Logger.getLogger(ZipFileImportWriter.class);
@@ -60,10 +57,10 @@ public class ZipFileImportWriter extends FileSystemImportWriter {
                 log.error(e, e);
             }
 
-            File libFolder = DqFileUtils.getFile(tempFile, EResourceConstant.LIBRARIES.getName(), true);
+            File projectFile = DqFileUtils.getFile(tempFile, FileConstants.LOCAL_PROJECT_FILENAME, false);
 
-            if (libFolder != null && libFolder.exists()) {
-                IPath projectPath = new Path(libFolder.getParentFile().getAbsolutePath());
+            if (projectFile != null && projectFile.exists()) {
+                IPath projectPath = new Path(projectFile.getParentFile().getAbsolutePath());
                 return super.computeInput(projectPath);
             }
         }
