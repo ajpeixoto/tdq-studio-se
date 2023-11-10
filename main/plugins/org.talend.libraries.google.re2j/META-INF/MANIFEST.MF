@@ -8,3 +8,4 @@ Bundle-ClassPath: .,
  lib/re2j-1.2.jar
 Bundle-ActivationPolicy: lazy
 Export-Package: com.google.re2j
+Automatic-Module-Name: org.talend.libraries.google.re2j

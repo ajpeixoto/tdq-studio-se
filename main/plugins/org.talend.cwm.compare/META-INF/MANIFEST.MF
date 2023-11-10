@@ -32,3 +32,4 @@ Export-Package: org.talend.cwm.compare,
  org.talend.cwm.compare.exception,
  org.talend.cwm.compare.factory,
  org.talend.cwm.compare.factory.comparisonlevel
+Automatic-Module-Name: org.talend.cwm.compare

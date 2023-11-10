@@ -28,3 +28,4 @@ Require-Bundle: org.talend.dataquality,
  org.eclipse.core.runtime,
  org.talend.model
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: org.talend.dataquality.edit

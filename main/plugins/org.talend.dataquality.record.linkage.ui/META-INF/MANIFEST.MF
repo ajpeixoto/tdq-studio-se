@@ -43,3 +43,4 @@ Export-Package: org.talend.dataquality.record.linkage.ui.action,
  org.talend.dataquality.record.linkage.ui.service
 Bundle-ClassPath: .
 Bundle-Activator: org.talend.dataquality.record.linkage.ui.LinkageUIPlugin
+Automatic-Module-Name: org.talend.dataquality.record.linkage.ui

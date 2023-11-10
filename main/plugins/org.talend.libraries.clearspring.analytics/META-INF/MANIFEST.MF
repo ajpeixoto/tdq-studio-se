@@ -14,3 +14,4 @@ Export-Package: com.clearspring.analytics.hash,
  com.clearspring.analytics.stream.membership,
  com.clearspring.analytics.stream.quantile,
  com.clearspring.analytics.util
+Automatic-Module-Name: org.talend.libraries.clearspring.analytics

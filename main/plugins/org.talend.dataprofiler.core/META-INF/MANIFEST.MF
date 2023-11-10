@@ -128,4 +128,5 @@ Bundle-ClassPath: .
 Service-Component: OSGI-INF/indicatorDefault.xml
 Import-Package: org.talend.dataprofiler.service,
  org.talend.fileprocess
+Automatic-Module-Name: org.talend.dataprofiler.core
  

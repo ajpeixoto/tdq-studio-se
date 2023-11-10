@@ -14,3 +14,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: com.google.i18n.phonenumbers;version="8.9.6",
  com.google.i18n.phonenumbers.geocoding;version="2.95",
  com.google.i18n.phonenumbers.prefixmapper;version="2.95"
+Automatic-Module-Name: org.talend.libraries.google.libphonumber

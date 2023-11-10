@@ -29,8 +29,7 @@
       <import plugin="javax.servlet.jsp" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="javax.wsdl" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="javax.xml" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="javax.xml.rpc" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="javax.xml.soap" version="0.0.0" match="greaterOrEqual"/>
+      <import plugin="jakarta.xml.soap-api" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.antlr.runtime" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.apache.ant" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.talend.libraries.apache.axis2" version="0.0.0" match="greaterOrEqual"/>
@@ -152,8 +151,6 @@
       <import plugin="org.eclipse.update.configurator" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.xsd" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.hamcrest.core" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="org.mortbay.jetty.server" version="0.0.0" match="greaterOrEqual"/>
-      <import plugin="org.mortbay.jetty.util" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.talend.core.runtime" version="0.0.0" match="greaterOrEqual"/>
       <import plugin="org.talend.utils" version="0.0.0" match="greaterOrEqual"/>
    </requires>

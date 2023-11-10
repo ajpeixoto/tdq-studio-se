@@ -43,3 +43,4 @@ Require-Bundle: org.talend.libraries.apache,
  org.apache.commons.collections
 Bundle-ActivationPolicy: lazy
 Eclipse-BundleShape: dir
+Automatic-Module-Name: org.talend.libraries.jung

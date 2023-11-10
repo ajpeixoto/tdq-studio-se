@@ -16,3 +16,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.talend.dataprofiler.help
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
+Automatic-Module-Name: org.talend.dataprofiler.help

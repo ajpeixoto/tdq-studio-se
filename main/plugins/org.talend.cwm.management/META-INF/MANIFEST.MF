@@ -14,7 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.talend.libraries.custom,
  org.talend.libraries.jung;resolution:=optional,
  org.eclipse.xsd,
- javax.xml.rpc,
  org.talend.core.repository,
  org.talend.core.runtime,
  org.talend.metadata.managment,
@@ -84,4 +83,5 @@ Export-Package: org.talend.commons.emf,
  org.talend.dq.writer.impl
 Import-Package: org.talend.dataprofiler.service
 Service-Component: OSGI-INF/mapdb.xml
+Automatic-Module-Name: org.talend.cwm.management
 

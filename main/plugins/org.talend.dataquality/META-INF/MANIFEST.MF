@@ -89,3 +89,4 @@ Eclipse-RegisterBuddy: org.apache.log4j,
  org.talend.libraries.mapdb
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.talend.dataquality.DataQualityPlugin
+Automatic-Module-Name: org.talend.dataquality

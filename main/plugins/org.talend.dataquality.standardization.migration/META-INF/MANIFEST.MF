@@ -5,3 +5,4 @@ Bundle-SymbolicName: org.talend.dataquality.standardization.migration
 Bundle-Version: 8.8.8.qualifier
 Bundle-Vendor: .Talend SA.
 Require-Bundle: org.talend.libraries.apache.lucene8
+Automatic-Module-Name: org.talend.dataquality.standardization.migration

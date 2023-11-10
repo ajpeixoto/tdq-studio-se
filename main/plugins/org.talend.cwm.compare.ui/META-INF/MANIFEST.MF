@@ -27,3 +27,4 @@ Require-Bundle: org.talend.cwm.management,
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Bundle-Localization: plugin
+Automatic-Module-Name: org.talend.cwm.compare.ui

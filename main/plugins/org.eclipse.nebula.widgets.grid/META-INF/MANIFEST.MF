@@ -10,3 +10,4 @@ Export-Package: org.eclipse.nebula.jface.gridviewer,
  org.eclipse.nebula.widgets.grid,
  org.eclipse.nebula.widgets.grid.internal;x-internal:=true
 Bundle-Vendor: Eclipse.org
+Automatic-Module-Name: org.eclipse.nebula.widgets.grid

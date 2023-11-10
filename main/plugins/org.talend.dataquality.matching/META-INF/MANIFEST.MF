@@ -10,3 +10,4 @@ Bundle-ClassPath: .,
  dist/org.talend.dataquality.matching.jar
 Require-Bundle: org.apache.log4j,
  org.talend.commons.runtime
+Automatic-Module-Name: org.talend.dataquality.matching

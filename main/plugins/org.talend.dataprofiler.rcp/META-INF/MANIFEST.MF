@@ -34,10 +34,12 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.m2e.maven.runtime,
  org.talend.commons.runtime,
  org.apache.commons.lang,
- org.talend.studio.studio-utils
+ org.talend.studio.studio-utils,
+ javax.inject
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: .Talend SA.
 Export-Package: org.talend.dataprofiler.rcp,
  org.talend.dataprofiler.rcp.intro
 Eclipse-RegisterBuddy: org.apache.log4j
 Bundle-Localization: plugin
+Automatic-Module-Name: org.talend.dataprofiler.rcp

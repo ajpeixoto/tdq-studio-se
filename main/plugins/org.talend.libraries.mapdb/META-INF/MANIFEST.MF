@@ -9,3 +9,4 @@ Bundle-Vendor: .Talend SA.
 Eclipse-BuddyPolicy: registered
 Export-Package: org.mapdb
 Eclipse-BundleShape: dir
+Automatic-Module-Name: org.talend.libraries.mapdb

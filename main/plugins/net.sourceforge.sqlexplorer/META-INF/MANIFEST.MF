@@ -10,7 +10,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.2.0",
  org.eclipse.ui.workbench.texteditor;bundle-version="3.2.0",
  org.eclipse.jface.text;bundle-version="3.2.0",
  org.eclipse.ui.editors;bundle-version="3.2.0",
- org.eclipse.equinox.ds,
  org.eclipse.osgi.services,
  org.apache.log4j;bundle-version="1.2.13",
  org.apache.commons.lang,
@@ -111,3 +110,4 @@ Bundle-Localization: plugin
 Import-Package: org.talend.dataprofiler.service
 Service-Component: OSGI-INF/sqlexplorer.xml
 Bundle-ActivationPolicy: lazy
+Automatic-Module-Name: net.sourceforge.sqlexplorer
