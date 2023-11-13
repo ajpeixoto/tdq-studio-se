@@ -31,6 +31,7 @@ import org.talend.commons.exception.BusinessException;
 import org.talend.commons.utils.platform.PluginChecker;
 import org.talend.core.ITDQRepositoryService;
 import org.talend.core.model.metadata.builder.connection.Connection;
+import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataColumn;
 import org.talend.cwm.db.connection.DatabaseSQLExecutor;
 import org.talend.cwm.db.connection.DelimitedFileSQLExecutor;
@@ -225,7 +226,9 @@ public class MatchAnalysisExecutor implements IAnalysisExecutor {
                 AnalysisExecutorHelper.setExecutionInfoInAnalysisResult(analysis, rc.isOk(), rc.getMessage());
                 return rc;
             } finally {
-                ((AnalysisExecutor) sqlExecutor).closeSqlConnection(analysis, sqlConnection.getObject());
+                if (!(analysis.getContext().getConnection() instanceof DelimitedFileConnection)) {
+                    ((AnalysisExecutor) sqlExecutor).closeSqlConnection(analysis, sqlConnection.getObject());
+                }
             }
         }
 
