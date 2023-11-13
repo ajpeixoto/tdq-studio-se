@@ -2510,8 +2510,6 @@ public final class RepositoryNodeHelper {
      * @return
      */
     public static RepositoryNode getRootNode(ERepositoryObjectType nodeName) {
-        // MOD klliu bug 19138 In DI that can't find MDMConnectionFolderRepNode when create MDM connection
-        // ~2011-03-22
         // FIXME: why we need this check?? we have the same two returns.
         IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         if (activeWorkbenchWindow != null) {
@@ -2521,7 +2519,6 @@ public final class RepositoryNodeHelper {
                 return getRootNode(nodeName, true);
             }
         }
-        // ~
         return getRootNode(nodeName, true);
     }
 

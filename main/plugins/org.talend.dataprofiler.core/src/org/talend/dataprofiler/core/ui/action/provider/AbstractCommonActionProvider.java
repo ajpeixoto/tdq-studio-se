@@ -197,7 +197,6 @@ public class AbstractCommonActionProvider extends CommonActionProvider {
      *
      * Get Connection which cotain by selectedNode(DBConnectionRepNode\DBCatalogRepNode\DBSchemaRepNode) If want to
      * support to DelimiteFileConnection node need to make DFColumnFolderRepNode implements IConnectionElementSubFolder
-     * interface The case for MDMConnection is same to DelimiteFileConnection.
      *
      * @param selectedNode
      * @return

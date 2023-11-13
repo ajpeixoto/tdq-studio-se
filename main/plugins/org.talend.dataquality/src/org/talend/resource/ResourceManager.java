@@ -398,15 +398,6 @@ public final class ResourceManager {
         return getOneFolder(EResourceConstant.CONTEXT);
     }
 
-    /**
-     * DOC bZhou Comment method "getMDMConnectionFolder".
-     *
-     * @return
-     */
-    public static IFolder getMDMConnectionFolder() {
-        return getOneFolder(EResourceConstant.MDM_CONNECTIONS);
-    }
-
     public static IFolder getHadoopClusterFolder() {
         return getOneFolder(EResourceConstant.HADOOP_CLUSTER);
     }

@@ -26,7 +26,6 @@ import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.TDQItem;
 import org.talend.cwm.helper.SwitchHelpers;
 import org.talend.dataquality.analysis.Analysis;
@@ -62,7 +61,6 @@ public enum EResourceConstant {
     // These three resource constant is compatible with version before 4.1.
     OLD_METADATA("TDQ_Metadata", "TDQ_Metadata", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     OLD_DB_CONNECTIONS("DB Connections", "TDQ_Metadata/DB Connections", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
-    OLD_MDM_CONNECTIONS("MDM Connections", "TDQ_Metadata/MDM Connections", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     FOLDER("", ""), //$NON-NLS-1$ $NON-NLS-2$
     DATA_PROFILING("TDQ_Data Profiling", "TDQ_Data Profiling", ResourceConstant.READONLY, ResourceConstant.NO_SUBFOLDER), //$NON-NLS-1$ $NON-NLS-2$
     LIBRARIES("TDQ_Libraries", "TDQ_Libraries", ResourceConstant.READONLY, ResourceConstant.NO_SUBFOLDER), //$NON-NLS-1$ $NON-NLS-2$
@@ -127,7 +125,6 @@ public enum EResourceConstant {
 
     SOURCE_FILES("Source Files", "TDQ_Libraries/Source Files", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     DB_CONNECTIONS("connections", "metadata/connections", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
-    MDM_CONNECTIONS("MDMconnections", "metadata/MDMconnections", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     FILEDELIMITED("fileDelimited", "metadata/fileDelimited", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
     REPORTING_DB("TDQ_reporting_db", "REPORTING_DB", ResourceConstant.READONLY), //$NON-NLS-1$ $NON-NLS-2$
 
@@ -221,7 +218,6 @@ public enum EResourceConstant {
         constantList.add(ANALYSIS);
         constantList.add(REPORTS);
         constantList.add(DB_CONNECTIONS);
-        // constantList.add(MDM_CONNECTIONS);
         constantList.add(RULES_SQL);
         constantList.add(INDICATORS);
         constantList.add(JRXML_TEMPLATE);
@@ -288,11 +284,6 @@ public enum EResourceConstant {
             @Override
             public Object caseDatabaseConnectionItem(DatabaseConnectionItem object) {
                 return DB_CONNECTIONS;
-            }
-
-            @Override
-            public Object caseMDMConnectionItem(MDMConnectionItem object) {
-                return MDM_CONNECTIONS;
             }
 
             @Override
@@ -394,17 +385,6 @@ public enum EResourceConstant {
             object = constatnt;
         }
         return object != null ? (EResourceConstant) object : null;
-    }
-
-    /**
-     * DOC bZhou Comment method "isMDMConnection".
-     *
-     * @param provider
-     * @return
-     */
-    @SuppressWarnings("unused")
-    private static boolean isMDMConnection(DataProvider provider) {
-        return SwitchHelpers.MDMCONNECTION_SWITCH.doSwitch(provider) == null ? false : true;
     }
 
     /**

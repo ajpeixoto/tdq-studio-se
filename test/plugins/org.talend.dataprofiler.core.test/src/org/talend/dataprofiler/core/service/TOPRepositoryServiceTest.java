@@ -30,7 +30,6 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.talend.core.ITDQRepositoryService;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
-import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.Property;
 import org.talend.core.model.repository.IRepositoryViewObject;
@@ -169,17 +168,15 @@ public class TOPRepositoryServiceTest {
         ConnectionItem item = mock(ConnectionItem.class);
         when(pro.getItem()).thenReturn(item);
 
-        MDMConnection mdm = mock(MDMConnection.class);
         DelimitedFileConnection dfile = mock(DelimitedFileConnection.class);
         DatabaseConnection dbc = mock(DatabaseConnection.class);
-        when(item.getConnection()).thenReturn(dbc).thenReturn(dfile).thenReturn(mdm);
+        when(item.getConnection()).thenReturn(dbc).thenReturn(dfile);
 
         List<ModelElement> dependencyClients = new ArrayList<ModelElement>();
         ModelElement m1 = mock(ModelElement.class);
         dependencyClients.add(m1);
         PowerMockito.mockStatic(EObjectHelper.class);
         when(EObjectHelper.getDependencyClients(dbc)).thenReturn(dependencyClients);
-        when(EObjectHelper.getDependencyClients(mdm)).thenReturn(dependencyClients);
         when(EObjectHelper.getDependencyClients(dfile)).thenReturn(dependencyClients);
 
         Assert.assertFalse(tdqRepService.removeAliasInSQLExplorer(child));

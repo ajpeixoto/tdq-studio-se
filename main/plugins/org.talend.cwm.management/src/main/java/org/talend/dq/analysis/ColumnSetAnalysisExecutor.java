@@ -44,19 +44,14 @@ import orgomg.cwm.resource.relational.ColumnSet;
  */
 public class ColumnSetAnalysisExecutor extends AnalysisExecutor {
 
-    private static Logger log = Logger.getLogger(ColumnSetAnalysisExecutor.class);
-
     protected boolean isDelimitedFile = false;
-
-    protected boolean isMdm = false;
 
     /**
      * DOC yyi 2011-02-24 17871:delimitefile.
      */
-    public ColumnSetAnalysisExecutor(boolean isDelimitedFile, boolean isMdm) {
+    public ColumnSetAnalysisExecutor(boolean isDelimitedFile) {
         super();
         this.isDelimitedFile = isDelimitedFile;
-        this.isMdm = isMdm;
     }
 
     /*

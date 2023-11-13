@@ -40,7 +40,6 @@ import org.talend.core.context.Context;
 import org.talend.core.context.RepositoryContext;
 import org.talend.core.database.EDatabaseTypeName;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
-import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.database.JavaSqlFactory;
 import org.talend.core.model.metadata.builder.database.dburl.SupportDBUrlType;
 import org.talend.core.model.properties.ConnectionItem;
@@ -76,9 +75,6 @@ import org.talend.repository.model.IRepositoryNode;
 import org.talend.repository.model.IRepositoryNode.ENodeType;
 import org.talend.repository.model.IRepositoryNode.EProperties;
 import org.talend.repository.model.RepositoryNode;
-import org.talend.resource.EResourceConstant;
-
-import orgomg.cwm.foundation.softwaredeployment.DataManager;
 import orgomg.cwm.objectmodel.core.ModelElement;
 
 /**
@@ -218,8 +214,7 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
                     return ImageLib.createInvalidIcon(originalImageName);
                 }
                 EList<ModelElement> analysedElements = context.getAnalysedElements();
-                DataManager connection = context.getConnection();
-                if (analysedElements.isEmpty() || connection instanceof MDMConnection) {
+                if (analysedElements.isEmpty()) {
                     return ImageLib.createInvalidIcon(originalImageName);
                 }
             } else if (ERepositoryObjectType.TDQ_REPORT_ELEMENT == objectType) {
@@ -232,10 +227,6 @@ public class DQRepositoryViewLabelProvider extends AdapterFactoryLabelProvider i
                     Analysis analysis = anaMap.getAnalysis();
                     if (analysis == null || analysis.getContext() == null) {
                         continue;
-                    }
-                    DataManager connection = analysis.getContext().getConnection();
-                    if (connection instanceof MDMConnection) {
-                        return ImageLib.createInvalidIcon(originalImageName);
                     }
                 }
             }

@@ -50,7 +50,6 @@ import org.talend.core.model.metadata.IMetadataConnection;
 import org.talend.core.model.metadata.builder.connection.Connection;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
-import org.talend.core.model.metadata.builder.connection.MDMConnection;
 import org.talend.core.model.metadata.builder.connection.MetadataTable;
 import org.talend.core.model.properties.ConnectionItem;
 import org.talend.core.model.properties.ContextItem;
@@ -145,20 +144,6 @@ public class TOPRepositoryService implements ITDQRepositoryService {
         }
     }
 
-    /**
-     * Fill MDM connection only.
-     */
-    @Override
-    public void fillMetadata(ConnectionItem connItem) {
-        MetadataConnectionUtils.fillConnectionInformation(connItem);
-        // MOD gdbu 2011-7-12 bug : 22598
-        MDMConnection mdmConnection = (MDMConnection) connItem.getConnection();
-        mdmConnection.setLabel(connItem.getProperty().getLabel() + "");
-        mdmConnection.setName(connItem.getProperty().getLabel() + "");
-        ElementWriterFactory.getInstance().createDataProviderWriter().save(mdmConnection);
-        // ~22598
-    }
-
     @Override
     public void refresh() {
         CorePlugin.getDefault().refreshWorkSpace();
@@ -229,8 +214,7 @@ public class TOPRepositoryService implements ITDQRepositoryService {
         // MOD mzhao filter the connections which is not a type of database.
         if (item != null && item instanceof ConnectionItem) {
             Connection connection = ((ConnectionItem) item).getConnection();
-            if (connection instanceof DatabaseConnection || connection instanceof DelimitedFileConnection
-                    || connection instanceof MDMConnection) {
+            if (connection instanceof DatabaseConnection || connection instanceof DelimitedFileConnection) {
                 CWMPlugin.getDefault().removeAliasInSQLExplorer(connection);
             }
         }

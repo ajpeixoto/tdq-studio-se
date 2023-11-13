@@ -21,7 +21,6 @@ import org.talend.core.model.properties.ContextItem;
 import org.talend.core.model.properties.DatabaseConnectionItem;
 import org.talend.core.model.properties.DelimitedFileConnectionItem;
 import org.talend.core.model.properties.Item;
-import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.cwm.constants.ConstantsFactory;
 import org.talend.cwm.relational.RelationalFactory;
@@ -412,11 +411,6 @@ public final class FactoriesUtil {
 
                     @Override
                     public Object caseDatabaseConnectionItem(DatabaseConnectionItem object) {
-                        return ITEM;
-                    }
-
-                    @Override
-                    public Object caseMDMConnectionItem(MDMConnectionItem object) {
                         return ITEM;
                     }
 

@@ -42,7 +42,6 @@ import org.talend.core.model.properties.FolderItem;
 import org.talend.core.model.properties.FolderType;
 import org.talend.core.model.properties.Item;
 import org.talend.core.model.properties.ItemState;
-import org.talend.core.model.properties.MDMConnectionItem;
 import org.talend.core.model.properties.Project;
 import org.talend.core.model.properties.PropertiesFactory;
 import org.talend.core.model.properties.PropertiesPackage;
@@ -501,7 +500,7 @@ public final class PropertyHelper {
             }
         }
 
-        return "";
+        return ""; //$NON-NLS-1$
     }
 
     /**
@@ -531,7 +530,6 @@ public final class PropertyHelper {
         } else {
             List<EResourceConstant> typedConstantList = EResourceConstant.getTypedConstantList();
             typedConstantList.add(EResourceConstant.OLD_DB_CONNECTIONS);
-            typedConstantList.add(EResourceConstant.OLD_MDM_CONNECTIONS);
 
             for (int i = 0; i < filePath.segmentCount() && flag == 0; i++) {
                 String seg = filePath.segment(i);
@@ -566,11 +564,6 @@ public final class PropertyHelper {
 
             @Override
             public Object caseDatabaseConnectionItem(DatabaseConnectionItem object) {
-                return object.getConnection();
-            }
-
-            @Override
-            public Object caseMDMConnectionItem(MDMConnectionItem object) {
                 return object.getConnection();
             }
 

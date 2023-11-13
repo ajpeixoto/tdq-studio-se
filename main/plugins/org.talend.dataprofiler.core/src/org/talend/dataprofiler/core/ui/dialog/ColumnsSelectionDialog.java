@@ -405,9 +405,6 @@ public class ColumnsSelectionDialog extends TwoPartCheckSelectionDialog {
      */
     protected void handleTreeElementsChecked(RepositoryNode repNode, Boolean checkedFlag) {
         if (checkedFlag) {
-            // MOD klliu 2011-03-03 bug 19195 the MDM node is defferent from DF/DB connection Structure
-            // MDM does not have Column folder
-
             List<IRepositoryNode> children = repNode.getChildren();
             for (IRepositoryNode colFolderNode : children) {
                 for (IRepositoryNode colNode : colFolderNode.getChildren()) {
@@ -616,10 +613,6 @@ public class ColumnsSelectionDialog extends TwoPartCheckSelectionDialog {
                 }
                 return repoNode.getChildren().get(0).getChildren().toArray();
             }
-            // if (parentElement instanceof DBColumnFolderRepNode || parentElement instanceof MDMSchemaRepNode) {
-            // IRepositoryNode repoNode = (IRepositoryNode) parentElement;
-            // return repoNode.getChildren().toArray();
-            // }
             if (parentElement instanceof DBColumnRepNode || parentElement instanceof DFColumnRepNode) {
                 return new Object[] { parentElement };
             }

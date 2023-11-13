@@ -57,7 +57,6 @@ public class CreateUserFolderProvider extends AbstractCommonActionProvider {
 
             if (!ResourceService.isNoSubFolder(currentSelection)) {
                 // !ResourceManager.isConnectionFolder(currentSelection)
-                // && !ResourceManager.isMdmConnectionFolder(currentSelection)) {
                 // MOD qiongli -2011-1-20 don't add it for recycle bin elements
                 RepositoryNode node = (RepositoryNode) obj;
                 if (node.getObject() != null) {
