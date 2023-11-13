@@ -80,7 +80,6 @@ public class ConnectionTypePage extends WizardPage {
         connectionType.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         connectionType.setEditable(false);
 
-        // TODO support MDM later.
         connectionType.add(Messages.getString("DQRepositoryViewLabelProvider.DBConnectionFolderName")); //$NON-NLS-1$
         connectionType.add(Messages.getString("DQRepositoryViewLabelProvider.DFConnectionFolderName")); //$NON-NLS-1$
         connectionType.select(0);

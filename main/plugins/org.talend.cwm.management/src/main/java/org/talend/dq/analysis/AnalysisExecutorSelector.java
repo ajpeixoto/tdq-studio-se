@@ -134,10 +134,10 @@ public final class AnalysisExecutorSelector {
         boolean isSQLEngine = ExecutionLanguage.SQL.equals(executionEngine);
         boolean isUseSampleData = AnalysisHelper.isUseSampleData(analysis);
         if (isUseSampleData) {
-            return new ColumnSetAnalysisExecutorWithSampleData(isDelimitedFile, false);
+            return new ColumnSetAnalysisExecutorWithSampleData(isDelimitedFile);
         } else {
             return isSQLEngine ? new MultiColumnAnalysisExecutor()
-                    : new ColumnSetAnalysisExecutor(isDelimitedFile, false);
+                    : new ColumnSetAnalysisExecutor(isDelimitedFile);
         }
     }
 

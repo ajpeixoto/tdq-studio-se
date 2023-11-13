@@ -62,7 +62,6 @@ public class SwitchContextProvider extends AbstractCommonActionProvider {
      * @param node
      * @return
      */
-    @SuppressWarnings("unchecked")
     private boolean shouldShowSwitchMenu(RepositoryNode node) {
         ENodeType type = node.getType();
         // MOD msjian 2012-2-13 TDQ-4559: make it support file/mdm connection

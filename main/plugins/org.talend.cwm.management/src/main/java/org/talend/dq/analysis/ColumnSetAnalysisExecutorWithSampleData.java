@@ -25,10 +25,9 @@ public class ColumnSetAnalysisExecutorWithSampleData extends ColumnSetAnalysisEx
      * DOC zshen ColumnSetAnalysisExecutorWithSampleData constructor comment.
      *
      * @param isDelimitedFile
-     * @param isMdm
      */
-    public ColumnSetAnalysisExecutorWithSampleData(boolean isDelimitedFile, boolean isMdm) {
-        super(isDelimitedFile, isMdm);
+    public ColumnSetAnalysisExecutorWithSampleData(boolean isDelimitedFile) {
+        super(isDelimitedFile);
     }
 
     /*

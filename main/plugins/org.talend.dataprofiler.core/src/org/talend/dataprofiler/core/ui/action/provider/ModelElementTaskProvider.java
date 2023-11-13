@@ -83,7 +83,7 @@ public class ModelElementTaskProvider extends AbstractCommonActionProvider {
     // * @return
     // */
     // private boolean shouldShowAddTask(RepositoryNode node) {
-    // return (node instanceof AnalysisRepNode || node instanceof ReportRepNode || node instanceof MDMConnectionRepNode
+    // return (node instanceof AnalysisRepNode || node instanceof ReportRepNode
     // || node instanceof DBConnectionRepNode || node instanceof DFConnectionRepNode
     // || node instanceof DBConnectionRepNode || node instanceof DBCatalogRepNode || node instanceof DBSchemaRepNode
     // || node instanceof DBTableRepNode || node instanceof DBViewRepNode || node instanceof DBColumnRepNode

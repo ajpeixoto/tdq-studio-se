@@ -983,10 +983,6 @@ public final class ConnectionUtils {
             // ADD klliu 2011-05-19 21704: Refactoring this "otherParameter" !
             connectionParam.setFilterSchema(dbConnection.getUiSchema());
         }
-        // MOD mzhao adapte model. MDM connection editing need handle
-        // additionally.
-        // connectionParam.getParameters().setProperty(TaggedValueHelper.UNIVERSE,
-        // DataProviderHelper.getUniverse(connection));
         connectionParam.setDbName(JavaSqlFactory.getSID(conn));
         // MOD by zshen for bug 15314
         String retrieveAllMetadata = MetadataHelper.getRetrieveAllMetadata(conn);
