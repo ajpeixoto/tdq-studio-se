@@ -159,31 +159,31 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
                 tacokitDatabaseConnection.setStereotype(EcoreUtil.copy(dbConn.getStereotype()));
                 tacokitDatabaseConnection.setSupportNLS(dbConn.isSupportNLS());
 
-                tacokitDatabaseConnection.getDataPackage().addAll(EcoreUtil.copyAll(dbConn.getDataPackage()));
-                tacokitDatabaseConnection.getConstraint().addAll(EcoreUtil.copyAll(dbConn.getConstraint()));
-                tacokitDatabaseConnection.getChangeRequest().addAll(EcoreUtil.copyAll(dbConn.getChangeRequest()));
-                tacokitDatabaseConnection.getClientDependency().addAll(EcoreUtil.copyAll(dbConn.getClientDependency()));
-                tacokitDatabaseConnection.getDataManager().addAll(EcoreUtil.copyAll(dbConn.getDataManager()));
-                tacokitDatabaseConnection.getDasdlProperty().addAll(EcoreUtil.copyAll(dbConn.getDasdlProperty()));
+                tacokitDatabaseConnection.getDataPackage().addAll(dbConn.getDataPackage());
+                tacokitDatabaseConnection.getConstraint().addAll(dbConn.getConstraint());
+                tacokitDatabaseConnection.getChangeRequest().addAll(dbConn.getChangeRequest());
+                tacokitDatabaseConnection.getClientDependency().addAll(dbConn.getClientDependency());
+                tacokitDatabaseConnection.getDataManager().addAll(dbConn.getDataManager());
+                tacokitDatabaseConnection.getDasdlProperty().addAll(dbConn.getDasdlProperty());
                 tacokitDatabaseConnection.getDeployedSoftwareSystem()
-                        .addAll(EcoreUtil.copyAll(dbConn.getDeployedSoftwareSystem()));
-                tacokitDatabaseConnection.getDescription().addAll(EcoreUtil.copyAll(dbConn.getDescription()));
-                tacokitDatabaseConnection.getDocument().addAll(EcoreUtil.copyAll(dbConn.getDocument()));
-                tacokitDatabaseConnection.getElementNode().addAll(EcoreUtil.copyAll(dbConn.getElementNode()));
-                tacokitDatabaseConnection.getImportedElement().addAll(EcoreUtil.copyAll(dbConn.getImportedElement()));
-                tacokitDatabaseConnection.getImporter().addAll(EcoreUtil.copyAll(dbConn.getImporter()));
-                tacokitDatabaseConnection.getMeasurement().addAll(EcoreUtil.copyAll(dbConn.getMeasurement()));
-                tacokitDatabaseConnection.getOwnedElement().addAll(EcoreUtil.copyAll(dbConn.getOwnedElement()));
-                tacokitDatabaseConnection.getParameters().addAll(EcoreUtil.copyAll(dbConn.getParameters()));
-                tacokitDatabaseConnection.getRenderedObject().addAll(EcoreUtil.copyAll(dbConn.getRenderedObject()));
+                        .addAll(dbConn.getDeployedSoftwareSystem());
+                tacokitDatabaseConnection.getDescription().addAll(dbConn.getDescription());
+                tacokitDatabaseConnection.getDocument().addAll(dbConn.getDocument());
+                tacokitDatabaseConnection.getElementNode().addAll(dbConn.getElementNode());
+                tacokitDatabaseConnection.getImportedElement().addAll(dbConn.getImportedElement());
+                tacokitDatabaseConnection.getImporter().addAll(dbConn.getImporter());
+                tacokitDatabaseConnection.getMeasurement().addAll(dbConn.getMeasurement());
+                tacokitDatabaseConnection.getOwnedElement().addAll(dbConn.getOwnedElement());
+                tacokitDatabaseConnection.getParameters().addAll(dbConn.getParameters());
+                tacokitDatabaseConnection.getRenderedObject().addAll(dbConn.getRenderedObject());
                 tacokitDatabaseConnection.getResourceConnection()
-                        .addAll(EcoreUtil.copyAll(dbConn.getResourceConnection()));
-                tacokitDatabaseConnection.getResponsibleParty().addAll(EcoreUtil.copyAll(dbConn.getResponsibleParty()));
+                        .addAll(dbConn.getResourceConnection());
+                tacokitDatabaseConnection.getResponsibleParty().addAll(dbConn.getResponsibleParty());
                 tacokitDatabaseConnection.getSupplierDependency()
-                        .addAll(EcoreUtil.copyAll(dbConn.getSupplierDependency()));
-                tacokitDatabaseConnection.getTaggedValue().addAll(EcoreUtil.copyAll(dbConn.getTaggedValue()));
+                        .addAll(dbConn.getSupplierDependency());
+                tacokitDatabaseConnection.getTaggedValue().addAll(dbConn.getTaggedValue());
                 tacokitDatabaseConnection.getVocabularyElement()
-                        .addAll(EcoreUtil.copyAll(dbConn.getVocabularyElement()));
+                        .addAll(dbConn.getVocabularyElement());
                 
                 tacokitDatabaseConnection.setEnableDBType(false);
 
