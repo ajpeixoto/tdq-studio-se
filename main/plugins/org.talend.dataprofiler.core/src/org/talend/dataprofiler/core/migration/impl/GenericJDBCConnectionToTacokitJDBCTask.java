@@ -28,6 +28,7 @@ import org.talend.core.model.properties.TacokitDatabaseConnectionItem;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.model.repository.IRepositoryViewObject;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
+import org.talend.cwm.helper.ResourceHelper;
 import org.talend.dataprofiler.core.migration.AbstractWorksapceUpdateTask;
 import org.talend.sdk.component.server.front.model.ConfigTypeNode;
 import org.talend.sdk.component.studio.Lookups;
@@ -104,13 +105,33 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
                 property.setPurpose(item.getProperty().getPurpose());
                 property.setStatusCode(item.getProperty().getStatusCode());
                 property.setVersion(item.getProperty().getVersion());
-                property.getAdditionalProperties().addAll(EcoreUtil.copyAll(item.getProperty().getAdditionalProperties()));
+                property.getAdditionalProperties().addAll(item.getProperty().getAdditionalProperties());
 
+                tacokitDatabaseConnection.setId(dbConn.getId());
                 tacokitDatabaseConnection.getProperties().putAll(dbConn.getProperties());
                 tacokitDatabaseConnection.setDbmsId(dbConn.getDbmsId());
                 tacokitDatabaseConnection.setURL(dbConn.getURL());
                 tacokitDatabaseConnection.setDatabaseType(dbConn.getDatabaseType());
-                tacokitDatabaseConnection.setDriverJarPath(dbConn.getDriverJarPath());
+                if (connection.isContextMode()) {
+                    tacokitDatabaseConnection.setDriverJarPath(dbConn.getDriverJarPath());
+                } else {
+                    String driverPath = dbConn.getDriverJarPath();
+                    StringBuffer newPathSB = new StringBuffer();
+                    if (driverPath != null) {
+                        String[] values = driverPath.split(";");
+                        for (String v : values) {
+                            if (newPathSB.length() > 0) {
+                                newPathSB.append(";");
+                            }
+                            if (v.startsWith("\"") && v.endsWith("\"")) {
+                                newPathSB.append(v);
+                            } else {
+                                newPathSB.append("\"").append(v).append("\"");
+                            }
+                        }
+                    }
+                    tacokitDatabaseConnection.setDriverJarPath(newPathSB.toString());
+                }
                 tacokitDatabaseConnection.setDriverClass(dbConn.getDriverClass());
                 tacokitDatabaseConnection.setUsername(dbConn.getUsername());
                 tacokitDatabaseConnection.setPassword(dbConn.getPassword());
@@ -119,7 +140,7 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
                 tacokitDatabaseConnection.getProperties().put(BuiltInKeys.TACOKIT_CONFIG_ID, configNode.getId());
                 tacokitDatabaseConnection.getProperties().put(BuiltInKeys.TACOKIT_CONFIG_PARENT_ID, configNode.getParentId());
 
-                tacokitDatabaseConnection.setCdcConns(EcoreUtil.copy(dbConn.getCdcConns()));
+                tacokitDatabaseConnection.setCdcConns(dbConn.getCdcConns());
                 tacokitDatabaseConnection.setCdcTypeMode(dbConn.getCdcTypeMode());
                 tacokitDatabaseConnection.setContextId(dbConn.getContextId());
                 tacokitDatabaseConnection.setContextMode(dbConn.isContextMode());
@@ -153,17 +174,17 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
                 tacokitDatabaseConnection.setNamespace(EcoreUtil.copy(dbConn.getNamespace()));
 
                 tacokitDatabaseConnection.setIsCaseSensitive(dbConn.isIsCaseSensitive());
-                tacokitDatabaseConnection.setMachine(EcoreUtil.copy(dbConn.getMachine()));
+                tacokitDatabaseConnection.setMachine(dbConn.getMachine());
                 tacokitDatabaseConnection.setPathname(dbConn.getPathname());
-                tacokitDatabaseConnection.setQueries(EcoreUtil.copy(dbConn.getQueries()));
-                tacokitDatabaseConnection.setStereotype(EcoreUtil.copy(dbConn.getStereotype()));
+                tacokitDatabaseConnection.setQueries(dbConn.getQueries());
+                tacokitDatabaseConnection.setStereotype(dbConn.getStereotype());
                 tacokitDatabaseConnection.setSupportNLS(dbConn.isSupportNLS());
 
                 tacokitDatabaseConnection.getDataPackage().addAll(dbConn.getDataPackage());
                 tacokitDatabaseConnection.getConstraint().addAll(dbConn.getConstraint());
                 tacokitDatabaseConnection.getChangeRequest().addAll(dbConn.getChangeRequest());
                 tacokitDatabaseConnection.getClientDependency().addAll(dbConn.getClientDependency());
-                tacokitDatabaseConnection.getDataManager().addAll(dbConn.getDataManager());
+                // tacokitDatabaseConnection.getDataManager().addAll(dbConn.getDataManager());
                 tacokitDatabaseConnection.getDasdlProperty().addAll(dbConn.getDasdlProperty());
                 tacokitDatabaseConnection.getDeployedSoftwareSystem()
                         .addAll(dbConn.getDeployedSoftwareSystem());
@@ -199,6 +220,9 @@ public class GenericJDBCConnectionToTacokitJDBCTask extends AbstractWorksapceUpd
                             item.getProperty().getVersion(), true);
                     factory.deleteObjectPhysical(obj);
                     factory.create(tacokitDatabaseConnectionItem, new Path(item.getState().getPath()), true);
+
+                    ResourceHelper.setUUid(tacokitDatabaseConnection, ResourceHelper.getUUID(dbConn));
+                    factory.save(tacokitDatabaseConnectionItem, true);
                 } catch (Exception e) {
                     ExceptionHandler.process(e);
                     return false;
