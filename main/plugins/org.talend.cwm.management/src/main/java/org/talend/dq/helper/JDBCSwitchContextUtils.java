@@ -75,8 +75,11 @@ public class JDBCSwitchContextUtils {
         if (connNode.getObjectType() == ERepositoryObjectType.METADATA_CON_CATALOG) {
             connNode = connNode.getParent();
         }
-        if (connNode.getObjectType().equals(ERepositoryObjectType.JDBC) && connNode instanceof DBConnectionRepNode) {
-            conn = ((DBConnectionRepNode) connNode).getDatabaseConnection();
+        if (connNode.getObjectType() != null) {
+            if (connNode.getObjectType().equals(ERepositoryObjectType.JDBC)
+                    && connNode instanceof DBConnectionRepNode) {
+                conn = ((DBConnectionRepNode) connNode).getDatabaseConnection();
+            }
         }
         if (connNode instanceof TCKConnectionRepNode) {
             conn = ((DBConnectionRepNode) connNode).getDatabaseConnection();
