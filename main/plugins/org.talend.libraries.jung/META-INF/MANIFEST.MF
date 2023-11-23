@@ -4,8 +4,7 @@ Bundle-Name: Jung Plug-in
 Bundle-SymbolicName: org.talend.libraries.jung;singleton:=true
 Bundle-Version: 7.3.1.qualifier
 Bundle-Vendor: .Talend SA.
-Bundle-ClassPath: lib/collections-generic-4.01.jar,
- lib/colt.jar,
+Bundle-ClassPath: lib/colt.jar,
  lib/concurrent.jar,
  lib/jung-1.7.6.jar
 Export-Package: EDU.oswego.cs.dl.util.concurrent,
