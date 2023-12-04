@@ -76,7 +76,6 @@ Require-Bundle: org.talend.utils,
  org.talend.dataquality.common,
  org.talend.core.runtime,
  org.talend.dataquality.statistics,
- org.slf4j.api,
  org.eclipse.core.runtime,
  org.eclipse.emf.ecore,
  org.talend.cwm.mip,
@@ -90,3 +89,4 @@ Eclipse-RegisterBuddy: org.apache.log4j,
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: org.talend.dataquality.DataQualityPlugin
 Automatic-Module-Name: org.talend.dataquality
+Import-Package: org.slf4j

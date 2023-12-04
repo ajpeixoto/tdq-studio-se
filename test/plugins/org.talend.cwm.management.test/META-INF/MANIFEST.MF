@@ -8,6 +8,6 @@ Fragment-Host: org.talend.cwm.management
 Require-Bundle: org.talend.testutils,
  org.talend.model,
  org.junit,
- org.talend.dataprofiler.core,
- org.slf4j.api
+ org.talend.dataprofiler.core
 Bundle-ClassPath: .
+Import-Package: org.slf4j
