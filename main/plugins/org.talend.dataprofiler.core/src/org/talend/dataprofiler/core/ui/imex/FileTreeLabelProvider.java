@@ -22,6 +22,7 @@ import org.talend.commons.ui.runtime.image.ECoreImage;
 import org.talend.commons.ui.runtime.image.ImageProvider;
 import org.talend.core.model.metadata.builder.connection.DatabaseConnection;
 import org.talend.core.model.metadata.builder.connection.DelimitedFileConnection;
+import org.talend.core.model.metadata.builder.connection.TacokitDatabaseConnection;
 import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.ui.imex.model.ItemRecord;
 import org.talend.dataquality.rules.MatchRuleDefinition;
@@ -99,6 +100,8 @@ public class FileTreeLabelProvider extends LabelProvider {
                 } else if (fileName.endsWith(FactoriesUtil.ITEM_EXTENSION)) {
                     if (record.getElement() instanceof DelimitedFileConnection) {
                         image = ImageLib.getImage(ImageLib.FILE_DELIMITED);
+                    } else if (record.getElement() instanceof TacokitDatabaseConnection) {
+                        image = ImageLib.getImage(ImageLib.NEW_JDBC);
                     } else if (record.getElement() instanceof DatabaseConnection) {
                         image = ImageProvider.getImage(ECoreImage.METADATA_CONNECTION_ICON);
                     } else {
