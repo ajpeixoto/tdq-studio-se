@@ -12,6 +12,7 @@
 // ============================================================================
 package org.talend.dataprofiler.core.ui.editor.preview;
 
+import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -254,6 +255,12 @@ public class DatasetUtils {
     private static java.util.Date convert2Date(Object obj) {
         if (obj instanceof String) {
             return java.sql.Date.valueOf(obj.toString());
+        }
+        if (obj instanceof java.time.LocalDateTime) {
+            return Date.from(((java.time.LocalDateTime) obj).atZone(ZoneId.systemDefault()).toInstant());
+        }
+        if (obj instanceof java.time.LocalDate) {
+            return Date.from(((java.time.LocalDate) obj).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
         }
         // for Timestamp type data
         return (Date) obj;
