@@ -25,7 +25,6 @@ import org.talend.commons.exception.PersistenceException;
 import org.talend.core.model.repository.ERepositoryObjectType;
 import org.talend.core.repository.model.ProxyRepositoryFactory;
 import org.talend.dataprofiler.core.CorePlugin;
-import org.talend.dataprofiler.core.ImageLib;
 import org.talend.dataprofiler.core.i18n.internal.DefaultMessagesImpl;
 import org.talend.dataprofiler.core.manager.DQStructureManager;
 import org.talend.dataprofiler.core.ui.views.DQRespositoryView;
@@ -62,7 +61,6 @@ public class FolderWizard extends Wizard {
         super();
         this.path = path;
         this.defaultLabel = defaultLabel;
-        setDefaultPageImageDescriptor(ImageLib.getImageDescriptor(ImageLib.FOLDER_WIZ_IMAGE));
     }
 
     /**
