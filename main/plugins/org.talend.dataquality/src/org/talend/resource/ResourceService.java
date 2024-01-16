@@ -22,6 +22,7 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.QualifiedName;
 import org.talend.utils.sugars.ReturnCode;
@@ -108,15 +109,17 @@ public final class ResourceService {
     }
 
     /**
-     * DOC bZhou Comment method "refreshStructure".
+     * only refresh DQ resource.
      */
     public static void refreshStructure() {
-        refreshStructure(ResourceManager.getRootProject());
+        if (!ResourceManager.getRootProject().isSynchronized(IResource.DEPTH_ONE)) {
+            refreshStructure(ResourceManager.getDataProfilingFolder());
+            refreshStructure(ResourceManager.getLibrariesFolder());
+            refreshStructure(ResourceManager.getMetadataFolder());
+            refreshStructure(ResourceManager.getContextFolder());
+        }
     }
 
-    /**
-     * DOC bZhou Comment method "refreshStructure".
-     */
     public static void refreshStructure(IResource resource) {
         try {
             resource.refreshLocal(IResource.DEPTH_INFINITE, null);
