@@ -112,7 +112,7 @@ public final class ResourceService {
      * only refresh DQ resource when is not Synchronized.
      */
     public static void refreshStructure() {
-        if (!ResourceManager.getRootProject().isSynchronized(IResource.DEPTH_ONE)) {
+        if (!ResourceManager.getRootProject().isSynchronized(IResource.DEPTH_INFINITE)) {
             refreshStructure(ResourceManager.getDataProfilingFolder());
             refreshStructure(ResourceManager.getLibrariesFolder());
             refreshStructure(ResourceManager.getMetadataFolder());
