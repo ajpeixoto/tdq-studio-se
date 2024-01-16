@@ -109,7 +109,7 @@ public final class ResourceService {
     }
 
     /**
-     * only refresh DQ resource.
+     * only refresh DQ resource when is not Synchronized.
      */
     public static void refreshStructure() {
         if (!ResourceManager.getRootProject().isSynchronized(IResource.DEPTH_ONE)) {
