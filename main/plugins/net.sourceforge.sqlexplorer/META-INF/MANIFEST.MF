@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.ui;bundle-version="3.2.0",
  org.eclipse.osgi.services,
  org.apache.log4j;bundle-version="1.2.13",
  org.apache.commons.lang,
- org.apache.commons.io,
  org.apache.commons.logging,
  org.talend.model,
  org.talend.utils,
@@ -107,7 +106,8 @@ Export-Package: META-INF,
  org.eclipse.jface.preference
 Eclipse-RegisterBuddy: org.talend.utils, org.apache.log4j
 Bundle-Localization: plugin
-Import-Package: org.talend.dataprofiler.service
+Import-Package: org.apache.commons.io,
+ org.talend.dataprofiler.service
 Service-Component: OSGI-INF/sqlexplorer.xml
 Bundle-ActivationPolicy: lazy
 Automatic-Module-Name: net.sourceforge.sqlexplorer

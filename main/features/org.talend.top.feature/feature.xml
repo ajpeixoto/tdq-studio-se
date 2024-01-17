@@ -21,10 +21,10 @@
     <import plugin="net.jeeeyul.eclipse.themes" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="net.jeeeyul.swtend" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.commons-beanutils" version="0.0.0" match="greaterOrEqual"/>
-    <import plugin="org.apache.commons.codec" version="0.0.0" match="greaterOrEqual"/>
+    <import plugin="org.apache.commons.commons-codec" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.collections" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.httpclient" version="0.0.0" match="greaterOrEqual"/>
-    <import plugin="org.apache.commons.io" version="0.0.0" match="greaterOrEqual"/>
+    <import plugin="org.apache.commons.commons-io" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.lang" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.lang3" version="0.0.0" match="greaterOrEqual"/>
     <import plugin="org.apache.commons.logging" version="0.0.0" match="greaterOrEqual"/>
