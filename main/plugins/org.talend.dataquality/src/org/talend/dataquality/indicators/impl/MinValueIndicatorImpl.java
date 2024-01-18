@@ -7,6 +7,7 @@ package org.talend.dataquality.indicators.impl;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EClass;
 import org.talend.dataquality.indicators.IndicatorValueType;
 import org.talend.dataquality.indicators.IndicatorsPackage;
@@ -21,6 +22,8 @@ import org.talend.dataquality.indicators.MinValueIndicator;
  * @generated
  */
 public class MinValueIndicatorImpl extends ValueIndicatorImpl implements MinValueIndicator {
+
+    private static Logger log = Logger.getLogger(MinValueIndicatorImpl.class);
 
     boolean isDateType = false;
 
@@ -93,8 +96,8 @@ public class MinValueIndicatorImpl extends ValueIndicatorImpl implements MinValu
                     this.value = formatObjValue();
                     return false;
                 }
-                Date thisDate = (Date) objValue;
-                Date dataDate = (Date) data;
+                Date thisDate = convert2Date(objValue);
+                Date dataDate = convert2Date(data);
                 if (dataDate.compareTo(thisDate) < 0) {
                     return true;
                 }
@@ -105,6 +108,7 @@ public class MinValueIndicatorImpl extends ValueIndicatorImpl implements MinValu
             double dataValue = Double.valueOf(data.toString());
             return thisValue > dataValue;
         } catch (Exception e) {
+            log.error(e, e);
             return false;
         }
     }
