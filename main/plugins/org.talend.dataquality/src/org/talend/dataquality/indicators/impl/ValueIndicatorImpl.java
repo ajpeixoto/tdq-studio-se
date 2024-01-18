@@ -8,6 +8,8 @@ package org.talend.dataquality.indicators.impl;
 import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -342,6 +344,23 @@ public class ValueIndicatorImpl extends IndicatorImpl implements ValueIndicator 
             }
         }
         return false;
+    }
+
+    /**
+     * DOC msjian Comment method "convert2Date".
+     * 
+     * @param obj
+     * @return
+     */
+    protected static java.util.Date convert2Date(Object obj) {
+        if (obj instanceof java.time.LocalDateTime) {
+            return Date.from(((java.time.LocalDateTime) obj).atZone(ZoneId.systemDefault()).toInstant());
+        }
+        if (obj instanceof java.time.LocalDate) {
+            return Date.from(((java.time.LocalDate) obj).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant());
+        }
+        // for Timestamp type data
+        return (Date) obj;
     }
 
     /**

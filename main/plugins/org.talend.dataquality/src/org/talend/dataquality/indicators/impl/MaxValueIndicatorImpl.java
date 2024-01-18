@@ -7,6 +7,7 @@ package org.talend.dataquality.indicators.impl;
 
 import java.util.Date;
 
+import org.apache.log4j.Logger;
 import org.eclipse.emf.ecore.EClass;
 import org.talend.dataquality.indicators.IndicatorValueType;
 import org.talend.dataquality.indicators.IndicatorsPackage;
@@ -23,6 +24,8 @@ import org.talend.dataquality.indicators.MaxValueIndicator;
 public class MaxValueIndicatorImpl extends ValueIndicatorImpl implements MaxValueIndicator {
 
     boolean isDateType = false;
+
+    private static Logger log = Logger.getLogger(MaxValueIndicatorImpl.class);
 
     /**
      * <!-- begin-user-doc --> <!-- end-user-doc -->
@@ -91,8 +94,8 @@ public class MaxValueIndicatorImpl extends ValueIndicatorImpl implements MaxValu
                     this.value = formatObjValue();
                     return false;
                 }
-                Date thisDate = (Date) objValue;
-                Date dataDate = (Date) data;
+                Date thisDate = convert2Date(objValue);
+                Date dataDate = convert2Date(data);
                 if (dataDate.compareTo(thisDate) > 0) {
                     return true;
                 }
@@ -102,6 +105,7 @@ public class MaxValueIndicatorImpl extends ValueIndicatorImpl implements MaxValu
             double dataValue = Double.valueOf(data.toString());
             return thisValue < dataValue;
         } catch (Exception e) {
+            log.error(e, e);
             return false;
         }
     }
