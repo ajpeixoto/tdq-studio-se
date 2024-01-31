@@ -67,7 +67,7 @@ public class MinValueIndicatorImpl extends ValueIndicatorImpl implements MinValu
         if (data == null) {
             return ok;
         }
-        if (isLess(data) || null == this.value) {
+        if (null == this.value || isLess(data)) {
             this.value = String.valueOf(data);
             if (isDateType) {
                 objValue = data;

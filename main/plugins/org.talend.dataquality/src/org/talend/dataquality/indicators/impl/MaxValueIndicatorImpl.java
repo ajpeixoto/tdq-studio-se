@@ -65,7 +65,7 @@ public class MaxValueIndicatorImpl extends ValueIndicatorImpl implements MaxValu
         if (data == null) {
             return ok;
         }
-        if (isGreater(data) || null == this.value) {
+        if (null == this.value || isGreater(data)) {
             this.value = String.valueOf(data);
             if (isDateType) {
                 objValue = data;
